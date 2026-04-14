@@ -1,3 +1,9 @@
+import Hero from './components/Hero';
+
 export default function App() {
-  return <div className="min-h-screen bg-surface text-on-surface">Wraith Protocol</div>;
+  return (
+    <div className="bg-surface text-on-surface">
+      <Hero />
+    </div>
+  );
 }
