@@ -11,7 +11,7 @@ export default function Footer() {
     <footer className="border-t border-outline-variant px-6 py-12">
       <div className="mx-auto flex max-w-5xl flex-col items-center gap-8 md:flex-row md:justify-between">
         <div className="flex items-center gap-3">
-          <img src="/logo-white.png" alt="Wraith Protocol" className="h-6 w-6" />
+          <img src="/logo.png" alt="Wraith Protocol" className="h-6 w-6" />
           <span className="font-heading text-sm font-semibold text-on-surface">
             Wraith Protocol
           </span>

@@ -3,7 +3,7 @@ export default function Header() {
     <header className="fixed top-0 z-50 w-full border-b border-outline-variant bg-surface/80 backdrop-blur-sm">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
         <a href="https://usewraith.xyz" className="flex items-center gap-3">
-          <img src="/logo-white.png" alt="Wraith Protocol" className="h-8 w-8" />
+          <img src="/logo.png" alt="Wraith Protocol" className="h-8 w-8" />
           <span className="font-heading text-base font-semibold text-on-surface">
             Wraith Protocol
           </span>
