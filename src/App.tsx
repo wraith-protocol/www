@@ -1,6 +1,9 @@
 import Hero from './components/Hero';
 import Features from './components/Features';
 import Architecture from './components/Architecture';
+import ForDevelopers from './components/ForDevelopers';
+import Chains from './components/Chains';
+import Footer from './components/Footer';
 
 export default function App() {
   return (
@@ -8,6 +11,9 @@ export default function App() {
       <Hero />
       <Features />
       <Architecture />
+      <ForDevelopers />
+      <Chains />
+      <Footer />
     </div>
   );
 }
