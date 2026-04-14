@@ -1,0 +1,50 @@
+<svg viewBox="0 0 720 440" xmlns="http://www.w3.org/2000/svg">
+  <rect width="720" height="440" fill="transparent" />
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="8" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 3.5 L 0 7" fill="#767575" />
+    </marker>
+  </defs>
+
+  <!-- Your App -->
+  <rect x="220" y="20" width="280" height="56" fill="#141414" stroke="#444444" stroke-width="1" />
+  <text x="360" y="54" text-anchor="middle" fill="#e6e1e5" font-family="Space Grotesk, sans-serif" font-weight="600" font-size="15">Your App</text>
+
+  <!-- Arrow -->
+  <line x1="360" y1="76" x2="360" y2="112" stroke="#767575" stroke-width="1.5" marker-end="url(#arrow)" />
+
+  <!-- SDK -->
+  <rect x="170" y="116" width="380" height="56" fill="#141414" stroke="#c6c6c7" stroke-width="1.5" />
+  <text x="360" y="142" text-anchor="middle" fill="#c6c6c7" font-family="JetBrains Mono, monospace" font-weight="500" font-size="13">@wraith-protocol/sdk</text>
+  <text x="360" y="161" text-anchor="middle" fill="#767575" font-family="Inter, sans-serif" font-size="11">npm package — crypto + agent client</text>
+
+  <!-- Arrow -->
+  <line x1="360" y1="172" x2="360" y2="208" stroke="#767575" stroke-width="1.5" marker-end="url(#arrow)" />
+
+  <!-- Gateway -->
+  <rect x="170" y="212" width="380" height="56" fill="#141414" stroke="#444444" stroke-width="1" />
+  <text x="360" y="238" text-anchor="middle" fill="#e6e1e5" font-family="Space Grotesk, sans-serif" font-weight="600" font-size="14">Gateway</text>
+  <text x="360" y="257" text-anchor="middle" fill="#767575" font-family="Inter, sans-serif" font-size="11">auth · rate limiting · billing · proxy</text>
+
+  <!-- Arrow -->
+  <line x1="360" y1="268" x2="360" y2="304" stroke="#767575" stroke-width="1.5" marker-end="url(#arrow)" />
+
+  <!-- Spectre TEE -->
+  <rect x="170" y="308" width="380" height="56" fill="#141414" stroke="#22c55e" stroke-width="1.5" />
+  <text x="360" y="334" text-anchor="middle" fill="#22c55e" font-family="Space Grotesk, sans-serif" font-weight="600" font-size="14">Spectre TEE</text>
+  <text x="360" y="353" text-anchor="middle" fill="#767575" font-family="Inter, sans-serif" font-size="11">AI agent · key derivation · chain ops · attestation</text>
+
+  <!-- Fan-out arrows -->
+  <line x1="280" y1="364" x2="160" y2="400" stroke="#767575" stroke-width="1.5" marker-end="url(#arrow)" />
+  <line x1="360" y1="364" x2="360" y2="400" stroke="#767575" stroke-width="1.5" marker-end="url(#arrow)" />
+  <line x1="440" y1="364" x2="560" y2="400" stroke="#767575" stroke-width="1.5" marker-end="url(#arrow)" />
+
+  <!-- Chains -->
+  <rect x="90" y="404" width="120" height="28" fill="#141414" stroke="#444444" stroke-width="1" />
+  <text x="150" y="423" text-anchor="middle" fill="#c6c6c7" font-family="JetBrains Mono, monospace" font-size="12">Horizen</text>
+  <rect x="300" y="404" width="120" height="28" fill="#141414" stroke="#444444" stroke-width="1" />
+  <text x="360" y="423" text-anchor="middle" fill="#c6c6c7" font-family="JetBrains Mono, monospace" font-size="12">Stellar</text>
+  <rect x="510" y="404" width="120" height="28" fill="#141414" stroke="#444444" stroke-width="1" />
+  <text x="570" y="423" text-anchor="middle" fill="#c6c6c7" font-family="JetBrains Mono, monospace" font-size="12">EVM chains</text>
+</svg>
