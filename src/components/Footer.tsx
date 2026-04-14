@@ -21,6 +21,8 @@ export default function Footer() {
             <a
               key={link.label}
               href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-sm text-on-surface-variant transition-opacity hover:opacity-80"
             >
               {link.label}

@@ -46,12 +46,14 @@ export default function ForDevelopers() {
                 {resource.description}
               </p>
               {'code' in resource && resource.code && (
-                <pre className="mt-4 border border-outline-variant bg-surface-bright p-3 font-mono text-sm text-primary">
+                <pre className="mt-4 overflow-x-auto border border-outline-variant bg-surface-bright p-3 font-mono text-xs text-primary sm:text-sm">
                   {resource.code}
                 </pre>
               )}
               <a
                 href={resource.link}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="mt-auto pt-6 text-sm font-medium text-primary transition-opacity hover:opacity-80"
               >
                 {resource.linkText} →

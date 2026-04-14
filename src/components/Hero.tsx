@@ -51,18 +51,22 @@ export default function Hero() {
         Private payments for every chain
       </h1>
       <p className="mt-6 max-w-xl text-center text-lg text-on-surface-variant">
-        Send and receive payments on any blockchain without revealing the recipient. Powered by
-        stealth addresses.
+        Stealth addresses generate a fresh one-time address for every payment — so nothing on-chain
+        links sender to recipient.
       </p>
       <div className="mt-10 flex gap-4">
         <a
           href="https://docs.usewraith.xyz"
+          target="_blank"
+          rel="noopener noreferrer"
           className="bg-primary px-6 py-3 font-heading text-sm font-semibold text-surface transition-opacity hover:opacity-80"
         >
           Read the Docs
         </a>
         <a
           href="https://demo.usewraith.xyz"
+          target="_blank"
+          rel="noopener noreferrer"
           className="border border-outline-variant px-6 py-3 font-heading text-sm font-semibold text-on-surface transition-opacity hover:opacity-80"
         >
           Try the Demo
