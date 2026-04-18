@@ -2,15 +2,24 @@
 
 @theme {
   --color-surface: #0e0e0e;
+  --color-surface-dim: #080808;
   --color-surface-container: #141414;
+  --color-surface-container-low: #0e0e0e;
+  --color-surface-container-high: #212121;
   --color-surface-bright: #1a1a1a;
   --color-primary: #c6c6c7;
   --color-on-surface: #e6e1e5;
   --color-on-surface-variant: #c4c7c5;
   --color-outline: #767575;
   --color-outline-variant: #444444;
+  --color-outline-variant-30: #44444466;
   --color-error: #ee7d77;
+  --color-error-10: #ee7d7719;
+  --color-error-30: #ee7d774d;
   --color-tertiary: #22c55e;
+  --color-tertiary-10: #22c55e19;
+  --color-blue: #60a5fa;
+  --color-blue-10: #60a5fa19;
 
   --font-heading: 'Space Grotesk', sans-serif;
   --font-body: 'Inter', sans-serif;
