@@ -7,9 +7,7 @@ export default function Header() {
     <header className="fixed top-0 z-50 w-full border-b border-outline-variant-30 bg-surface/80 backdrop-blur-sm">
       <div className="mx-auto flex w-full items-center justify-between px-12 py-5">
         <a href="https://usewraith.xyz" className="flex items-center gap-3">
-          <div className="flex h-6 w-6 items-center justify-center bg-primary">
-            <span className="font-heading text-sm font-bold text-surface">W</span>
-          </div>
+          <img src="/logo.png" alt="Wraith" className="h-6 opacity-90" />
           <span className="font-heading text-[15px] font-bold tracking-[2px] text-on-surface">
             WRAITH
           </span>

@@ -22,7 +22,6 @@ const columns = [
     links: [
       { label: 'ERC-5564 spec', href: 'https://eips.ethereum.org/EIPS/eip-5564' },
       { label: 'ERC-6538 spec', href: 'https://eips.ethereum.org/EIPS/eip-6538' },
-      { label: 'Horizen docs', href: 'https://docs.horizen.io' },
       { label: 'Security', href: 'https://docs.usewraith.xyz/security' },
     ],
   },
@@ -35,9 +34,7 @@ export default function Footer() {
         <div className="flex flex-col justify-between gap-12 md:flex-row">
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-3">
-              <div className="flex h-6 w-6 items-center justify-center bg-primary">
-                <span className="font-heading text-sm font-bold text-surface">W</span>
-              </div>
+              <img src="/logo.png" alt="Wraith" className="h-6 opacity-90" />
               <span className="font-heading text-[13px] font-bold tracking-[2px] text-on-surface">
                 WRAITH PROTOCOL
               </span>
