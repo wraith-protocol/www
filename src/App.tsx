@@ -4,6 +4,7 @@ import Features from './components/Features';
 import Architecture from './components/Architecture';
 import ForDevelopers from './components/ForDevelopers';
 import Chains from './components/Chains';
+import CtaStrip from './components/CtaStrip';
 import Footer from './components/Footer';
 
 export default function App() {
@@ -15,6 +16,7 @@ export default function App() {
       <Architecture />
       <ForDevelopers />
       <Chains />
+      <CtaStrip />
       <Footer />
     </div>
   );
