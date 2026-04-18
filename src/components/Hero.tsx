@@ -1,42 +1,93 @@
-const codeLines = [
-  {
-    num: '1',
-    content: "import { Wraith } from '@wraith-protocol/sdk'",
-    color: 'text-on-surface-variant',
-  },
-  { num: '2', content: ' ', color: 'text-on-surface-variant' },
-  {
-    num: '3',
-    content: "const wraith = new Wraith({ chain: 'horizen' })",
-    color: 'text-on-surface-variant',
-  },
-  { num: '4', content: ' ', color: 'text-on-surface-variant' },
-  {
-    num: '5',
-    content: "// derive a stealth address from the recipient's meta-address",
-    color: 'text-outline',
-  },
-  {
-    num: '6',
-    content: 'const { stealthAddress, ephemeralPubKey } =',
-    color: 'text-on-surface-variant',
-  },
-  { num: '7', content: '  await wraith.deriveStealthAddress(metaAddress)', color: 'text-primary' },
-  { num: '8', content: ' ', color: 'text-on-surface-variant' },
-  {
-    num: '9',
-    content: '// send — the recipient sees this on-chain, but nobody else can',
-    color: 'text-outline',
-  },
-  { num: '10', content: '// link it to the receiver.', color: 'text-outline' },
-  {
-    num: '11',
-    content: 'await wraith.send({ stealthAddress, amount, ephemeralPubKey })',
-    color: 'text-on-surface-variant',
-  },
-];
+import { useState } from 'react';
+
+type CodeLine = {
+  content: string;
+  color: 'code' | 'comment' | 'highlight';
+};
+
+const tabs = ['send.ts', 'scan.ts', 'withdraw.ts'] as const;
+type Tab = (typeof tabs)[number];
+
+const codeByTab: Record<Tab, CodeLine[]> = {
+  'send.ts': [
+    {
+      content:
+        "import { generateStealthAddress, buildSendStealth } from '@wraith-protocol/sdk/chains/evm'",
+      color: 'code',
+    },
+    { content: '', color: 'code' },
+    { content: '// generate a one-time stealth address for the recipient', color: 'comment' },
+    {
+      content: 'const stealth = generateStealthAddress(spendingPubKey, viewingPubKey)',
+      color: 'highlight',
+    },
+    { content: '', color: 'code' },
+    { content: '// build the transaction — atomic send + announce', color: 'comment' },
+    { content: 'const tx = buildSendStealth({', color: 'code' },
+    { content: '  stealthAddress: stealth.stealthAddress,', color: 'code' },
+    { content: '  ephemeralPubKey: stealth.ephemeralPubKey,', color: 'code' },
+    { content: '  viewTag: stealth.viewTag,', color: 'code' },
+    { content: "  amount: parseEther('0.1'),", color: 'highlight' },
+    { content: '})', color: 'code' },
+  ],
+  'scan.ts': [
+    {
+      content:
+        "import { deriveStealthKeys, scanAnnouncements, fetchAnnouncements } from '@wraith-protocol/sdk/chains/evm'",
+      color: 'code',
+    },
+    { content: '', color: 'code' },
+    { content: '// derive stealth keys from wallet signature', color: 'comment' },
+    { content: 'const keys = deriveStealthKeys(signature)', color: 'code' },
+    { content: '', color: 'code' },
+    { content: '// fetch on-chain announcements and scan for your payments', color: 'comment' },
+    { content: "const announcements = await fetchAnnouncements('horizen')", color: 'code' },
+    { content: 'const matched = scanAnnouncements(', color: 'code' },
+    {
+      content: '  announcements, keys.viewingKey, keys.spendingPubKey, keys.spendingKey',
+      color: 'highlight',
+    },
+    { content: ')', color: 'code' },
+  ],
+  'withdraw.ts': [
+    {
+      content: "import { deriveStealthPrivateKey } from '@wraith-protocol/sdk/chains/evm'",
+      color: 'code',
+    },
+    { content: '', color: 'code' },
+    { content: '// derive the private key that controls the stealth address', color: 'comment' },
+    { content: 'const stealthPrivKey = deriveStealthPrivateKey(', color: 'code' },
+    { content: '  keys.spendingKey, ann.ephemeralPubKey, keys.viewingKey', color: 'highlight' },
+    { content: ')', color: 'code' },
+    { content: '', color: 'code' },
+    { content: '// send funds to any destination', color: 'comment' },
+    { content: 'const account = privateKeyToAccount(stealthPrivKey)', color: 'code' },
+    { content: 'await walletClient.sendTransaction({', color: 'code' },
+    { content: '  account, to: destination, value: amount', color: 'highlight' },
+    { content: '})', color: 'code' },
+  ],
+};
+
+const colorMap = {
+  code: 'text-on-surface-variant',
+  comment: 'text-outline',
+  highlight: 'text-primary',
+};
 
 export default function Hero() {
+  const [activeTab, setActiveTab] = useState<Tab>('send.ts');
+  const [copied, setCopied] = useState(false);
+
+  const lines = codeByTab[activeTab];
+
+  const handleCopy = () => {
+    const text = lines.map((l) => l.content).join('\n');
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
+
   return (
     <section className="flex w-full flex-col gap-16 px-6 pt-24 pb-[120px] md:flex-row md:gap-16 md:px-12 md:pt-24 lg:gap-16">
       <div className="flex w-full flex-col gap-8 pt-16 md:w-1/2">
@@ -102,30 +153,49 @@ export default function Hero() {
       <div className="flex w-full flex-col md:w-1/2">
         <div className="flex items-center justify-between border border-b-0 border-outline-variant bg-surface-container px-4 py-3">
           <div className="flex items-center gap-0">
-            <div className="flex items-center justify-center bg-surface-bright px-3 py-1.5">
-              <span className="font-mono text-[11px] font-medium text-on-surface">send.ts</span>
-            </div>
-            <div className="flex items-center justify-center px-3 py-1.5">
-              <span className="font-mono text-[11px] text-outline">scan.ts</span>
-            </div>
-            <div className="flex items-center justify-center px-3 py-1.5">
-              <span className="font-mono text-[11px] text-outline">withdraw.ts</span>
-            </div>
+            {tabs.map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`flex items-center justify-center px-3 py-1.5 transition-colors duration-150 ${
+                  activeTab === tab
+                    ? 'bg-surface-bright'
+                    : 'hover:bg-surface-bright/50 cursor-pointer'
+                }`}
+              >
+                <span
+                  className={`font-mono text-[11px] ${
+                    activeTab === tab ? 'font-medium text-on-surface' : 'text-outline'
+                  }`}
+                >
+                  {tab}
+                </span>
+              </button>
+            ))}
           </div>
-          <div className="flex items-center gap-1.5 px-2 py-1">
+          <button
+            onClick={handleCopy}
+            className="flex cursor-pointer items-center gap-1.5 px-2 py-1 transition-colors duration-150 hover:opacity-80"
+          >
             <span className="font-mono text-[10px] font-semibold tracking-[1px] text-outline">
-              COPY
+              {copied ? 'COPIED' : 'COPY'}
             </span>
-          </div>
+          </button>
         </div>
 
-        <div className="flex flex-col gap-2 border border-outline-variant bg-surface-container p-6">
-          {codeLines.map((line) => (
-            <div key={line.num} className="flex gap-4">
-              <span className="font-mono text-xs text-outline-variant select-none">{line.num}</span>
-              <span className={`font-mono text-[13px] ${line.color}`}>{line.content}</span>
-            </div>
-          ))}
+        <div className="overflow-x-auto border border-outline-variant bg-surface-container p-6">
+          <div className="w-max min-w-full">
+            {lines.map((line, i) => (
+              <div key={`${activeTab}-${i}`} className="flex gap-4 py-1">
+                <span className="w-4 shrink-0 font-mono text-xs text-outline-variant select-none">
+                  {i + 1}
+                </span>
+                <span className={`whitespace-pre font-mono text-[13px] ${colorMap[line.color]}`}>
+                  {line.content || ' '}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
 
         <div className="flex items-center justify-between border border-t-0 border-outline-variant bg-surface-container px-4 py-3">
