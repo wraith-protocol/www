@@ -1,31 +1,73 @@
 const chains = [
-  { name: 'Horizen', active: true },
-  { name: 'Stellar', active: true },
-  { name: 'Ethereum', active: false },
-  { name: 'Polygon', active: false },
-  { name: 'Base', active: false },
-  { name: 'Solana', active: false },
+  {
+    name: 'Horizen',
+    active: true,
+    status: 'LIVE ON TESTNET',
+    meta: 'EVM · TEE-secured · ERC-5564',
+    border: true,
+  },
+  {
+    name: 'Stellar',
+    active: true,
+    status: 'LIVE ON TESTNET',
+    meta: 'Soroban · Memo-based',
+    border: true,
+  },
+  {
+    name: 'Solana',
+    active: false,
+    status: 'COMING SOON',
+    meta: 'SPL tokens · Memo program',
+    border: true,
+  },
+  {
+    name: 'Nervos CKB',
+    active: false,
+    status: 'COMING SOON',
+    meta: 'Cell model · CCC integration',
+    border: false,
+  },
 ];
 
 export default function Chains() {
   return (
-    <section className="px-6 py-24">
-      <div className="mx-auto max-w-5xl">
-        <h2 className="font-heading text-center text-3xl font-bold text-on-surface md:text-4xl">
-          Supported chains
-        </h2>
-        <div className="mt-12 flex flex-wrap items-center justify-center gap-6">
+    <section className="border-t border-outline-variant-30 px-6 py-24 md:px-12">
+      <div className="mx-auto flex max-w-[1344px] flex-col gap-10">
+        <div className="flex flex-col gap-3">
+          <span className="font-mono text-[10px] font-semibold uppercase tracking-[2px] text-outline">
+            Supported Chains
+          </span>
+          <h2 className="font-heading text-[28px] font-bold tracking-[-1.2px] text-on-surface sm:text-[40px]">
+            Built for a multi-chain world.
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-2 border-y border-outline-variant md:grid-cols-4">
           {chains.map((chain) => (
             <div
               key={chain.name}
-              className={`border px-6 py-3 font-mono text-sm ${
-                chain.active
-                  ? 'border-outline-variant text-primary'
-                  : 'border-outline-variant text-outline'
-              }`}
+              className={`flex flex-col gap-4 p-6 md:p-7 ${chain.border ? 'border-b border-outline-variant md:border-r md:border-b-0' : ''}`}
             >
-              {chain.name}
-              {!chain.active && <span className="ml-2 text-xs text-outline">coming soon</span>}
+              <div className="flex items-center justify-between">
+                <span
+                  className={`font-heading text-lg font-semibold ${chain.active ? 'text-on-surface' : 'text-outline'}`}
+                >
+                  {chain.name}
+                </span>
+                <span
+                  className={`h-2 w-2 rounded-full ${chain.active ? 'bg-tertiary' : 'bg-outline-variant'}`}
+                />
+              </div>
+              <span
+                className={`font-mono text-[10px] font-semibold tracking-[1.5px] ${chain.active ? 'text-tertiary' : 'text-outline'}`}
+              >
+                {chain.status}
+              </span>
+              <span
+                className={`font-mono text-[11px] ${chain.active ? 'text-outline' : 'text-outline-variant'}`}
+              >
+                {chain.meta}
+              </span>
             </div>
           ))}
         </div>
