@@ -44,7 +44,7 @@ export default function Hero() {
           <div className="flex items-center gap-2 border border-outline-variant px-2.5 py-1.5">
             <span className="h-1.5 w-1.5 rounded-full bg-tertiary" />
             <span className="font-mono text-[10px] font-semibold tracking-[1.5px] text-on-surface-variant">
-              v0.4.2 — HORIZEN TESTNET LIVE
+              LIVE ON 4 TESTNETS — HORIZEN · STELLAR · SOLANA · CKB
             </span>
           </div>
         </div>
