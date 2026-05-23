@@ -35,6 +35,53 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://usewraith.xyz/#organization",
+            "name": "Wraith Protocol",
+            "url": "https://usewraith.xyz",
+            "logo": "https://usewraith.xyz/logo.png",
+            "sameAs": [
+              "https://github.com/wraith-protocol",
+              "https://www.npmjs.com/package/@wraith-protocol/sdk"
+            ]
+          },
+          {
+            "@type": "SoftwareApplication",
+            "@id": "https://usewraith.xyz/#software",
+            "name": "Wraith Protocol",
+            "url": "https://usewraith.xyz",
+            "applicationCategory": "DeveloperApplication",
+            "operatingSystem": "Web",
+            "description": "Wraith Protocol enables private payments on any blockchain using stealth addresses, a multichain SDK, and AI-powered privacy agents.",
+            "publisher": {
+              "@id": "https://usewraith.xyz/#organization"
+            },
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "USD"
+            }
+          },
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://usewraith.xyz/#breadcrumb",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://usewraith.xyz"
+              }
+            ]
+          }
+        ]
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

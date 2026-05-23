@@ -21,6 +21,8 @@ pnpm dev
 pnpm build
 ```
 
+The build runs TypeScript, Vite, and `scripts/generate-sitemap.mjs`. The sitemap script emits `dist/sitemap.xml` from the route list and `public/robots.txt` is copied by Vite into the build output. After deployment, maintainers should verify the `usewraith.xyz` property in Google Search Console and Bing Webmaster Tools, then submit `https://usewraith.xyz/sitemap.xml`.
+
 ## Format
 
 ```bash
