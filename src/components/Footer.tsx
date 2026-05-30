@@ -20,6 +20,7 @@ const columns = [
   {
     title: 'RESOURCES',
     links: [
+      { label: 'Compare', href: '#compare', local: true },
       { label: 'ERC-5564 spec', href: 'https://eips.ethereum.org/EIPS/eip-5564' },
       { label: 'ERC-6538 spec', href: 'https://eips.ethereum.org/EIPS/eip-6538' },
       { label: 'Security', href: 'https://docs.usewraith.xyz/security' },
@@ -54,8 +55,8 @@ export default function Footer() {
                   <a
                     key={link.label}
                     href={link.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    target={'local' in link && link.local ? undefined : '_blank'}
+                    rel={'local' in link && link.local ? undefined : 'noopener noreferrer'}
                     className="font-body text-[13px] text-on-surface-variant transition-colors duration-150 hover:text-on-surface"
                   >
                     {link.label}

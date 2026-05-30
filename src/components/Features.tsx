@@ -36,6 +36,12 @@ export default function Features() {
           <p className="font-body text-base leading-[1.6] text-on-surface-variant">
             Three primitives, wired correctly. No custom crypto on your side.
           </p>
+          <a
+            href="#compare"
+            className="mt-3 w-fit border border-outline-variant px-5 py-3 font-heading text-[11px] font-semibold uppercase tracking-[1.5px] text-primary transition-colors duration-150 hover:bg-surface-bright"
+          >
+            Compare Privacy Models
+          </a>
         </div>
 
         <div className="grid gap-4 md:grid-cols-3">
