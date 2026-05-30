@@ -1,3 +1,5 @@
+import { useInView } from '../hooks/useInView';
+
 const chains = [
   {
     name: 'Horizen',
@@ -30,8 +32,14 @@ const chains = [
 ];
 
 export default function Chains() {
+  const { ref, inView } = useInView<HTMLElement>(0.2);
+
   return (
-    <section className="border-t border-outline-variant-30 px-6 py-24 md:px-12">
+    <section
+      ref={ref}
+      data-revealed={inView ? 'true' : undefined}
+      className="border-t border-outline-variant-30 px-6 py-24 md:px-12"
+    >
       <div className="mx-auto flex max-w-[1344px] flex-col gap-10">
         <div className="flex flex-col gap-3">
           <span className="font-mono text-[10px] font-semibold uppercase tracking-[2px] text-outline">
@@ -43,9 +51,11 @@ export default function Chains() {
         </div>
 
         <div className="grid grid-cols-2 border-y border-outline-variant md:grid-cols-4">
-          {chains.map((chain) => (
+          {chains.map((chain, index) => (
             <div
               key={chain.name}
+              data-reveal-item
+              style={{ transitionDelay: inView ? `${index * 60}ms` : '0ms' }}
               className={`flex flex-col gap-4 p-6 md:p-7 ${chain.border ? 'border-b border-outline-variant md:border-r md:border-b-0' : ''}`}
             >
               <div className="flex items-center justify-between">

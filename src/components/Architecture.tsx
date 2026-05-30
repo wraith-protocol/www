@@ -1,3 +1,5 @@
+import { useInView } from '../hooks/useInView';
+
 const steps = [
   {
     num: '1',
@@ -26,8 +28,14 @@ const steps = [
 ];
 
 export default function Architecture() {
+  const { ref, inView } = useInView<HTMLElement>(0.2);
+
   return (
-    <section className="border-t border-outline-variant-30 px-6 py-24 md:px-12">
+    <section
+      ref={ref}
+      data-revealed={inView ? 'true' : undefined}
+      className="border-t border-outline-variant-30 px-6 py-24 md:px-12"
+    >
       <div className="mx-auto flex max-w-[1344px] flex-col items-center gap-12">
         <div className="flex flex-col items-center gap-3">
           <span className="font-mono text-[10px] font-semibold uppercase tracking-[2px] text-outline">
@@ -40,9 +48,11 @@ export default function Architecture() {
 
         <div className="w-full max-w-[960px] border border-outline-variant bg-surface-container">
           <div className="flex flex-col md:flex-row">
-            {steps.map((step) => (
+            {steps.map((step, index) => (
               <div
                 key={step.num}
+                data-reveal-item
+                style={{ transitionDelay: inView ? `${index * 100}ms` : '0ms' }}
                 className={`flex flex-1 flex-col gap-4 p-8 ${step.border ? 'border-b border-outline-variant md:border-r md:border-b-0' : ''}`}
               >
                 <div className="flex h-8 w-8 items-center justify-center border border-outline-variant">
