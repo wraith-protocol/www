@@ -91,11 +91,16 @@ export default function Hero() {
   return (
     <section className="flex w-full flex-col gap-16 px-6 pt-24 pb-[120px] md:flex-row md:gap-16 md:px-12 md:pt-24 lg:gap-16">
       <div className="flex w-full flex-col gap-8 pt-16 md:w-1/2">
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-3">
           <div className="flex items-center gap-2 border border-outline-variant px-2.5 py-1.5">
             <span className="h-1.5 w-1.5 rounded-full bg-tertiary" />
             <span className="font-mono text-[10px] font-semibold tracking-[1.5px] text-on-surface-variant">
-              LIVE ON 4 TESTNETS — HORIZEN · STELLAR · SOLANA · CKB
+              LIVE ON 4 TESTNETS
+            </span>
+          </div>
+          <div className="rounded-sm border border-tertiary px-2.5 py-1.5">
+            <span className="font-mono text-[10px] font-semibold uppercase tracking-[1.5px] text-tertiary">
+              Stellar partner
             </span>
           </div>
         </div>
@@ -107,6 +112,10 @@ export default function Hero() {
         <p className="font-body text-[17px] leading-[1.6] text-on-surface-variant">
           A stealth-address toolkit built on ERC-5564 and ERC-6538. Drop it into your app and send
           receiver-unlinkable payments across Horizen, Stellar, Solana, and CKB.
+        </p>
+        <p className="font-body text-[14px] leading-[1.6] text-tertiary">
+          Memo-enabled stealth support on Stellar, plus coordinated privacy flows for multi-chain
+          apps.
         </p>
 
         <div className="flex items-center gap-3">
