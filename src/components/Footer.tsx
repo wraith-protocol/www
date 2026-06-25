@@ -24,6 +24,7 @@ const columns = [
       { label: 'ERC-5564 spec', href: 'https://eips.ethereum.org/EIPS/eip-5564' },
       { label: 'ERC-6538 spec', href: 'https://eips.ethereum.org/EIPS/eip-6538' },
       { label: 'Security', href: 'https://docs.usewraith.xyz/security' },
+      { label: 'Press', href: '/press' },
     ],
   },
 ];
