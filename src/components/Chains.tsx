@@ -1,3 +1,5 @@
+import { useInView } from '../hooks/useInView';
+
 const chains = [
   {
     name: 'Horizen',
@@ -31,10 +33,12 @@ const chains = [
 ];
 
 export default function Chains() {
+  const { ref, isInView } = useInView({ threshold: 0.1 });
+
   return (
-    <section className="border-t border-outline-variant-30 px-6 py-24 md:px-12">
+    <section ref={ref} className="border-t border-outline-variant-30 px-6 py-24 md:px-12">
       <div className="mx-auto flex max-w-[1344px] flex-col gap-10">
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-3" data-reveal={isInView}>
           <span className="font-mono text-[10px] font-semibold uppercase tracking-[2px] text-outline">
             Supported Chains
           </span>
@@ -43,7 +47,10 @@ export default function Chains() {
           </h2>
         </div>
 
-        <div className="rounded-sm border border-tertiary bg-surface-container p-5">
+        <div
+          className="rounded-sm border border-tertiary bg-surface-container p-5"
+          data-reveal={isInView}
+        >
           <span className="font-mono text-[11px] uppercase tracking-[1.5px] text-tertiary">
             Stellar-first stealth support
           </span>
@@ -54,10 +61,12 @@ export default function Chains() {
         </div>
 
         <div className="grid grid-cols-2 border-y border-outline-variant md:grid-cols-4">
-          {chains.map((chain) => (
+          {chains.map((chain, index) => (
             <div
               key={chain.name}
               className={`flex flex-col gap-4 p-6 md:p-7 ${chain.border ? 'border-b border-outline-variant md:border-r md:border-b-0' : ''} ${chain.featured ? 'bg-surface-bright' : ''}`}
+              data-reveal={isInView}
+              style={{ transitionDelay: isInView ? `${index * 80}ms` : '0ms' }}
             >
               <div className="flex items-center justify-between gap-3">
                 <span

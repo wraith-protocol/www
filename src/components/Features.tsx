@@ -1,3 +1,5 @@
+import { useInView } from '../hooks/useInView';
+
 const features = [
   {
     num: '01',
@@ -23,10 +25,12 @@ const features = [
 ];
 
 export default function Features() {
+  const { ref, isInView } = useInView({ threshold: 0.1 });
+
   return (
-    <section className="border-t border-outline-variant-30 px-6 py-24 md:px-12">
+    <section ref={ref} className="border-t border-outline-variant-30 px-6 py-24 md:px-12">
       <div className="mx-auto flex max-w-[1344px] flex-col gap-12">
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-3" data-reveal={isInView}>
           <span className="font-mono text-[10px] font-semibold uppercase tracking-[2px] text-outline">
             Why Wraith
           </span>
@@ -39,10 +43,12 @@ export default function Features() {
         </div>
 
         <div className="grid gap-4 md:grid-cols-3">
-          {features.map((feature) => (
+          {features.map((feature, index) => (
             <div
               key={feature.num}
               className="flex flex-col gap-4 border border-outline-variant bg-surface-container p-7"
+              data-reveal={isInView}
+              style={{ transitionDelay: isInView ? `${index * 100}ms` : '0ms' }}
             >
               <span className="font-mono text-[11px] font-semibold tracking-[1.5px] text-outline">
                 {feature.num}
