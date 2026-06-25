@@ -34,7 +34,13 @@ export default function Features() {
             Everything you need{'\n'}for stealth payments.
           </h2>
           <p className="font-body text-base leading-[1.6] text-on-surface-variant">
-            Three primitives, wired correctly. No custom crypto on your side.
+            Three primitives, wired correctly. No custom crypto on your side.{' '}
+            <a
+              href="#compare"
+              className="text-primary hover:text-on-surface transition-colors duration-150 underline underline-offset-4 decoration-outline-variant"
+            >
+              See how we compare to alternatives →
+            </a>
           </p>
         </div>
 

@@ -5,6 +5,7 @@ const columns = [
       { label: 'Docs', href: 'https://docs.usewraith.xyz' },
       { label: 'Demo', href: 'https://demo.usewraith.xyz' },
       { label: 'Console', href: 'https://console.usewraith.xyz' },
+      { label: 'Compare', href: '#compare' },
       { label: 'Changelog', href: 'https://docs.usewraith.xyz/changelog' },
     ],
   },
@@ -55,17 +56,20 @@ export default function Footer() {
                 <span className="font-mono text-[10px] font-semibold tracking-[1.5px] text-outline">
                   {column.title}
                 </span>
-                {column.links.map((link) => (
-                  <a
-                    key={link.label}
-                    href={link.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-body text-[13px] text-on-surface-variant transition-colors duration-150 hover:text-on-surface"
-                  >
-                    {link.label}
-                  </a>
-                ))}
+                {column.links.map((link) => {
+                  const isHash = link.href.startsWith('#');
+                  return (
+                    <a
+                      key={link.label}
+                      href={link.href}
+                      target={isHash ? undefined : '_blank'}
+                      rel={isHash ? undefined : 'noopener noreferrer'}
+                      className="font-body text-[13px] text-on-surface-variant transition-colors duration-150 hover:text-on-surface"
+                    >
+                      {link.label}
+                    </a>
+                  );
+                })}
               </div>
             ))}
 
