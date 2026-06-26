@@ -1,13 +1,16 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Check localStorage or prefers-color-scheme
     const savedTheme = localStorage.getItem('wraith-theme') as 'dark' | 'light' | null;
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const prefersDark =
+      typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: dark)').matches;
 
     const initialTheme = savedTheme || (prefersDark ? 'dark' : 'light');
     setTheme(initialTheme);
@@ -26,12 +29,6 @@ export default function Header() {
     metaTheme?.setAttribute('content', newTheme === 'dark' ? '#0e0e0e' : '#faf9f7');
     localStorage.setItem('wraith-theme', newTheme);
   };
-import { useEffect, useRef, useState } from 'react';
-
-export default function Header() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const menuButtonRef = useRef<HTMLButtonElement>(null);
-  const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -123,6 +120,12 @@ export default function Header() {
           >
             Press
           </a>
+          <a
+            href="/use-cases"
+            className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
+          >
+            Use Cases
+          </a>
         </nav>
 
         <div className="hidden items-center gap-3 md:flex">
@@ -174,8 +177,12 @@ export default function Header() {
       </div>
 
       {menuOpen && (
-        <div className="border-t border-outline-variant-30 bg-surface px-6 pb-6 pt-4 md:hidden">
-          <nav className="flex flex-col gap-4">
+        <div
+          id="mobile-menu"
+          ref={menuRef}
+          className="border-t border-outline-variant-30 bg-surface px-6 pb-6 pt-4 md:hidden"
+        >
+          <nav className="flex flex-col gap-4" aria-label="Mobile navigation">
             <button
               onClick={toggleTheme}
               className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant text-left"
@@ -185,12 +192,6 @@ export default function Header() {
             >
               {theme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode'}
             </button>
-        <div
-          id="mobile-menu"
-          ref={menuRef}
-          className="border-t border-outline-variant-30 bg-surface px-6 pb-6 pt-4 md:hidden"
-        >
-          <nav className="flex flex-col gap-4" aria-label="Mobile navigation">
             <a
               href="https://docs.usewraith.xyz"
               target="_blank"
@@ -233,6 +234,13 @@ export default function Header() {
               className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
             >
               Press
+            </a>
+            <a
+              href="/use-cases"
+              onClick={closeMenu}
+              className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
+            >
+              Use Cases
             </a>
             <a
               href="https://github.com/wraith-protocol"

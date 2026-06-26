@@ -11,6 +11,7 @@ import CtaStrip from './components/CtaStrip';
 import Footer from './components/Footer';
 import Faq from './pages/Faq';
 import Privacy from './pages/Privacy';
+import UseCases from './pages/UseCases';
 
 function Home() {
   return (
@@ -41,6 +42,7 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/faq" element={<Faq />} />
         <Route path="/privacy" element={<Privacy />} />
+        <Route path="/use-cases" element={<UseCases />} />
       </Routes>
     </BrowserRouter>
   );
