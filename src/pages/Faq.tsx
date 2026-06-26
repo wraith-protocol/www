@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Footer from '../components/Footer';
 
@@ -220,6 +220,16 @@ const sectionLabelStyles = 'font-mono text-[10px] font-semibold uppercase tracki
 export default function Faq() {
   const [openEntryId, setOpenEntryId] = useState<string | null>(faqSections[0]?.entries[0]?.id ?? null);
 
+  useEffect(() => {
+    const hash = window.location.hash.replace('#', '');
+    if (!hash) return;
+
+    const entryExists = faqSections.some((section) => section.entries.some((entry) => entry.id === hash));
+    if (entryExists) {
+      setOpenEntryId(hash);
+    }
+  }, []);
+
   const entryCount = useMemo(() => faqSections.reduce((count, section) => count + section.entries.length, 0), []);
 
   return (
@@ -285,9 +295,11 @@ export default function Faq() {
                 <div className="flex flex-col gap-3">
                   {section.entries.map((entry) => {
                     const isOpen = openEntryId === entry.id;
+                    const toggleId = `faq-toggle-${entry.id}`;
+                    const panelId = `faq-panel-${entry.id}`;
                     return (
                       <div key={entry.id} className="rounded-sm border border-outline-variant bg-surface-container">
-                        <div className="flex items-start justify-between gap-3 px-4 py-4 sm:px-5">
+                        <div className="px-4 py-4 sm:px-5">
                           <h3 id={entry.id} className="font-heading text-[16px] font-semibold tracking-[-0.3px] text-on-surface">
                             <a
                               href={`#${entry.id}`}
@@ -296,21 +308,26 @@ export default function Faq() {
                             >
                               #
                             </a>
-                            {entry.question}
+                            <button
+                              id={toggleId}
+                              type="button"
+                              aria-expanded={isOpen}
+                              aria-controls={panelId}
+                              aria-label={`${isOpen ? 'Hide' : 'Show'} answer for ${entry.question}`}
+                              onClick={() => setOpenEntryId(isOpen ? null : entry.id)}
+                              className="flex w-full items-center justify-between text-left"
+                            >
+                              <span className="block w-full text-left">
+                                {entry.question}
+                              </span>
+                              <span className="font-mono text-[10px] font-semibold uppercase tracking-[1.6px] text-outline transition-colors hover:text-on-surface">
+                                {isOpen ? 'Hide' : 'Show'}
+                              </span>
+                            </button>
                           </h3>
-                          <button
-                            type="button"
-                            className="shrink-0 font-mono text-[10px] font-semibold uppercase tracking-[1.6px] text-outline transition-colors hover:text-on-surface"
-                            aria-expanded={isOpen}
-                            aria-controls={`faq-panel-${entry.id}`}
-                            aria-label={`${isOpen ? 'Hide' : 'Show'} answer for ${entry.question}`}
-                            onClick={() => setOpenEntryId(isOpen ? null : entry.id)}
-                          >
-                            {isOpen ? 'Hide' : 'Show'}
-                          </button>
                         </div>
                         {isOpen && (
-                          <div id={`faq-panel-${entry.id}`} className="border-t border-outline-variant px-4 py-4 sm:px-5">
+                          <div id={panelId} role="region" aria-labelledby={toggleId} className="border-t border-outline-variant px-4 py-4 sm:px-5">
                             <p className="font-body text-[14px] leading-[1.7] text-on-surface-variant">
                               {entry.answer}
                             </p>
