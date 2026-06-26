@@ -1,3 +1,6 @@
+import { useState } from 'react';
+import { copyToClipboard } from '../utils/clipboard';
+
 const BRAND_COLORS = [
   { name: 'Surface', hex: '#0e0e0e', label: 'Background' },
   { name: 'Primary', hex: '#c6c6c7', label: 'Primary' },
@@ -16,18 +19,38 @@ const LOGOS = [
 const COVERAGE: { outlet: string; title: string; date: string; href: string }[] = [];
 
 function CopyBlock({ children }: { children: string }) {
-  const copy = () => navigator.clipboard.writeText(children);
+  const [copyStatus, setCopyStatus] = useState<'idle' | 'copied' | 'failed'>('idle');
+
+  const copy = async () => {
+    try {
+      await copyToClipboard(children);
+      setCopyStatus('copied');
+    } catch {
+      setCopyStatus('failed');
+    }
+
+    setTimeout(() => setCopyStatus('idle'), 2000);
+  };
+
   return (
     <div className="relative border border-outline-variant bg-surface-container p-4">
       <p className="pr-16 font-body text-[13px] leading-[1.65] text-on-surface-variant whitespace-pre-wrap">
         {children}
       </p>
       <button
+        type="button"
         onClick={copy}
+        aria-label="Copy press description"
         className="absolute right-3 top-3 font-mono text-[10px] font-semibold tracking-[1.5px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
       >
-        COPY
+        {copyStatus === 'copied' && 'COPIED'}
+        {copyStatus === 'failed' && 'FAILED'}
+        {copyStatus === 'idle' && 'COPY'}
       </button>
+      <span className="sr-only" aria-live="polite">
+        {copyStatus === 'copied' && 'Press description copied to clipboard'}
+        {copyStatus === 'failed' && 'Press description could not be copied'}
+      </span>
     </div>
   );
 }
@@ -39,7 +62,7 @@ export default function Press() {
       <header className="fixed top-0 z-50 w-full border-b border-outline-variant-30 bg-surface/80 backdrop-blur-sm">
         <div className="mx-auto flex w-full items-center justify-between px-12 py-5">
           <a href="/" className="flex items-center gap-3">
-            <img src="/logo.png" alt="Wraith" className="h-6 opacity-90" />
+            <img src="/logo.png" alt="" className="h-6 opacity-90" />
             <span className="font-heading text-[15px] font-bold tracking-[2px] text-on-surface">
               WRAITH
             </span>
@@ -140,8 +163,10 @@ Wraith Protocol was founded with the conviction that privacy is not a premium fe
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
               {BRAND_COLORS.map(({ name, hex }) => (
                 <button
+                  type="button"
                   key={hex}
                   onClick={() => navigator.clipboard.writeText(hex)}
+                  aria-label={`Copy ${name} brand color ${hex}`}
                   className="group flex flex-col overflow-hidden border border-outline-variant transition-colors duration-150 hover:border-outline"
                   title={`Copy ${hex}`}
                 >

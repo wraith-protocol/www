@@ -10,9 +10,9 @@
   --color-primary: #c6c6c7;
   --color-on-surface: #e6e1e5;
   --color-on-surface-variant: #c4c7c5;
-  --color-outline: #767575;
-  --color-outline-variant: #444444;
-  --color-outline-variant-30: #44444466;
+  --color-outline: #a7a7a7;
+  --color-outline-variant: #5e5e5e;
+  --color-outline-variant-30: #5e5e5e66;
   --color-error: #ee7d77;
   --color-error-10: #ee7d7719;
   --color-error-30: #ee7d774d;
@@ -32,6 +32,32 @@ body {
   color: var(--color-on-surface);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+a:focus-visible,
+button:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--color-blue);
+  outline-offset: 3px;
+}
+
+.skip-link {
+  position: fixed;
+  left: 1rem;
+  top: 1rem;
+  z-index: 100;
+  transform: translateY(-200%);
+  background: var(--color-primary);
+  color: var(--color-surface);
+  padding: 0.75rem 1rem;
+  font-family: var(--font-heading);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.skip-link:focus-visible {
+  transform: translateY(0);
 }
 
 /* Reveal animations */

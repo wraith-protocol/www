@@ -41,7 +41,7 @@ export default function Footer() {
         <div className="flex flex-col justify-between gap-12 md:flex-row">
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-3">
-              <img src="/logo.png" alt="Wraith" className="h-6 opacity-90" />
+              <img src="/logo.png" alt="" className="h-6 opacity-90" />
               <span className="font-heading text-[13px] font-bold tracking-[2px] text-on-surface">
                 WRAITH PROTOCOL
               </span>

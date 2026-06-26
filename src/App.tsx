@@ -17,15 +17,20 @@ export default function App() {
 
   return (
     <div className="bg-surface text-on-surface">
+      <a href="#main-content" className="skip-link">
+        Skip to content
+      </a>
       <Header />
-      <Hero />
-      <Features />
-      <Architecture />
-      <ForDevelopers />
-      <Chains />
-      <Compare />
-      <Showcase />
-      <CtaStrip />
+      <main id="main-content" tabIndex={-1}>
+        <Hero />
+        <Features />
+        <Architecture />
+        <ForDevelopers />
+        <Chains />
+        <Compare />
+        <Showcase />
+        <CtaStrip />
+      </main>
       <Footer />
     </div>
   );

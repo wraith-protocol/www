@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { type KeyboardEvent, useState } from 'react';
 
 type ComparisonRow = {
   protocol: string;
@@ -9,6 +9,18 @@ type ComparisonRow = {
   regulation: string;
   multichain: string;
   complexity: string;
+};
+
+const comparisonTabs = ['all', 'wraith', 'mixers', 'rollups', 'railgun', 'transparent'] as const;
+type ComparisonTab = (typeof comparisonTabs)[number];
+
+const comparisonTabLabels: Record<ComparisonTab, string> = {
+  all: 'All Details',
+  wraith: 'Wraith (Stealth)',
+  mixers: 'Tornado Cash (Mixers)',
+  rollups: 'Aztec (zk-Rollups)',
+  railgun: 'Railgun (Shielded)',
+  transparent: 'Status Quo',
 };
 
 const comparisonData: ComparisonRow[] = [
@@ -61,9 +73,29 @@ const comparisonData: ComparisonRow[] = [
 ];
 
 export default function Compare() {
-  const [activeTab, setActiveTab] = useState<
-    'all' | 'wraith' | 'mixers' | 'rollups' | 'railgun' | 'transparent'
-  >('all');
+  const [activeTab, setActiveTab] = useState<ComparisonTab>('all');
+
+  const activeTabIndex = comparisonTabs.indexOf(activeTab);
+
+  const handleTabKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
+    let nextIndex = activeTabIndex;
+
+    if (event.key === 'ArrowRight') nextIndex = (activeTabIndex + 1) % comparisonTabs.length;
+    else if (event.key === 'ArrowLeft') {
+      nextIndex = (activeTabIndex - 1 + comparisonTabs.length) % comparisonTabs.length;
+    } else if (event.key === 'Home') nextIndex = 0;
+    else if (event.key === 'End') nextIndex = comparisonTabs.length - 1;
+    else return;
+
+    event.preventDefault();
+    const nextTab = comparisonTabs[nextIndex];
+    if (!nextTab) return;
+
+    setActiveTab(nextTab);
+    requestAnimationFrame(() => {
+      document.getElementById(`comparison-tab-${nextTab}`)?.focus();
+    });
+  };
 
   return (
     <section
@@ -156,7 +188,7 @@ export default function Compare() {
                         : 'hover:bg-surface-bright/40 text-on-surface-variant'
                     }`}
                   >
-                    <td
+                    <th
                       scope="row"
                       className={`sticky left-0 z-10 px-[23px] py-[19px] md:px-6 md:py-5 font-heading text-sm border-r border-outline-variant-30 ${
                         row.isWraith
@@ -170,7 +202,7 @@ export default function Compare() {
                           <span className="inline-block h-2 w-2 rounded-full bg-tertiary animate-pulse" />
                         )}
                       </div>
-                    </td>
+                    </th>
                     <td className="px-[23px] py-[19px] md:px-6 md:py-5 font-body text-[13px] leading-relaxed">
                       {row.mechanism}
                     </td>
@@ -198,30 +230,39 @@ export default function Compare() {
 
         {/* Prose Deep-Dives - Category Tabs */}
         <div className="flex flex-col gap-6 mt-6">
-          <div className="border-b border-outline-variant flex flex-wrap gap-1 md:gap-2">
-            {(['all', 'wraith', 'mixers', 'rollups', 'railgun', 'transparent'] as const).map(
-              (tab) => (
-                <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab)}
-                  className={`px-4 py-3 font-mono text-[10px] font-semibold uppercase tracking-[1.5px] border-b-2 transition-all duration-150 -mb-[1px] ${
-                    activeTab === tab
-                      ? 'border-primary text-on-surface'
-                      : 'border-transparent text-outline hover:text-on-surface-variant'
-                  }`}
-                >
-                  {tab === 'all' && 'All Details'}
-                  {tab === 'wraith' && 'Wraith (Stealth)'}
-                  {tab === 'mixers' && 'Tornado Cash (Mixers)'}
-                  {tab === 'rollups' && 'Aztec (zk-Rollups)'}
-                  {tab === 'railgun' && 'Railgun (Shielded)'}
-                  {tab === 'transparent' && 'Status Quo'}
-                </button>
-              ),
-            )}
+          <div
+            className="border-b border-outline-variant flex flex-wrap gap-1 md:gap-2"
+            role="tablist"
+            aria-label="Comparison detail filters"
+          >
+            {comparisonTabs.map((tab) => (
+              <button
+                key={tab}
+                id={`comparison-tab-${tab}`}
+                type="button"
+                role="tab"
+                aria-selected={activeTab === tab}
+                aria-controls="comparison-tabpanel"
+                tabIndex={activeTab === tab ? 0 : -1}
+                onClick={() => setActiveTab(tab)}
+                onKeyDown={handleTabKeyDown}
+                className={`px-4 py-3 font-mono text-[10px] font-semibold uppercase tracking-[1.5px] border-b-2 transition-all duration-150 -mb-[1px] ${
+                  activeTab === tab
+                    ? 'border-primary text-on-surface'
+                    : 'border-transparent text-outline hover:text-on-surface-variant'
+                }`}
+              >
+                {comparisonTabLabels[tab]}
+              </button>
+            ))}
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
+          <div
+            id="comparison-tabpanel"
+            role="tabpanel"
+            aria-labelledby={`comparison-tab-${activeTab}`}
+            className="grid gap-6 md:grid-cols-2 lg:grid-cols-2"
+          >
             {/* Card 1: Wraith (Stealth Addresses) */}
             {(activeTab === 'all' || activeTab === 'wraith') && (
               <div className="border border-tertiary-10 bg-surface-container p-8 flex flex-col gap-5 rounded-sm relative overflow-hidden group">
