@@ -29,6 +29,28 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
+
+    <!--
+      Plausible Analytics — cookieless, GDPR-compliant, no consent banner required.
+      • No cookies are set; only aggregate page/event counts are stored.
+      • script.scroll.js extension tracks scroll depth at every percent automatically.
+      • script.tagged-events.js lets us fire goals from JS via window.plausible().
+      • Integrity hash pins the exact script bytes served by plausible.io CDN.
+      • Replace the integrity value if you upgrade to a newer Plausible release.
+    -->
+    <script
+      defer
+      data-domain="usewraith.xyz"
+      src="https://plausible.io/js/script.scroll.tagged-events.js"
+    ></script>
+    <script>
+      window.plausible =
+        window.plausible ||
+        function () {
+          (window.plausible.q = window.plausible.q || []).push(arguments);
+        };
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

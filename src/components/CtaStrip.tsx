@@ -1,3 +1,5 @@
+import { trackEvent } from '../analytics';
+
 export default function CtaStrip() {
   return (
     <section className="flex flex-col items-start justify-between gap-8 border-y border-outline-variant bg-surface-container px-6 py-[72px] sm:flex-row sm:items-center md:px-12">
@@ -14,14 +16,16 @@ export default function CtaStrip() {
           href="https://console.usewraith.xyz"
           target="_blank"
           rel="noopener noreferrer"
+          onClick={() => trackEvent('Get API Key')}
           className="flex h-12 items-center justify-center bg-primary px-7 font-heading text-[13px] font-semibold uppercase tracking-[1.5px] text-surface transition-[filter] duration-150 hover:brightness-110"
         >
-          Get API Key
+          Get API Keys
         </a>
         <a
           href="https://docs.usewraith.xyz"
           target="_blank"
           rel="noopener noreferrer"
+          onClick={() => trackEvent('Read the Docs')}
           className="flex h-12 items-center justify-center border border-outline-variant px-7 font-heading text-[13px] font-semibold uppercase tracking-[1.5px] text-primary transition-colors duration-150 hover:bg-surface-bright"
         >
           Read the Docs

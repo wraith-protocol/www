@@ -14,6 +14,9 @@ importers:
       react-dom:
         specifier: ^19.2.5
         version: 19.2.5(react@19.2.5)
+      react-router-dom:
+        specifier: ^7.18.0
+        version: 7.18.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
     devDependencies:
       '@commitlint/cli':
         specifier: ^20.5.0
@@ -452,6 +455,10 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
+  cookie@1.1.1:
+    resolution: {integrity: sha512-ei8Aos7ja0weRpFzJnEA9UHJ/7XQmqglbRwnf2ATjcB9Wq874VKH9kfjjirM6UhU2/E5fFYadylyhFldcqSidQ==}
+    engines: {node: '>=18'}
+
   cosmiconfig-typescript-loader@6.3.0:
     resolution: {integrity: sha512-Akr82WH1Wfqatyiqpj8HDkO2o2KmJRu1FhKfSNJP3K4IdXwHfEyL7MOb62i1AGQVLtIQM+iCE9CGOtrfhR+mmA==}
     engines: {node: '>=v18'}
@@ -721,6 +728,23 @@ packages:
     peerDependencies:
       react: ^19.2.5
 
+  react-router-dom@7.18.0:
+    resolution: {integrity: sha512-Fi0yY6kgtKae/Th2xibdWK0KSdYZ4B53Gyf6wRtomOKWgpNm7H7+DyfDhncdz9FKbpS+1jmDhg3F4WoGJ+yFOA==}
+    engines: {node: '>=20.0.0'}
+    peerDependencies:
+      react: '>=18'
+      react-dom: '>=18'
+
+  react-router@7.18.0:
+    resolution: {integrity: sha512-pTTGt8J+ji1NOmYnjzT+bAJy/1zD+Jp4ziO6cL7T3ZLvXKtusO7BpFqlRXitqpcPVqllsIXFHRMt+2/k3Xn6HQ==}
+    engines: {node: '>=20.0.0'}
+    peerDependencies:
+      react: '>=18'
+      react-dom: '>=18'
+    peerDependenciesMeta:
+      react-dom:
+        optional: true
+
   react@19.2.5:
     resolution: {integrity: sha512-llUJLzz1zTUBrskt2pwZgLq59AemifIftw4aB7JxOqf1HY2FDaGDxgwpAPVzHU1kdWabH7FauP4i1oEeer2WCA==}
     engines: {node: '>=0.10.0'}
@@ -753,6 +777,9 @@ packages:
     resolution: {integrity: sha512-vFKC2IEtQnVhpT78h1Yp8wzwrf8CM+MzKMHGJZfBtzhZNycRFnXsHk6E5TxIkkMsgNS7mdX3AGB7x2QM2di4lA==}
     engines: {node: '>=10'}
     hasBin: true
+
+  set-cookie-parser@2.7.2:
+    resolution: {integrity: sha512-oeM1lpU/UvhTxw+g3cIfxXHyJRc/uidd3yK1P242gzHds0udQBYzs3y8j4gCCW+ZJ7ad0yctld8RYO+bdurlvw==}
 
   source-map-js@1.2.1:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
@@ -1225,6 +1252,8 @@ snapshots:
       '@simple-libs/stream-utils': 1.2.0
       meow: 13.2.0
 
+  cookie@1.1.1: {}
+
   cosmiconfig-typescript-loader@6.3.0(@types/node@25.6.0)(cosmiconfig@9.0.1(typescript@6.0.2))(typescript@6.0.2):
     dependencies:
       '@types/node': 25.6.0
@@ -1423,6 +1452,20 @@ snapshots:
       react: 19.2.5
       scheduler: 0.27.0
 
+  react-router-dom@7.18.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5):
+    dependencies:
+      react: 19.2.5
+      react-dom: 19.2.5(react@19.2.5)
+      react-router: 7.18.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+
+  react-router@7.18.0(react-dom@19.2.5(react@19.2.5))(react@19.2.5):
+    dependencies:
+      cookie: 1.1.1
+      react: 19.2.5
+      set-cookie-parser: 2.7.2
+    optionalDependencies:
+      react-dom: 19.2.5(react@19.2.5)
+
   react@19.2.5: {}
 
   require-directory@2.1.1: {}
@@ -1457,6 +1500,8 @@ snapshots:
   scheduler@0.27.0: {}
 
   semver@7.7.4: {}
+
+  set-cookie-parser@2.7.2: {}
 
   source-map-js@1.2.1: {}
 

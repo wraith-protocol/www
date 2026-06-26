@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 const columns = [
   {
     title: 'PRODUCT',
@@ -71,12 +73,12 @@ export default function Footer() {
             BUILT ON HORIZEN · ERC-5564 · OPEN SOURCE
           </span>
           <div className="flex items-center gap-6">
-            <a
-              href="https://usewraith.xyz/privacy"
+            <Link
+              to="/privacy"
               className="font-body text-xs text-outline transition-colors duration-150 hover:text-on-surface-variant"
             >
               Privacy
-            </a>
+            </Link>
             <a
               href="https://usewraith.xyz/terms"
               className="font-body text-xs text-outline transition-colors duration-150 hover:text-on-surface-variant"
