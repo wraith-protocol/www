@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { trackEvent } from '../analytics';
 
 type CodeLine = {
   content: string;
@@ -12,58 +13,81 @@ const codeByTab: Record<Tab, CodeLine[]> = {
   'send.ts': [
     {
       content:
-        "import { generateStealthAddress, buildSendStealth } from '@wraith-protocol/sdk/chains/evm'",
+        "import { bytesToHex, encodeStealthMetaAddress, generateStealthAddress } from '@wraith-protocol/sdk/chains/stellar'",
       color: 'code',
     },
     { content: '', color: 'code' },
-    { content: '// generate a one-time stealth address for the recipient', color: 'comment' },
+    { content: 'declare const spendingPubKey: Uint8Array', color: 'code' },
+    { content: 'declare const viewingPubKey: Uint8Array', color: 'code' },
+    { content: '', color: 'code' },
+    { content: '// Stellar recipients share st:xlm: stealth meta-addresses', color: 'comment' },
     {
-      content: 'const stealth = generateStealthAddress(spendingPubKey, viewingPubKey)',
+      content: 'const metaAddress = encodeStealthMetaAddress(spendingPubKey, viewingPubKey)',
       color: 'highlight',
     },
     { content: '', color: 'code' },
-    { content: '// build the transaction — atomic send + announce', color: 'comment' },
-    { content: 'const tx = buildSendStealth({', color: 'code' },
-    { content: '  stealthAddress: stealth.stealthAddress,', color: 'code' },
-    { content: '  ephemeralPubKey: stealth.ephemeralPubKey,', color: 'code' },
-    { content: '  viewTag: stealth.viewTag,', color: 'code' },
-    { content: "  amount: parseEther('0.1'),", color: 'highlight' },
-    { content: '})', color: 'code' },
+    {
+      content: '// generate a one-time Stellar G... address and announcement memo',
+      color: 'comment',
+    },
+    {
+      content: 'const stealth = generateStealthAddress(spendingPubKey, viewingPubKey)',
+      color: 'code',
+    },
+    { content: 'const recipient = stealth.stealthAddress', color: 'highlight' },
+    { content: 'const memo = bytesToHex(stealth.ephemeralPubKey)', color: 'code' },
   ],
   'scan.ts': [
     {
       content:
-        "import { deriveStealthKeys, scanAnnouncements, fetchAnnouncements } from '@wraith-protocol/sdk/chains/evm'",
+        "import { deriveStealthKeys, fetchAnnouncements, scanAnnouncements } from '@wraith-protocol/sdk/chains/stellar'",
       color: 'code',
     },
     { content: '', color: 'code' },
-    { content: '// derive stealth keys from wallet signature', color: 'comment' },
-    { content: 'const keys = deriveStealthKeys(signature)', color: 'code' },
+    { content: 'async function findPayments(walletSignature: Uint8Array) {', color: 'code' },
+    { content: '  const keys = deriveStealthKeys(walletSignature)', color: 'code' },
+    { content: "  const announcements = await fetchAnnouncements('stellar')", color: 'highlight' },
     { content: '', color: 'code' },
-    { content: '// fetch on-chain announcements and scan for your payments', color: 'comment' },
-    { content: "const announcements = await fetchAnnouncements('horizen')", color: 'code' },
-    { content: 'const matched = scanAnnouncements(', color: 'code' },
+    { content: '  // derive viewing keys and scan Stellar announcements', color: 'comment' },
+    { content: '  const matched = scanAnnouncements(', color: 'code' },
     {
-      content: '  announcements, keys.viewingKey, keys.spendingPubKey, keys.spendingKey',
+      content: '    announcements, keys.viewingKey, keys.spendingPubKey, keys.spendingScalar',
       color: 'highlight',
     },
-    { content: ')', color: 'code' },
+    { content: '  )', color: 'code' },
+    { content: '  return matched.map((ann) => ann.stealthAddress)', color: 'code' },
+    { content: '}', color: 'code' },
   ],
   'withdraw.ts': [
     {
-      content: "import { deriveStealthPrivateKey } from '@wraith-protocol/sdk/chains/evm'",
+      content:
+        "import { deriveStealthPrivateScalar, hexToBytes, signStellarTransaction } from '@wraith-protocol/sdk/chains/stellar'",
       color: 'code',
     },
     { content: '', color: 'code' },
-    { content: '// derive the private key that controls the stealth address', color: 'comment' },
-    { content: 'const stealthPrivKey = deriveStealthPrivateKey(', color: 'code' },
-    { content: '  keys.spendingKey, ann.ephemeralPubKey, keys.viewingKey', color: 'highlight' },
+    {
+      content: 'declare const keys: { spendingScalar: bigint; viewingKey: Uint8Array }',
+      color: 'code',
+    },
+    {
+      content: 'declare const ann: { ephemeralPubKey: string; stealthPubKeyBytes: Uint8Array }',
+      color: 'code',
+    },
+    { content: 'declare const txHash: Uint8Array', color: 'code' },
+    { content: '', color: 'code' },
+    {
+      content: '// derive the Stellar stealth scalar and sign a transaction hash',
+      color: 'comment',
+    },
+    { content: 'const stealthScalar = deriveStealthPrivateScalar(', color: 'code' },
+    {
+      content: '  keys.spendingScalar, keys.viewingKey, hexToBytes(ann.ephemeralPubKey)',
+      color: 'highlight',
+    },
     { content: ')', color: 'code' },
     { content: '', color: 'code' },
-    { content: '// send funds to any destination', color: 'comment' },
-    { content: 'const account = privateKeyToAccount(stealthPrivKey)', color: 'code' },
-    { content: 'await walletClient.sendTransaction({', color: 'code' },
-    { content: '  account, to: destination, value: amount', color: 'highlight' },
+    { content: 'const signature = signStellarTransaction(', color: 'code' },
+    { content: '  txHash, stealthScalar, ann.stealthPubKeyBytes', color: 'highlight' },
     { content: '})', color: 'code' },
   ],
 };
@@ -76,16 +100,48 @@ const colorMap = {
 
 export default function Hero() {
   const [activeTab, setActiveTab] = useState<Tab>('send.ts');
-  const [copied, setCopied] = useState(false);
+  const [copyStatus, setCopyStatus] = useState<'idle' | 'copied' | 'failed'>('idle');
+
+  const handleTabChange = (tab: Tab) => {
+    setActiveTab(tab);
+    trackEvent('Code Tab Change', { props: { tab } });
+  };
 
   const lines = codeByTab[activeTab];
 
-  const handleCopy = () => {
-    const text = lines.map((l) => l.content).join('\n');
-    navigator.clipboard.writeText(text).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+  const activeTabIndex = tabs.indexOf(activeTab);
+
+  const handleTabKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
+    let nextIndex = activeTabIndex;
+
+    if (event.key === 'ArrowRight') nextIndex = (activeTabIndex + 1) % tabs.length;
+    else if (event.key === 'ArrowLeft')
+      nextIndex = (activeTabIndex - 1 + tabs.length) % tabs.length;
+    else if (event.key === 'Home') nextIndex = 0;
+    else if (event.key === 'End') nextIndex = tabs.length - 1;
+    else return;
+
+    event.preventDefault();
+    const nextTab = tabs[nextIndex];
+    if (!nextTab) return;
+
+    setActiveTab(nextTab);
+    requestAnimationFrame(() => {
+      document.getElementById(`code-tab-${nextTab}`)?.focus();
     });
+  };
+
+  const handleCopy = async () => {
+    const text = lines.map((l) => l.content).join('\n');
+
+    try {
+      await copyToClipboard(text);
+      setCopyStatus('copied');
+    } catch {
+      setCopyStatus('failed');
+    }
+
+    setTimeout(() => setCopyStatus('idle'), 2000);
   };
 
   return (
@@ -123,6 +179,7 @@ export default function Hero() {
             href="https://docs.usewraith.xyz"
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackEvent('Read the Docs')}
             className="flex h-12 items-center justify-center bg-primary px-7 font-heading text-[13px] font-semibold uppercase tracking-[1.5px] text-surface transition-[filter] duration-150 hover:brightness-110"
           >
             Read the Docs
@@ -131,6 +188,7 @@ export default function Hero() {
             href="https://demo.usewraith.xyz"
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackEvent('Try the Demo')}
             className="flex h-12 items-center justify-center border border-outline-variant px-7 font-heading text-[13px] font-semibold uppercase tracking-[1.5px] text-primary transition-colors duration-150 hover:bg-surface-bright"
           >
             Try the Demo
@@ -161,11 +219,11 @@ export default function Hero() {
 
       <div className="flex w-full flex-col md:w-1/2">
         <div className="flex items-center justify-between border border-b-0 border-outline-variant bg-surface-container px-4 py-3">
-          <div className="flex items-center gap-0">
+          <div className="flex items-center gap-0" role="tablist" aria-label="Code examples">
             {tabs.map((tab) => (
               <button
                 key={tab}
-                onClick={() => setActiveTab(tab)}
+                onClick={() => handleTabChange(tab)}
                 className={`flex items-center justify-center px-3 py-1.5 transition-colors duration-150 ${
                   activeTab === tab
                     ? 'bg-surface-bright'
@@ -183,20 +241,36 @@ export default function Hero() {
             ))}
           </div>
           <button
+            type="button"
             onClick={handleCopy}
+            aria-label={`Copy ${activeTab} code example`}
             className="flex cursor-pointer items-center gap-1.5 px-2 py-1 transition-colors duration-150 hover:opacity-80"
           >
             <span className="font-mono text-[10px] font-semibold tracking-[1px] text-outline">
-              {copied ? 'COPIED' : 'COPY'}
+              {copyStatus === 'copied' && 'COPIED'}
+              {copyStatus === 'failed' && 'FAILED'}
+              {copyStatus === 'idle' && 'COPY'}
             </span>
           </button>
+          <span className="sr-only" aria-live="polite">
+            {copyStatus === 'copied' && `${activeTab} copied to clipboard`}
+            {copyStatus === 'failed' && `${activeTab} could not be copied`}
+          </span>
         </div>
 
-        <div className="overflow-x-auto border border-outline-variant bg-surface-container p-6">
+        <div
+          id={`code-panel-${activeTab}`}
+          role="tabpanel"
+          aria-labelledby={`code-tab-${activeTab}`}
+          className="overflow-x-auto border border-outline-variant bg-surface-container p-6"
+        >
           <div className="w-max min-w-full">
             {lines.map((line, i) => (
               <div key={`${activeTab}-${i}`} className="flex gap-4 py-1">
-                <span className="w-4 shrink-0 font-mono text-xs text-outline-variant select-none">
+                <span
+                  className="w-4 shrink-0 font-mono text-xs text-outline-variant select-none"
+                  aria-hidden="true"
+                >
                   {i + 1}
                 </span>
                 <span className={`whitespace-pre font-mono text-[13px] ${colorMap[line.color]}`}>

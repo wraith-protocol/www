@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 const columns = [
   {
     title: 'PRODUCT',
@@ -5,6 +7,7 @@ const columns = [
       { label: 'Docs', href: 'https://docs.usewraith.xyz' },
       { label: 'Demo', href: 'https://demo.usewraith.xyz' },
       { label: 'Console', href: 'https://console.usewraith.xyz' },
+      { label: 'Compare', href: '#compare' },
       { label: 'Changelog', href: 'https://docs.usewraith.xyz/changelog' },
     ],
   },
@@ -23,6 +26,7 @@ const columns = [
       { label: 'ERC-5564 spec', href: 'https://eips.ethereum.org/EIPS/eip-5564' },
       { label: 'ERC-6538 spec', href: 'https://eips.ethereum.org/EIPS/eip-6538' },
       { label: 'Security', href: 'https://docs.usewraith.xyz/security' },
+      { label: 'Press', href: '/press' },
     ],
   },
 ];
@@ -39,7 +43,7 @@ export default function Footer() {
         <div className="flex flex-col justify-between gap-12 md:flex-row">
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-3">
-              <img src="/logo.png" alt="Wraith" className="h-6 opacity-90" />
+              <img src="/logo.png" alt="" className="h-6 opacity-90" />
               <span className="font-heading text-[13px] font-bold tracking-[2px] text-on-surface">
                 WRAITH PROTOCOL
               </span>
@@ -55,17 +59,20 @@ export default function Footer() {
                 <span className="font-mono text-[10px] font-semibold tracking-[1.5px] text-outline">
                   {column.title}
                 </span>
-                {column.links.map((link) => (
-                  <a
-                    key={link.label}
-                    href={link.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-body text-[13px] text-on-surface-variant transition-colors duration-150 hover:text-on-surface"
-                  >
-                    {link.label}
-                  </a>
-                ))}
+                {column.links.map((link) => {
+                  const isHash = link.href.startsWith('#');
+                  return (
+                    <a
+                      key={link.label}
+                      href={link.href}
+                      target={isHash ? undefined : '_blank'}
+                      rel={isHash ? undefined : 'noopener noreferrer'}
+                      className="font-body text-[13px] text-on-surface-variant transition-colors duration-150 hover:text-on-surface"
+                    >
+                      {link.label}
+                    </a>
+                  );
+                })}
               </div>
             ))}
 
@@ -103,12 +110,12 @@ export default function Footer() {
             BUILT ON HORIZEN · ERC-5564 · OPEN SOURCE
           </span>
           <div className="flex items-center gap-6">
-            <a
-              href="https://usewraith.xyz/privacy"
+            <Link
+              to="/privacy"
               className="font-body text-xs text-outline transition-colors duration-150 hover:text-on-surface-variant"
             >
               Privacy
-            </a>
+            </Link>
             <a
               href="https://usewraith.xyz/terms"
               className="font-body text-xs text-outline transition-colors duration-150 hover:text-on-surface-variant"

@@ -3,3 +3,11 @@ dist/
 .env
 reference/
 *.local
+
+# TypeScript build cache — regenerated on every build, not source
+tsconfig.tsbuildinfo
+*.tsbuildinfo
+
+# IDE / agent local config
+.vscode/
+.kiro/
