@@ -9,6 +9,7 @@ import Compare from './components/Compare';
 import Showcase from './components/Showcase';
 import CtaStrip from './components/CtaStrip';
 import Footer from './components/Footer';
+import Faq from './pages/Faq';
 import Privacy from './pages/Privacy';
 
 function Home() {
@@ -38,6 +39,7 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/faq" element={<Faq />} />
         <Route path="/privacy" element={<Privacy />} />
       </Routes>
     </BrowserRouter>

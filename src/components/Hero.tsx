@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { trackEvent } from '../analytics';
 
 type CodeLine = {
@@ -174,7 +175,7 @@ export default function Hero() {
           apps.
         </p>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <a
             href="https://docs.usewraith.xyz"
             target="_blank"
@@ -193,6 +194,12 @@ export default function Hero() {
           >
             Try the Demo
           </a>
+          <Link
+            to="/faq"
+            className="flex h-12 items-center justify-center border border-outline-variant px-7 font-heading text-[13px] font-semibold uppercase tracking-[1.5px] text-primary transition-colors duration-150 hover:bg-surface-bright"
+          >
+            View FAQ
+          </Link>
         </div>
 
         <div className="flex items-center gap-8 pt-6">

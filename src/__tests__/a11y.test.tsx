@@ -39,4 +39,13 @@ describe('homepage accessibility', () => {
       expect(screen.getByText(/scan\.ts copied to clipboard/i)).toBeInTheDocument();
     });
   });
+
+  it('renders the FAQ page with accordion entries', async () => {
+    window.history.replaceState({}, '', '/faq');
+
+    render(<App />);
+
+    expect(screen.getByRole('heading', { name: /faq/i, level: 1 })).toBeInTheDocument();
+    expect(screen.getAllByRole('button', { name: /show answer for/i }).length).toBeGreaterThanOrEqual(20);
+  });
 });

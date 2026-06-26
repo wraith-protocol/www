@@ -8,6 +8,7 @@ const columns = [
       { label: 'Demo', href: 'https://demo.usewraith.xyz' },
       { label: 'Console', href: 'https://console.usewraith.xyz' },
       { label: 'Compare', href: '#compare' },
+      { label: 'FAQ', href: '/faq' },
       { label: 'Changelog', href: 'https://docs.usewraith.xyz/changelog' },
     ],
   },
