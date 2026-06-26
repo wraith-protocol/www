@@ -1,3 +1,5 @@
+import { useInView } from '../hooks/useInView';
+
 const steps = [
   {
     num: '1',
@@ -26,10 +28,12 @@ const steps = [
 ];
 
 export default function Architecture() {
+  const { ref, isInView } = useInView({ threshold: 0.1 });
+
   return (
-    <section className="border-t border-outline-variant-30 px-6 py-24 md:px-12">
+    <section ref={ref} className="border-t border-outline-variant-30 px-6 py-24 md:px-12">
       <div className="mx-auto flex max-w-[1344px] flex-col items-center gap-12">
-        <div className="flex flex-col items-center gap-3">
+        <div className="flex flex-col items-center gap-3" data-reveal={isInView}>
           <span className="font-mono text-[10px] font-semibold uppercase tracking-[2px] text-outline">
             How It Works
           </span>
@@ -40,10 +44,12 @@ export default function Architecture() {
 
         <div className="w-full max-w-[960px] border border-outline-variant bg-surface-container">
           <div className="flex flex-col md:flex-row">
-            {steps.map((step) => (
+            {steps.map((step, index) => (
               <div
                 key={step.num}
                 className={`flex flex-1 flex-col gap-4 p-8 ${step.border ? 'border-b border-outline-variant md:border-r md:border-b-0' : ''}`}
+                data-reveal={isInView}
+                style={{ transitionDelay: isInView ? `${index * 100}ms` : '0ms' }}
               >
                 <div className="flex h-8 w-8 items-center justify-center border border-outline-variant">
                   <span className="font-heading text-[13px] font-semibold text-on-surface">

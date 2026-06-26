@@ -7,6 +7,7 @@ const columns = [
       { label: 'Docs', href: 'https://docs.usewraith.xyz' },
       { label: 'Demo', href: 'https://demo.usewraith.xyz' },
       { label: 'Console', href: 'https://console.usewraith.xyz' },
+      { label: 'Compare', href: '#compare' },
       { label: 'Changelog', href: 'https://docs.usewraith.xyz/changelog' },
     ],
   },
@@ -25,8 +26,14 @@ const columns = [
       { label: 'ERC-5564 spec', href: 'https://eips.ethereum.org/EIPS/eip-5564' },
       { label: 'ERC-6538 spec', href: 'https://eips.ethereum.org/EIPS/eip-6538' },
       { label: 'Security', href: 'https://docs.usewraith.xyz/security' },
+      { label: 'Press', href: '/press' },
     ],
   },
+];
+
+const acknowledgments = [
+  { label: 'Stellar', src: '/logos/stellar-mark.svg' },
+  { label: 'Drips', src: '/logos/drips-mark.svg' },
 ];
 
 export default function Footer() {
@@ -36,7 +43,7 @@ export default function Footer() {
         <div className="flex flex-col justify-between gap-12 md:flex-row">
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-3">
-              <img src="/logo.png" alt="Wraith" className="h-6 opacity-90" />
+              <img src="/logo.png" alt="" className="h-6 opacity-90" />
               <span className="font-heading text-[13px] font-bold tracking-[2px] text-on-surface">
                 WRAITH PROTOCOL
               </span>
@@ -52,19 +59,49 @@ export default function Footer() {
                 <span className="font-mono text-[10px] font-semibold tracking-[1.5px] text-outline">
                   {column.title}
                 </span>
-                {column.links.map((link) => (
-                  <a
-                    key={link.label}
-                    href={link.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-body text-[13px] text-on-surface-variant transition-colors duration-150 hover:text-on-surface"
-                  >
-                    {link.label}
-                  </a>
-                ))}
+                {column.links.map((link) => {
+                  const isHash = link.href.startsWith('#');
+                  return (
+                    <a
+                      key={link.label}
+                      href={link.href}
+                      target={isHash ? undefined : '_blank'}
+                      rel={isHash ? undefined : 'noopener noreferrer'}
+                      className="font-body text-[13px] text-on-surface-variant transition-colors duration-150 hover:text-on-surface"
+                    >
+                      {link.label}
+                    </a>
+                  );
+                })}
               </div>
             ))}
+
+            <div className="flex max-w-[260px] flex-col gap-3">
+              <span className="font-mono text-[10px] font-semibold tracking-[1.5px] text-outline">
+                ACKNOWLEDGMENTS
+              </span>
+              <a
+                href="https://www.drips.network/wave/stellar"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Supported by Stellar Development Foundation's Stellar Wave program via Drips"
+                className="group flex flex-col gap-2 font-body text-[13px] leading-[1.45] text-on-surface-variant transition-colors duration-150 hover:text-on-surface"
+              >
+                <span className="flex items-center gap-2" aria-hidden="true">
+                  {acknowledgments.map((logo) => (
+                    <img
+                      key={logo.label}
+                      src={logo.src}
+                      alt=""
+                      className="h-4 w-4 opacity-70 transition-opacity duration-150 group-hover:opacity-90"
+                    />
+                  ))}
+                </span>
+                <span>
+                  Supported by Stellar Development Foundation&apos;s Stellar Wave program via Drips
+                </span>
+              </a>
+            </div>
           </div>
         </div>
 

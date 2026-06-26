@@ -1,3 +1,5 @@
+import { useInView } from '../hooks/useInView';
+
 const resources = [
   {
     label: 'SDK',
@@ -31,11 +33,13 @@ const resources = [
 ];
 
 export default function ForDevelopers() {
+  const { ref, isInView } = useInView({ threshold: 0.1 });
+
   return (
-    <section className="border-t border-outline-variant-30 px-6 py-24 md:px-12">
+    <section ref={ref} className="border-t border-outline-variant-30 px-6 py-24 md:px-12">
       <div className="mx-auto flex max-w-[1344px] flex-col gap-12">
         <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3" data-reveal={isInView}>
             <span className="font-mono text-[10px] font-semibold uppercase tracking-[2px] text-outline">
               For Developers
             </span>
@@ -54,10 +58,12 @@ export default function ForDevelopers() {
         </div>
 
         <div className="grid gap-4 md:grid-cols-3">
-          {resources.map((resource) => (
+          {resources.map((resource, index) => (
             <div
               key={resource.label}
               className="flex flex-col gap-5 border border-outline-variant bg-surface-container p-7"
+              data-reveal={isInView}
+              style={{ transitionDelay: isInView ? `${index * 100}ms` : '0ms' }}
             >
               <div className="flex items-center justify-between">
                 <span className="font-mono text-[10px] font-semibold tracking-[2px] text-outline">
