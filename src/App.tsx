@@ -12,6 +12,7 @@ import Footer from './components/Footer';
 import Faq from './pages/Faq';
 import Privacy from './pages/Privacy';
 import UseCases from './pages/UseCases';
+import NotFound from './pages/NotFound';
 
 function Home() {
   return (
@@ -43,6 +44,7 @@ export default function App() {
         <Route path="/faq" element={<Faq />} />
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/use-cases" element={<UseCases />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );
