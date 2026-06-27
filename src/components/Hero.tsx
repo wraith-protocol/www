@@ -1,6 +1,9 @@
 import { useState } from 'react';
+import type { KeyboardEvent as ReactKeyboardEvent } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { trackEvent } from '../analytics';
+import { copyToClipboard } from '../utils/clipboard';
 
 type CodeLine = {
   content: string;
@@ -100,6 +103,7 @@ const colorMap = {
 };
 
 export default function Hero() {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<Tab>('send.ts');
   const [copyStatus, setCopyStatus] = useState<'idle' | 'copied' | 'failed'>('idle');
 
@@ -112,7 +116,7 @@ export default function Hero() {
 
   const activeTabIndex = tabs.indexOf(activeTab);
 
-  const handleTabKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
+  const handleTabKeyDown = (event: ReactKeyboardEvent<HTMLButtonElement>) => {
     let nextIndex = activeTabIndex;
 
     if (event.key === 'ArrowRight') nextIndex = (activeTabIndex + 1) % tabs.length;
@@ -152,27 +156,25 @@ export default function Hero() {
           <div className="flex items-center gap-2 border border-outline-variant px-2.5 py-1.5">
             <span className="h-1.5 w-1.5 rounded-full bg-tertiary" />
             <span className="font-mono text-[10px] font-semibold tracking-[1.5px] text-on-surface-variant">
-              LIVE ON 4 TESTNETS
+              {t('hero.badge.testnet')}
             </span>
           </div>
           <div className="rounded-sm border border-tertiary px-2.5 py-1.5">
             <span className="font-mono text-[10px] font-semibold uppercase tracking-[1.5px] text-tertiary">
-              Stellar partner
+              {t('hero.badge.partner')}
             </span>
           </div>
         </div>
 
         <h1 className="font-heading text-[40px] font-bold leading-[1.05] tracking-[-2.5px] text-on-surface sm:text-[56px] md:text-[72px]">
-          Private payments{'\n'}for every chain.
+          {t('hero.heading')}
         </h1>
 
         <p className="font-body text-[17px] leading-[1.6] text-on-surface-variant">
-          A stealth-address toolkit built on ERC-5564 and ERC-6538. Drop it into your app and send
-          receiver-unlinkable payments across Horizen, Stellar, Solana, and CKB.
+          {t('hero.description')}
         </p>
         <p className="font-body text-[14px] leading-[1.6] text-tertiary">
-          Memo-enabled stealth support on Stellar, plus coordinated privacy flows for multi-chain
-          apps.
+          {t('hero.stellarNote')}
         </p>
 
         <div className="flex flex-wrap items-center gap-3">
@@ -183,7 +185,7 @@ export default function Hero() {
             onClick={() => trackEvent('Read the Docs')}
             className="flex h-12 items-center justify-center bg-primary px-7 font-heading text-[13px] font-semibold uppercase tracking-[1.5px] text-surface transition-[filter] duration-150 hover:brightness-110"
           >
-            Read the Docs
+            {t('hero.cta.docs')}
           </a>
           <a
             href="https://demo.usewraith.xyz"
@@ -192,32 +194,32 @@ export default function Hero() {
             onClick={() => trackEvent('Try the Demo')}
             className="flex h-12 items-center justify-center border border-outline-variant px-7 font-heading text-[13px] font-semibold uppercase tracking-[1.5px] text-primary transition-colors duration-150 hover:bg-surface-bright"
           >
-            Try the Demo
+            {t('hero.cta.demo')}
           </a>
           <Link
             to="/faq"
             className="flex h-12 items-center justify-center border border-outline-variant px-7 font-heading text-[13px] font-semibold uppercase tracking-[1.5px] text-primary transition-colors duration-150 hover:bg-surface-bright"
           >
-            View FAQ
+            {t('hero.cta.faq')}
           </Link>
         </div>
 
         <div className="flex items-center gap-8 pt-6">
           <div className="flex flex-col gap-1">
             <span className="font-mono text-[10px] font-semibold tracking-[1.5px] text-outline">
-              CHAINS SUPPORTED
+              {t('hero.stats.chainsLabel')}
             </span>
             <span className="font-heading text-xl font-bold text-on-surface">4</span>
           </div>
           <div className="flex flex-col gap-1">
             <span className="font-mono text-[10px] font-semibold tracking-[1.5px] text-outline">
-              SDK BUNDLE
+              {t('hero.stats.bundleLabel')}
             </span>
             <span className="font-heading text-xl font-bold text-on-surface">14.2 KB</span>
           </div>
           <div className="flex flex-col gap-1">
             <span className="font-mono text-[10px] font-semibold tracking-[1.5px] text-outline">
-              ERC STANDARD
+              {t('hero.stats.ercLabel')}
             </span>
             <span className="font-heading text-xl font-bold text-on-surface">5564 / 6538</span>
           </div>
@@ -226,11 +228,21 @@ export default function Hero() {
 
       <div className="flex w-full flex-col md:w-1/2">
         <div className="flex items-center justify-between border border-b-0 border-outline-variant bg-surface-container px-4 py-3">
-          <div className="flex items-center gap-0" role="tablist" aria-label="Code examples">
+          <div
+            className="flex items-center gap-0"
+            role="tablist"
+            aria-label={t('hero.code.ariaLabel')}
+          >
             {tabs.map((tab) => (
               <button
                 key={tab}
+                id={`code-tab-${tab}`}
+                role="tab"
+                aria-selected={activeTab === tab}
+                aria-controls={`code-panel-${tab}`}
+                tabIndex={activeTab === tab ? 0 : -1}
                 onClick={() => handleTabChange(tab)}
+                onKeyDown={handleTabKeyDown}
                 className={`flex items-center justify-center px-3 py-1.5 transition-colors duration-150 ${
                   activeTab === tab
                     ? 'bg-surface-bright'
@@ -250,18 +262,18 @@ export default function Hero() {
           <button
             type="button"
             onClick={handleCopy}
-            aria-label={`Copy ${activeTab} code example`}
+            aria-label={t('hero.code.copyAria', { tab: activeTab })}
             className="flex cursor-pointer items-center gap-1.5 px-2 py-1 transition-colors duration-150 hover:opacity-80"
           >
             <span className="font-mono text-[10px] font-semibold tracking-[1px] text-outline">
-              {copyStatus === 'copied' && 'COPIED'}
-              {copyStatus === 'failed' && 'FAILED'}
-              {copyStatus === 'idle' && 'COPY'}
+              {copyStatus === 'copied' && t('hero.code.copied')}
+              {copyStatus === 'failed' && t('hero.code.failed')}
+              {copyStatus === 'idle' && t('hero.code.copy')}
             </span>
           </button>
           <span className="sr-only" aria-live="polite">
-            {copyStatus === 'copied' && `${activeTab} copied to clipboard`}
-            {copyStatus === 'failed' && `${activeTab} could not be copied`}
+            {copyStatus === 'copied' && t('hero.code.copiedLive', { tab: activeTab })}
+            {copyStatus === 'failed' && t('hero.code.failedLive', { tab: activeTab })}
           </span>
         </div>
 
@@ -292,11 +304,11 @@ export default function Hero() {
           <div className="flex items-center gap-2">
             <span className="h-1.5 w-1.5 rounded-full bg-tertiary" />
             <span className="font-mono text-[11px] text-on-surface-variant">
-              npm i @wraith-protocol/sdk
+              {t('hero.code.install')}
             </span>
           </div>
           <span className="font-mono text-[10px] font-semibold tracking-[1.5px] text-outline">
-            TYPESCRIPT
+            {t('hero.code.language')}
           </span>
         </div>
       </div>

@@ -1,13 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { changeLocale, type Locale } from '../i18n';
 
 export default function Header() {
+  const { t, i18n } = useTranslation();
   const [menuOpen, setMenuOpen] = useState(false);
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
+  const currentLocale = (i18n.language.split('-')[0] ?? 'en') as Locale;
+  const nextLocale: Locale = currentLocale === 'en' ? 'es' : 'en';
+
   useEffect(() => {
-    // Check localStorage or prefers-color-scheme
     const savedTheme = localStorage.getItem('wraith-theme') as 'dark' | 'light' | null;
     const prefersDark =
       typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: dark)').matches;
@@ -77,7 +82,7 @@ export default function Header() {
         <a href="https://usewraith.xyz" className="flex items-center gap-3">
           <img src="/logo.png" alt="" className="h-6 opacity-90" />
           <span className="font-heading text-[15px] font-bold tracking-[2px] text-on-surface">
-            WRAITH
+            {t('header.brand')}
           </span>
         </a>
 
@@ -88,7 +93,7 @@ export default function Header() {
             rel="noopener noreferrer"
             className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
           >
-            Docs
+            {t('header.nav.docs')}
           </a>
           <a
             href="https://docs.usewraith.xyz/sdk/overview"
@@ -96,7 +101,7 @@ export default function Header() {
             rel="noopener noreferrer"
             className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
           >
-            SDK
+            {t('header.nav.sdk')}
           </a>
           <a
             href="https://demo.usewraith.xyz"
@@ -104,7 +109,7 @@ export default function Header() {
             rel="noopener noreferrer"
             className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
           >
-            Demo
+            {t('header.nav.demo')}
           </a>
           <a
             href="https://console.usewraith.xyz"
@@ -112,19 +117,19 @@ export default function Header() {
             rel="noopener noreferrer"
             className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
           >
-            Console
+            {t('header.nav.console')}
           </a>
           <a
             href="/press"
             className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
           >
-            Press
+            {t('header.nav.press')}
           </a>
           <a
             href="/use-cases"
             className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
           >
-            Use Cases
+            {t('header.nav.useCases')}
           </a>
         </nav>
 
@@ -132,11 +137,19 @@ export default function Header() {
           <button
             onClick={toggleTheme}
             className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
-            aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}
+            aria-label={t(theme === 'dark' ? 'header.theme.switchToLight' : 'header.theme.switchToDark')}
             aria-pressed={theme === 'light'}
-            title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}
+            title={t(theme === 'dark' ? 'header.theme.switchToLight' : 'header.theme.switchToDark')}
           >
             {theme === 'dark' ? '☀️' : '🌙'}
+          </button>
+          <button
+            onClick={() => changeLocale(nextLocale)}
+            className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
+            aria-label={t('header.locale.switchTo', { lang: nextLocale.toUpperCase() })}
+            title={t('header.locale.switchTo', { lang: nextLocale.toUpperCase() })}
+          >
+            {nextLocale.toUpperCase()}
           </button>
           <a
             href="https://github.com/wraith-protocol"
@@ -144,7 +157,7 @@ export default function Header() {
             rel="noopener noreferrer"
             className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
           >
-            GitHub ↗
+            {t('header.github')}
           </a>
           <a
             href="https://demo.usewraith.xyz"
@@ -152,7 +165,7 @@ export default function Header() {
             rel="noopener noreferrer"
             className="flex h-9 items-center justify-center bg-primary px-5 font-heading text-[11px] font-semibold uppercase tracking-[1.5px] text-surface transition-[filter] duration-150 hover:brightness-110"
           >
-            Launch App
+            {t('header.launchApp')}
           </a>
         </div>
 
@@ -162,7 +175,7 @@ export default function Header() {
           className="flex flex-col gap-1.5 md:hidden"
           aria-controls="mobile-menu"
           aria-expanded={menuOpen}
-          aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+          aria-label={t(menuOpen ? 'header.menu.close' : 'header.menu.open')}
         >
           <span
             className={`block h-[1.5px] w-5 bg-on-surface transition-transform duration-150 ${menuOpen ? 'translate-y-[3px] rotate-45' : ''}`}
@@ -186,11 +199,18 @@ export default function Header() {
             <button
               onClick={toggleTheme}
               className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant text-left"
-              aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}
+              aria-label={t(theme === 'dark' ? 'header.theme.switchToLight' : 'header.theme.switchToDark')}
               aria-pressed={theme === 'light'}
-              title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}
+              title={t(theme === 'dark' ? 'header.theme.switchToLight' : 'header.theme.switchToDark')}
             >
-              {theme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode'}
+              {theme === 'dark' ? t('header.theme.lightMode') : t('header.theme.darkMode')}
+            </button>
+            <button
+              onClick={() => { changeLocale(nextLocale); closeMenu(); }}
+              className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant text-left"
+              aria-label={t('header.locale.switchTo', { lang: nextLocale.toUpperCase() })}
+            >
+              {t('header.locale.switchTo', { lang: nextLocale.toUpperCase() })}
             </button>
             <a
               href="https://docs.usewraith.xyz"
@@ -199,7 +219,7 @@ export default function Header() {
               onClick={closeMenu}
               className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
             >
-              Docs
+              {t('header.nav.docs')}
             </a>
             <a
               href="https://docs.usewraith.xyz/sdk/overview"
@@ -208,7 +228,7 @@ export default function Header() {
               onClick={closeMenu}
               className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
             >
-              SDK
+              {t('header.nav.sdk')}
             </a>
             <a
               href="https://demo.usewraith.xyz"
@@ -217,7 +237,7 @@ export default function Header() {
               onClick={closeMenu}
               className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
             >
-              Demo
+              {t('header.nav.demo')}
             </a>
             <a
               href="https://console.usewraith.xyz"
@@ -226,21 +246,21 @@ export default function Header() {
               onClick={closeMenu}
               className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
             >
-              Console
+              {t('header.nav.console')}
             </a>
             <a
               href="/press"
               onClick={closeMenu}
               className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
             >
-              Press
+              {t('header.nav.press')}
             </a>
             <a
               href="/use-cases"
               onClick={closeMenu}
               className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
             >
-              Use Cases
+              {t('header.nav.useCases')}
             </a>
             <a
               href="https://github.com/wraith-protocol"
@@ -249,7 +269,7 @@ export default function Header() {
               onClick={closeMenu}
               className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
             >
-              GitHub ↗
+              {t('header.github')}
             </a>
             <a
               href="https://demo.usewraith.xyz"
@@ -258,7 +278,7 @@ export default function Header() {
               onClick={closeMenu}
               className="mt-2 flex h-9 items-center justify-center bg-primary font-heading text-[11px] font-semibold uppercase tracking-[1.5px] text-surface transition-[filter] duration-150 hover:brightness-110"
             >
-              Launch App
+              {t('header.launchApp')}
             </a>
           </nav>
         </div>

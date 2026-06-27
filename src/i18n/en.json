@@ -1,0 +1,307 @@
+{
+  "header": {
+    "brand": "WRAITH",
+    "nav": {
+      "docs": "Docs",
+      "sdk": "SDK",
+      "demo": "Demo",
+      "console": "Console",
+      "press": "Press",
+      "useCases": "Use Cases"
+    },
+    "launchApp": "Launch App",
+    "github": "GitHub ↗",
+    "locale": {
+      "switchTo": "Switch to {{lang}}"
+    },
+    "theme": {
+      "switchToLight": "Switch to light theme",
+      "switchToDark": "Switch to dark theme",
+      "lightMode": "☀️ Light Mode",
+      "darkMode": "🌙 Dark Mode"
+    },
+    "menu": {
+      "open": "Open navigation menu",
+      "close": "Close navigation menu"
+    }
+  },
+  "hero": {
+    "badge": {
+      "testnet": "LIVE ON 4 TESTNETS",
+      "partner": "Stellar partner"
+    },
+    "heading": "Private payments for every chain.",
+    "description": "A stealth-address toolkit built on ERC-5564 and ERC-6538. Drop it into your app and send receiver-unlinkable payments across Horizen, Stellar, Solana, and CKB.",
+    "stellarNote": "Memo-enabled stealth support on Stellar, plus coordinated privacy flows for multi-chain apps.",
+    "cta": {
+      "docs": "Read the Docs",
+      "demo": "Try the Demo",
+      "faq": "View FAQ"
+    },
+    "stats": {
+      "chainsLabel": "CHAINS SUPPORTED",
+      "bundleLabel": "SDK BUNDLE",
+      "ercLabel": "ERC STANDARD"
+    },
+    "code": {
+      "ariaLabel": "Code examples",
+      "copy": "COPY",
+      "copied": "COPIED",
+      "failed": "FAILED",
+      "language": "TYPESCRIPT",
+      "install": "npm i @wraith-protocol/sdk",
+      "copyAria": "Copy {{tab}} code example",
+      "copiedLive": "{{tab}} copied to clipboard",
+      "failedLive": "{{tab}} could not be copied"
+    }
+  },
+  "features": {
+    "eyebrow": "Why Wraith",
+    "heading": "Everything you need for stealth payments.",
+    "description": "Three primitives, wired correctly. No custom crypto on your side.",
+    "compareLink": "See how we compare to alternatives →",
+    "stealth": {
+      "title": "Stealth Addresses",
+      "description": "Every incoming payment lands at a fresh, unlinkable address derived from the recipient's meta-address. Public chains, private receivers.",
+      "meta": "ERC-5564 · ERC-6538"
+    },
+    "scanning": {
+      "title": "Fast Scanning",
+      "description": "Indexed announcement events via Goldsky so clients scan a wallet's incoming stealth payments in seconds, not minutes.",
+      "meta": "Goldsky subgraphs"
+    },
+    "multichain": {
+      "title": "Multi-chain Core",
+      "description": "One API for Horizen, Stellar, Solana, and CKB. Chain-specific wallet adapters ship with the SDK — you write application code, not protocol code.",
+      "meta": "4 chains · more coming"
+    }
+  },
+  "architecture": {
+    "eyebrow": "How It Works",
+    "heading": "Announce. Derive. Scan.",
+    "sender": {
+      "label": "SENDER",
+      "description": "Derives a stealth address from the recipient's meta-address using a fresh ephemeral key."
+    },
+    "announcer": {
+      "label": "ANNOUNCER",
+      "description": "On-chain announcement event logs the payment so the receiver can find it without interaction."
+    },
+    "receiver": {
+      "label": "RECEIVER",
+      "description": "Scans announcements with their viewing key, derives the spending key, and withdraws at will."
+    }
+  },
+  "forDevelopers": {
+    "eyebrow": "For Developers",
+    "heading": "Three ways to ship.",
+    "fullDocs": "Full Docs ↗",
+    "sdk": {
+      "label": "SDK",
+      "badge": "STABLE",
+      "title": "@wraith-protocol/sdk",
+      "description": "TypeScript SDK with wallet adapters for every supported chain.",
+      "linkText": "READ THE GUIDE"
+    },
+    "demo": {
+      "label": "DEMO",
+      "badge": "TESTNET",
+      "title": "demo.usewraith.xyz",
+      "description": "A live stealth-payment playground. Send and receive across four chains with your own wallet.",
+      "linkText": "OPEN THE DEMO"
+    },
+    "console": {
+      "label": "CONSOLE",
+      "badge": "BETA",
+      "title": "console.usewraith.xyz",
+      "description": "API keys, usage dashboards, and team access. The production control plane for your integration.",
+      "linkText": "GET API KEYS"
+    }
+  },
+  "chains": {
+    "eyebrow": "Supported Chains",
+    "heading": "Built for a multi-chain world.",
+    "partner": "Partner",
+    "stellarNote": {
+      "eyebrow": "Stellar-first stealth support",
+      "description": "Soroban integration with memo-based recipient metadata, making private payments on Stellar feel native."
+    },
+    "statuses": {
+      "liveTestnet": "LIVE ON TESTNET",
+      "liveDevnet": "LIVE ON DEVNET"
+    },
+    "horizen": { "meta": "EVM · TEE-secured · ERC-5564" },
+    "stellar": { "meta": "Soroban · Memo-based" },
+    "solana": { "meta": "SPL tokens · Memo program" },
+    "ckb": { "meta": "Cell model · CCC integration" }
+  },
+  "compare": {
+    "eyebrow": "Comparative Analysis",
+    "heading": "Honest comparison to alternatives.",
+    "description": "Privacy is not one-size-fits-all. Different mechanisms make distinct trade-offs between user convenience, regulatory posture, and mathematical complexity.",
+    "scrollHint": "Swipe table horizontally to view all columns",
+    "table": {
+      "ariaLabel": "Comparison detail filters",
+      "protocol": "Protocol",
+      "mechanism": "Privacy Mechanism",
+      "ux": "UX / Sending Flow",
+      "recipient": "Recipient Flow",
+      "regulation": "Regulatory Posture",
+      "multichain": "Multichain",
+      "complexity": "Complexity"
+    },
+    "tabs": {
+      "all": "All Details",
+      "wraith": "Wraith (Stealth)",
+      "mixers": "Tornado Cash (Mixers)",
+      "rollups": "Aztec (zk-Rollups)",
+      "railgun": "Railgun (Shielded)",
+      "transparent": "Status Quo"
+    },
+    "rows": {
+      "wraith": {
+        "name": "Wraith Protocol",
+        "mechanism": "Stealth Addresses (ERC-5564)",
+        "ux": "Low friction (direct sending to meta-address)",
+        "recipient": "Passive receipt (scans announcements via viewing key)",
+        "regulation": "Non-pooled, direct peer-to-peer transfers",
+        "multichain": "Native multi-chain API (4+ chains)",
+        "complexity": "Low (standard elliptic curve cryptography)"
+      },
+      "tornado": {
+        "name": "Tornado Cash Style",
+        "mechanism": "Zero-Knowledge Pools (zk-SNARKs)",
+        "ux": "High friction (fixed deposits, note files)",
+        "recipient": "Active withdrawal (must generate ZK proof and pay relayers)",
+        "regulation": "Highly sanctioned (global OFAC sanctions)",
+        "multichain": "Isolated pools per chain",
+        "complexity": "High (client-side proofs, relayer networks)"
+      },
+      "aztec": {
+        "name": "Aztec / ZK Rollups",
+        "mechanism": "State Encryption & Rollups",
+        "ux": "High friction (requires bridging to L2 and exiting)",
+        "recipient": "L2 native (receiver must have L2 account & scan L2)",
+        "regulation": "Restricted (privacy bridges deprecating due to compliance)",
+        "multichain": "Host-chain locked (complex L2 bridging)",
+        "complexity": "Extreme (L2 rollup economics, state sync, proving nodes)"
+      },
+      "railgun": {
+        "name": "Railgun",
+        "mechanism": "In-Contract ZK Shielded Pools",
+        "ux": "Medium-High (shielding/unshielding, private wallet)",
+        "recipient": "Shielded native (must own private address to receive)",
+        "regulation": "Self-regulated (viewing keys, proof of innocence)",
+        "multichain": "Isolated contracts per network",
+        "complexity": "High (private state trees, DeFi adapters, client proofs)"
+      },
+      "statusQuo": {
+        "name": "Status Quo",
+        "mechanism": "None (transparent public ledger)",
+        "ux": "Frictionless (native wallet transactions)",
+        "recipient": "Native receipt (immediate access, standard wallets)",
+        "regulation": "Compliant (but zero privacy or commercial secrecy)",
+        "multichain": "Native support on all chains",
+        "complexity": "Zero (default ledger mechanics)"
+      }
+    },
+    "cards": {
+      "wraith": {
+        "eyebrow": "WRAITH APPROACH",
+        "badge": "NON-POOLED STEALTH",
+        "heading": "Wraith: Direct, Peer-to-Peer Privacy",
+        "body": "Wraith implements cryptographic stealth addresses based on the ERC-5564 and ERC-6538 standards. Instead of pooling funds into a shared mixer, every single transaction goes to a one-time, fresh destination address derived cryptographically using the recipient's public keys and the sender's ephemeral keys.",
+        "whyLabel": "Why it matters",
+        "why": "By removing the shared \"anonymity pool,\" Wraith avoids the regulatory issues and technical overhead of traditional mixers. Users transact peer-to-peer natively, while retaining complete unlinkability of the receiver's identity on the public ledger."
+      },
+      "mixers": {
+        "eyebrow": "MIXERS & POOLS",
+        "badge": "OFAC SANCTIONED",
+        "heading": "Tornado-Cash-style Mixers",
+        "body": "Mixers break links between deposit and withdrawal addresses by putting funds into a communal smart-contract pool. Users deposit fixed denominations (e.g. 1 ETH) and receive a cryptographic note. To withdraw, they generate a client-side zero-knowledge proof proving they own one of the unspent deposits.",
+        "gapsLabel": "Regulatory Status & Gaps",
+        "gaps": "Tornado Cash was sanctioned by the U.S. Office of Foreign Assets Control (OFAC) in 2022 because its pooled architecture obfuscates illicit financial flows. Additionally, the UX is complex: receivers must remain online to generate ZK proofs and pay gas relayers to maintain withdrawal privacy."
+      },
+      "rollups": {
+        "eyebrow": "LAYER 2 ENCRYPTION",
+        "badge": "PROGRAMMABLE L2",
+        "heading": "Aztec & zk-Rollup Privacy",
+        "body": "Aztec brings privacy to the smart contract execution layer via an encrypted Layer-2 rollup. Encrypted state updates are processed off-chain, and zero-knowledge proofs are compiled in batches and posted to the Layer-1 Ethereum ledger for global validation.",
+        "gapsLabel": "Strengths & Gaps",
+        "gaps": "Excellent for rich private state logic and private DeFi. However, users face significant friction, including L1-to-L2 bridging steps, delays in rollup finality, and complex wallet setup. Because rollups are tied to a single host chain, cross-chain privacy remains a major challenge."
+      },
+      "railgun": {
+        "eyebrow": "SHIELDED CONTRACTS",
+        "badge": "IN-CONTRACT DEFI",
+        "heading": "Railgun Shielded Actions",
+        "body": "Railgun is an on-chain privacy protocol deployed directly on EVM networks. It allows users to \"shield\" tokens inside a smart contract pool. Once shielded, assets can be transferred, swapped, or deployed into partner DeFi yield contracts privately using zk-SNARKs.",
+        "gapsLabel": "Strengths & Gaps",
+        "gaps": "Railgun excels at private, in-pool swaps and yield generation directly on L1/L2 without bridging. However, users must use specific Railgun-compatible wallets and pay substantial gas costs to shield or unshield. Its pooled design also requires heavy client-side proof generation."
+      },
+      "transparent": {
+        "eyebrow": "TRANSPARENT LEDGER",
+        "badge": "DEFAULT PUBLIC",
+        "heading": "The Transparent Ledger Status Quo",
+        "body": "Public blockchains operate on absolute transparency. Anyone with an internet connection can view your entire transaction history, balances, asset holdings, and network of counterparties via simple block explorers.",
+        "gapsLabel": "What you give up",
+        "gaps": "Transparent accounts expose businesses, merchants, and individuals to front-running, phishing, and physical security risks. While simple to use, complete public disclosure makes default ledger transactions unfeasible for standard enterprise operations like payroll or supplier contracts."
+      }
+    }
+  },
+  "cta": {
+    "eyebrow": "Ready to Build",
+    "heading": "Start shipping private payments today.",
+    "getKeys": "Get API Keys",
+    "readDocs": "Read the Docs"
+  },
+  "showcase": {
+    "eyebrow": "Built with Wraith",
+    "heading": "Projects using Wraith.",
+    "description": "Pilot integrations, reference implementations, and partner POCs.",
+    "visit": "Visit"
+  },
+  "footer": {
+    "brand": "WRAITH PROTOCOL",
+    "tagline": "Private payments, plainly.",
+    "columns": {
+      "product": "PRODUCT",
+      "developers": "DEVELOPERS",
+      "resources": "RESOURCES",
+      "acknowledgments": "ACKNOWLEDGMENTS"
+    },
+    "product": {
+      "docs": "Docs",
+      "demo": "Demo",
+      "console": "Console",
+      "compare": "Compare",
+      "faq": "FAQ",
+      "changelog": "Changelog"
+    },
+    "developers": {
+      "sdk": "SDK",
+      "apiReference": "API Reference",
+      "github": "GitHub",
+      "npm": "npm"
+    },
+    "resources": {
+      "erc5564": "ERC-5564 spec",
+      "erc6538": "ERC-6538 spec",
+      "security": "Security",
+      "press": "Press"
+    },
+    "acknowledgmentsAria": "Supported by Stellar Development Foundation’s Stellar Wave program via Drips",
+    "acknowledgmentsText": "Supported by Stellar Development Foundation’s Stellar Wave program via Drips",
+    "built": "BUILT ON HORIZEN · ERC-5564 · OPEN SOURCE",
+    "legal": {
+      "privacy": "Privacy",
+      "terms": "Terms",
+      "securityTxt": "Security.txt"
+    }
+  },
+  "og": {
+    "siteTitle": "Wraith Protocol — Private payments for every chain",
+    "metaDescription": "Wraith Protocol enables private payments on any blockchain using stealth addresses. One SDK, multiple chains.",
+    "ogTitle": "Wraith Protocol",
+    "ogDescription": "Private payments for every chain. Stealth addresses, multichain SDK, and AI-powered privacy agents."
+  }
+}

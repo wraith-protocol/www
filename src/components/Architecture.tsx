@@ -1,44 +1,43 @@
+import { useTranslation } from 'react-i18next';
 import { useInView } from '../hooks/useInView';
 
-const steps = [
-  {
-    num: '1',
-    label: 'SENDER',
-    description:
-      "Derives a stealth address from the recipient's meta-address using a fresh ephemeral key.",
-    code: 'deriveStealthAddress()',
-    border: true,
-  },
-  {
-    num: '2',
-    label: 'ANNOUNCER',
-    description:
-      'On-chain announcement event logs the payment so the receiver can find it without interaction.',
-    code: 'Announcement event',
-    border: true,
-  },
-  {
-    num: '3',
-    label: 'RECEIVER',
-    description:
-      'Scans announcements with their viewing key, derives the spending key, and withdraws at will.',
-    code: 'scan() → withdraw()',
-    border: false,
-  },
-];
-
 export default function Architecture() {
+  const { t } = useTranslation();
   const { ref, isInView } = useInView({ threshold: 0.1 });
+
+  const steps = [
+    {
+      num: '1',
+      label: t('architecture.sender.label'),
+      description: t('architecture.sender.description'),
+      code: 'deriveStealthAddress()',
+      border: true,
+    },
+    {
+      num: '2',
+      label: t('architecture.announcer.label'),
+      description: t('architecture.announcer.description'),
+      code: 'Announcement event',
+      border: true,
+    },
+    {
+      num: '3',
+      label: t('architecture.receiver.label'),
+      description: t('architecture.receiver.description'),
+      code: 'scan() → withdraw()',
+      border: false,
+    },
+  ];
 
   return (
     <section ref={ref} className="border-t border-outline-variant-30 px-6 py-24 md:px-12">
       <div className="mx-auto flex max-w-[1344px] flex-col items-center gap-12">
         <div className="flex flex-col items-center gap-3" data-reveal={isInView}>
           <span className="font-mono text-[10px] font-semibold uppercase tracking-[2px] text-outline">
-            How It Works
+            {t('architecture.eyebrow')}
           </span>
           <h2 className="font-heading text-[28px] font-bold tracking-[-1.2px] text-on-surface sm:text-[40px]">
-            Announce. Derive. Scan.
+            {t('architecture.heading')}
           </h2>
         </div>
 

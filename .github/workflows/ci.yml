@@ -18,5 +18,6 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm format:check
+      - run: pnpm lint:i18n
       - run: pnpm test:a11y
       - run: pnpm build

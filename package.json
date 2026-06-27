@@ -11,11 +11,15 @@
     "test:a11y": "vitest run src/__tests__/a11y.test.tsx",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "lint:i18n": "node scripts/lint-i18n.mjs",
+    "generate:og": "node scripts/generate-og.mjs",
     "prepare": "husky"
   },
   "dependencies": {
+    "i18next": "^26.3.3",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
+    "react-i18next": "^17.0.8",
     "react-router-dom": "^7.18.0"
   },
   "devDependencies": {

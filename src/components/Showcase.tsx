@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { entries } from '../data/showcase.json';
 
 type ShowcaseEntry = {
@@ -9,6 +10,8 @@ type ShowcaseEntry = {
 };
 
 export default function Showcase() {
+  const { t } = useTranslation();
+
   if (!entries || entries.length === 0) return null;
 
   return (
@@ -16,13 +19,13 @@ export default function Showcase() {
       <div className="mx-auto flex max-w-[1344px] flex-col gap-10">
         <div className="flex flex-col gap-3">
           <span className="font-mono text-[10px] font-semibold uppercase tracking-[2px] text-outline">
-            Built with Wraith
+            {t('showcase.eyebrow')}
           </span>
           <h2 className="font-heading text-[28px] font-bold leading-[1.1] tracking-[-1.2px] text-on-surface sm:text-[40px]">
-            Projects using Wraith.
+            {t('showcase.heading')}
           </h2>
           <p className="font-body text-base leading-[1.6] text-on-surface-variant">
-            Pilot integrations, reference implementations, and partner POCs.
+            {t('showcase.description')}
           </p>
         </div>
 
@@ -57,7 +60,7 @@ export default function Showcase() {
               </div>
               <div className="flex items-center gap-1.5">
                 <span className="font-mono text-[11px] text-outline transition-colors duration-150 group-hover:text-primary">
-                  Visit
+                  {t('showcase.visit')}
                 </span>
                 <span className="text-outline transition-transform duration-150 group-hover:translate-x-0.5">
                   ↗
