@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type KeyboardEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { trackEvent } from '../analytics';
 
@@ -111,6 +111,8 @@ export default function Hero() {
   const lines = codeByTab[activeTab];
 
   const activeTabIndex = tabs.indexOf(activeTab);
+
+  const copyToClipboard = (text: string) => navigator.clipboard.writeText(text);
 
   const handleTabKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
     let nextIndex = activeTabIndex;
@@ -230,7 +232,12 @@ export default function Hero() {
             {tabs.map((tab) => (
               <button
                 key={tab}
+                id={`code-tab-${tab}`}
+                role="tab"
+                aria-selected={activeTab === tab}
+                tabIndex={activeTab === tab ? 0 : -1}
                 onClick={() => handleTabChange(tab)}
+                onKeyDown={handleTabKeyDown}
                 className={`flex items-center justify-center px-3 py-1.5 transition-colors duration-150 ${
                   activeTab === tab
                     ? 'bg-surface-bright'

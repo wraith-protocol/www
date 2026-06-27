@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build && tsx scripts/og.ts",
+    "og:generate": "tsx scripts/og.ts",
     "preview": "vite preview",
     "test": "vitest run",
     "test:a11y": "vitest run src/__tests__/a11y.test.tsx",
@@ -21,6 +22,8 @@
   "devDependencies": {
     "@commitlint/cli": "^20.5.0",
     "@commitlint/config-conventional": "^20.5.0",
+    "@fontsource/space-grotesk": "^5.2.10",
+    "@resvg/resvg-js": "^2.6.2",
     "@tailwindcss/vite": "^4.2.2",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
@@ -31,7 +34,9 @@
     "husky": "^9.1.7",
     "jsdom": "^29.1.1",
     "prettier": "^3.8.2",
+    "satori": "^0.26.0",
     "tailwindcss": "^4.2.2",
+    "tsx": "^4.22.4",
     "typescript": "^6.0.2",
     "vite": "^8.0.8",
     "vitest": "^4.1.9",
