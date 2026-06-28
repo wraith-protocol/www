@@ -7,11 +7,13 @@ import ForDevelopers from './components/ForDevelopers';
 import Chains from './components/Chains';
 import Compare from './components/Compare';
 import Showcase from './components/Showcase';
+import EcosystemPartners from './components/EcosystemPartners';
 import CtaStrip from './components/CtaStrip';
 import Footer from './components/Footer';
 import Faq from './pages/Faq';
 import Privacy from './pages/Privacy';
 import UseCases from './pages/UseCases';
+import Stellar from './pages/Stellar';
 import NotFound from './pages/NotFound';
 
 function Home() {
@@ -29,6 +31,7 @@ function Home() {
         <Chains />
         <Compare />
         <Showcase />
+        <EcosystemPartners />
         <CtaStrip />
       </main>
       <Footer />
@@ -44,6 +47,7 @@ export default function App() {
         <Route path="/faq" element={<Faq />} />
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/use-cases" element={<UseCases />} />
+        <Route path="/stellar" element={<Stellar />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>

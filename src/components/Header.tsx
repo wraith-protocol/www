@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -126,6 +127,12 @@ export default function Header() {
           >
             Use Cases
           </a>
+          <Link
+            to="/stellar"
+            className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
+          >
+            Stellar
+          </Link>
         </nav>
 
         <div className="hidden items-center gap-3 md:flex">
@@ -171,7 +178,7 @@ export default function Header() {
             className={`block h-[1.5px] w-5 bg-on-surface transition-opacity duration-150 ${menuOpen ? 'opacity-0' : ''}`}
           />
           <span
-            className={`block h-[1.5px] w-5 bg-on-surface transition-transform duration-150 ${menuOpen ? '-translate-y-[3px] -rotate-45' : ''}`}
+            className={`block h-[1.5px] w-5 bg-on-surface transition-transform duration-150 ${menuOpen ? 'translate-y-[-3px] -rotate-45' : ''}`}
           />
         </button>
       </div>
@@ -242,6 +249,13 @@ export default function Header() {
             >
               Use Cases
             </a>
+            <Link
+              to="/stellar"
+              onClick={closeMenu}
+              className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
+            >
+              Stellar
+            </Link>
             <a
               href="https://github.com/wraith-protocol"
               target="_blank"

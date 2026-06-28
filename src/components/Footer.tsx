@@ -28,6 +28,7 @@ const columns = [
       { label: 'ERC-6538 spec', href: 'https://eips.ethereum.org/EIPS/eip-6538' },
       { label: 'Security', href: 'https://docs.usewraith.xyz/security' },
       { label: 'Press', href: '/press' },
+      { label: 'Stellar Integration', href: '/stellar' },
     ],
   },
 ];
@@ -49,7 +50,7 @@ export default function Footer() {
                 WRAITH PROTOCOL
               </span>
             </div>
-            <p className="max-w-[240px] font-body text-[13px] leading-[1.5] text-outline">
+            <p className="max-w-[240px] font-body text-[13px] leading-normal text-outline">
               Private payments, plainly.
             </p>
           </div>
