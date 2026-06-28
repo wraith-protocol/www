@@ -222,8 +222,18 @@ async function main() {
   }
 
   const fonts: FontDef[] = [
-    { name: 'Space Grotesk', data: loadFont('space-grotesk-latin-400-normal.woff'), weight: 400, style: 'normal' },
-    { name: 'Space Grotesk', data: loadFont('space-grotesk-latin-700-normal.woff'), weight: 700, style: 'normal' },
+    {
+      name: 'Space Grotesk',
+      data: loadFont('space-grotesk-latin-400-normal.woff'),
+      weight: 400,
+      style: 'normal',
+    },
+    {
+      name: 'Space Grotesk',
+      data: loadFont('space-grotesk-latin-700-normal.woff'),
+      weight: 700,
+      style: 'normal',
+    },
   ];
 
   const ogDir = join(distDir, 'og');

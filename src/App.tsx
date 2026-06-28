@@ -5,6 +5,7 @@ import Features from './components/Features';
 import Architecture from './components/Architecture';
 import ForDevelopers from './components/ForDevelopers';
 import Chains from './components/Chains';
+import StellarMetrics from './components/StellarMetrics';
 import Compare from './components/Compare';
 import Showcase from './components/Showcase';
 import CtaStrip from './components/CtaStrip';
@@ -27,6 +28,7 @@ function Home() {
         <Architecture />
         <ForDevelopers />
         <Chains />
+        <StellarMetrics />
         <Compare />
         <Showcase />
         <CtaStrip />
