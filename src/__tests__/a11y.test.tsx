@@ -45,9 +45,9 @@ describe('homepage accessibility', () => {
 
     render(<App />);
 
-    expect(screen.getByRole('heading', { name: /faq/i, level: 1 })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: /faq/i, level: 1 })).toBeInTheDocument();
     expect(
-      screen.getAllByRole('button', { name: /show answer for/i }).length,
+      (await screen.findAllByRole('button', { name: /show answer for/i })).length,
     ).toBeGreaterThanOrEqual(20);
   });
 });

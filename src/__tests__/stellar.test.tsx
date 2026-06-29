@@ -4,23 +4,23 @@ import { describe, expect, it } from 'vitest';
 import App from '../App';
 
 describe('Stellar page and partners section', () => {
-  it('renders the Stellar page for the /stellar route', () => {
+  it('renders the Stellar page for the /stellar route', async () => {
     window.history.replaceState({}, '', '/stellar');
 
     render(<App />);
 
     expect(
-      screen.getByRole('heading', { level: 1, name: /stellar integration/i }),
+      await screen.findByRole('heading', { level: 1, name: /stellar integration/i }),
     ).toBeInTheDocument();
   });
 
-  it('renders the ecosystem partners section with all six partner links', () => {
+  it('renders the ecosystem partners section with all six partner links', async () => {
     window.history.replaceState({}, '', '/stellar');
 
     render(<App />);
 
     expect(
-      screen.getByRole('heading', { level: 2, name: /ecosystem partners & credits/i }),
+      await screen.findByRole('heading', { level: 2, name: /ecosystem partners & credits/i }),
     ).toBeInTheDocument();
 
     const partners = [
@@ -32,9 +32,9 @@ describe('Stellar page and partners section', () => {
       { name: 'LOBSTR', link: 'https://lobstr.co' },
     ];
 
+    const links = await screen.findAllByRole('link');
     partners.forEach((partner) => {
       // Find the link by its href
-      const links = screen.getAllByRole('link');
       const link = links.find((l) => l.getAttribute('href') === partner.link);
       expect(link).toBeDefined();
       expect(link).toHaveAttribute('target', '_blank');
@@ -46,6 +46,10 @@ describe('Stellar page and partners section', () => {
     window.history.replaceState({}, '', '/stellar');
 
     const { container } = render(<App />);
+
+    // Wait for page to load before running axe
+    await screen.findByRole('heading', { level: 1, name: /stellar integration/i });
+
     const results = await axe(container);
 
     expect(results.violations).toEqual([]);
