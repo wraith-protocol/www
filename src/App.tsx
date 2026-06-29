@@ -1,21 +1,26 @@
+import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import Features from './components/Features';
-import Architecture from './components/Architecture';
-import ForDevelopers from './components/ForDevelopers';
-import Chains from './components/Chains';
-import StellarMetrics from './components/StellarMetrics';
-import Compare from './components/Compare';
-import Showcase from './components/Showcase';
-import EcosystemPartners from './components/EcosystemPartners';
-import CtaStrip from './components/CtaStrip';
-import Footer from './components/Footer';
-import Faq from './pages/Faq';
-import Privacy from './pages/Privacy';
-import UseCases from './pages/UseCases';
-import Stellar from './pages/Stellar';
-import NotFound from './pages/NotFound';
+
+// Lazy load below-the-fold homepage components
+const Architecture = lazy(() => import('./components/Architecture'));
+const ForDevelopers = lazy(() => import('./components/ForDevelopers'));
+const Chains = lazy(() => import('./components/Chains'));
+const StellarMetrics = lazy(() => import('./components/StellarMetrics'));
+const Compare = lazy(() => import('./components/Compare'));
+const Showcase = lazy(() => import('./components/Showcase'));
+const EcosystemPartners = lazy(() => import('./components/EcosystemPartners'));
+const CtaStrip = lazy(() => import('./components/CtaStrip'));
+const Footer = lazy(() => import('./components/Footer'));
+
+// Lazy load pages
+const Faq = lazy(() => import('./pages/Faq'));
+const Privacy = lazy(() => import('./pages/Privacy'));
+const UseCases = lazy(() => import('./pages/UseCases'));
+const Stellar = lazy(() => import('./pages/Stellar'));
+const NotFound = lazy(() => import('./pages/NotFound'));
 
 function Home() {
   return (
@@ -27,16 +32,20 @@ function Home() {
       <main id="main-content" tabIndex={-1}>
         <Hero />
         <Features />
-        <Architecture />
-        <ForDevelopers />
-        <Chains />
-        <StellarMetrics />
-        <Compare />
-        <Showcase />
-        <EcosystemPartners />
-        <CtaStrip />
+        <Suspense fallback={null}>
+          <Architecture />
+          <ForDevelopers />
+          <Chains />
+          <StellarMetrics />
+          <Compare />
+          <Showcase />
+          <EcosystemPartners />
+          <CtaStrip />
+        </Suspense>
       </main>
-      <Footer />
+      <Suspense fallback={null}>
+        <Footer />
+      </Suspense>
     </div>
   );
 }
@@ -44,14 +53,16 @@ function Home() {
 export default function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/faq" element={<Faq />} />
-        <Route path="/privacy" element={<Privacy />} />
-        <Route path="/use-cases" element={<UseCases />} />
-        <Route path="/stellar" element={<Stellar />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+      <Suspense fallback={null}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/faq" element={<Faq />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/use-cases" element={<UseCases />} />
+          <Route path="/stellar" element={<Stellar />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Suspense>
     </BrowserRouter>
   );
 }
