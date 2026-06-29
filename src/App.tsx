@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import Features from './components/Features';
+import Layout from './components/Layout';
 
 // Lazy load below-the-fold homepage components
 const Architecture = lazy(() => import('./components/Architecture'));
@@ -59,7 +60,15 @@ export default function App() {
           <Route path="/faq" element={<Faq />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/use-cases" element={<UseCases />} />
-          <Route path="/stellar" element={<Stellar />} />
+          {/* Wrap Stellar with Layout */}
+          <Route
+            path="/stellar"
+            element={
+              <Layout>
+                <Stellar />
+              </Layout>
+            }
+          />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>

@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { changeLocale, Locale } from '../i18n';
 
 export default function Header() {
   const { t, i18n } = useTranslation();
@@ -142,7 +144,9 @@ export default function Header() {
           <button
             onClick={toggleTheme}
             className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
-            aria-label={t(theme === 'dark' ? 'header.theme.switchToLight' : 'header.theme.switchToDark')}
+            aria-label={t(
+              theme === 'dark' ? 'header.theme.switchToLight' : 'header.theme.switchToDark',
+            )}
             aria-pressed={theme === 'light'}
             title={t(theme === 'dark' ? 'header.theme.switchToLight' : 'header.theme.switchToDark')}
           >
@@ -183,13 +187,13 @@ export default function Header() {
           aria-label={t(menuOpen ? 'header.menu.close' : 'header.menu.open')}
         >
           <span
-            className={`block h-[1.5px] w-5 bg-on-surface transition-transform duration-150 ${menuOpen ? 'translate-y-[3px] rotate-45' : ''}`}
+            className={`block h-[1.5px] w-5 bg-on-surface transition-transform duration-150 ${menuOpen ? 'translate-y-0.75 rotate-45' : ''}`}
           />
           <span
             className={`block h-[1.5px] w-5 bg-on-surface transition-opacity duration-150 ${menuOpen ? 'opacity-0' : ''}`}
           />
           <span
-            className={`block h-[1.5px] w-5 bg-on-surface transition-transform duration-150 ${menuOpen ? 'translate-y-[-3px] -rotate-45' : ''}`}
+            className={`block h-[1.5px] w-5 bg-on-surface transition-transform duration-150 ${menuOpen ? '-translate-y-0.75 -rotate-45' : ''}`}
           />
         </button>
       </div>
@@ -204,14 +208,21 @@ export default function Header() {
             <button
               onClick={toggleTheme}
               className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant text-left"
-              aria-label={t(theme === 'dark' ? 'header.theme.switchToLight' : 'header.theme.switchToDark')}
+              aria-label={t(
+                theme === 'dark' ? 'header.theme.switchToLight' : 'header.theme.switchToDark',
+              )}
               aria-pressed={theme === 'light'}
-              title={t(theme === 'dark' ? 'header.theme.switchToLight' : 'header.theme.switchToDark')}
+              title={t(
+                theme === 'dark' ? 'header.theme.switchToLight' : 'header.theme.switchToDark',
+              )}
             >
               {theme === 'dark' ? t('header.theme.lightMode') : t('header.theme.darkMode')}
             </button>
             <button
-              onClick={() => { changeLocale(nextLocale); closeMenu(); }}
+              onClick={() => {
+                changeLocale(nextLocale);
+                closeMenu();
+              }}
               className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant text-left"
               aria-label={t('header.locale.switchTo', { lang: nextLocale.toUpperCase() })}
             >

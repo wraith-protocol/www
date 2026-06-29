@@ -2,7 +2,6 @@ import { useState, type KeyboardEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { trackEvent } from '../analytics';
-import { copyToClipboard } from '../utils/clipboard';
 
 type CodeLine = {
   content: string;
@@ -151,7 +150,7 @@ export default function Hero() {
   };
 
   return (
-    <section className="flex w-full flex-col gap-16 px-6 pt-24 pb-[120px] md:flex-row md:gap-16 md:px-12 md:pt-24 lg:gap-16">
+    <section className="flex w-full flex-col gap-16 px-6 pt-24 pb-30 md:flex-row md:gap-16 md:px-12 md:pt-24 lg:gap-16">
       <div className="flex w-full flex-col gap-8 pt-16 md:w-1/2">
         <div className="flex flex-wrap items-center gap-3">
           <div className="flex items-center gap-2 border border-outline-variant px-2.5 py-1.5">
@@ -174,9 +173,7 @@ export default function Hero() {
         <p className="font-body text-[17px] leading-[1.6] text-on-surface-variant">
           {t('hero.description')}
         </p>
-        <p className="font-body text-[14px] leading-[1.6] text-tertiary">
-          {t('hero.stellarNote')}
-        </p>
+        <p className="font-body text-[14px] leading-[1.6] text-tertiary">{t('hero.stellarNote')}</p>
 
         <div className="flex flex-wrap items-center gap-3">
           <a

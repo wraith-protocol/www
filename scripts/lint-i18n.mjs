@@ -45,9 +45,7 @@ for (const file of files) {
     while ((match = re.exec(line)) !== null) {
       const text = match[1].trim();
       if (MULTI_WORD_RE.test(text)) {
-        console.error(
-          `${file}:${idx + 1}: hardcoded JSX string: "${text}"`,
-        );
+        console.error(`${file}:${idx + 1}: hardcoded JSX string: "${text}"`);
         violations++;
       }
     }

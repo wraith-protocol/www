@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { useInView } from '../hooks/useInView';
+import { Link } from 'react-router-dom';
 
 export default function Chains() {
   const { t } = useTranslation();
@@ -39,7 +40,7 @@ export default function Chains() {
 
   return (
     <section ref={ref} className="border-t border-outline-variant-30 px-6 py-24 md:px-12">
-      <div className="mx-auto flex max-w-[1344px] flex-col gap-10">
+      <div className="mx-auto flex max-w-336 flex-col gap-10">
         <div className="flex flex-col gap-3" data-reveal={isInView}>
           <span className="font-mono text-[10px] font-semibold uppercase tracking-[2px] text-outline">
             {t('chains.eyebrow')}
@@ -79,6 +80,14 @@ export default function Chains() {
                   <span className="rounded-full border border-tertiary px-2 py-1 text-[10px] font-semibold uppercase tracking-[1.5px] text-tertiary">
                     {t('chains.partner')}
                   </span>
+                )}
+                {chain.name === 'Stellar' && (
+                  <Link
+                    to="/stellar"
+                    className="mt-1 inline-block text-sm font-medium text-tertiary hover:underline"
+                  >
+                    Learn More →
+                  </Link>
                 )}
               </div>
               <span
