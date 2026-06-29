@@ -9,14 +9,14 @@ cookie-based tracker.
 
 **Why Plausible?**
 
-| Requirement | Plausible |
-|---|---|
-| No cookies | ✅ Daily-rotating hash, never persisted |
-| No personal data | ✅ IP never stored; no fingerprinting |
+| Requirement                                        | Plausible                                                                       |
+| -------------------------------------------------- | ------------------------------------------------------------------------------- |
+| No cookies                                         | ✅ Daily-rotating hash, never persisted                                         |
+| No personal data                                   | ✅ IP never stored; no fingerprinting                                           |
 | GDPR / ePrivacy compliant without a consent banner | ✅ [Confirmed by Plausible](https://plausible.io/privacy-focused-web-analytics) |
-| EU-hosted | ✅ Hetzner Germany/Finland |
-| Open source | ✅ [AGPL-3.0](https://github.com/plausible/analytics) |
-| Script bundle ≤ 2 KB gzipped | ✅ ~1 KB (verified via Network tab) |
+| EU-hosted                                          | ✅ Hetzner Germany/Finland                                                      |
+| Open source                                        | ✅ [AGPL-3.0](https://github.com/plausible/analytics)                           |
+| Script bundle ≤ 2 KB gzipped                       | ✅ ~1 KB (verified via Network tab)                                             |
 
 ### How the script is loaded
 
@@ -61,15 +61,16 @@ trackEvent('Code Tab Change', { props: { tab: 'scan.ts' } });
 
 #### Goals currently configured
 
-| Goal name | Where it fires | Notes |
-|---|---|---|
-| `Read the Docs` | Hero CTA, CtaStrip secondary button | Fires on click |
-| `Try the Demo` | Hero secondary CTA | Fires on click |
-| `Get API Key` | CtaStrip primary button | Fires on click |
-| `Code Tab Change` | Hero code snippet tabs | Includes `tab` prop (`send.ts` / `scan.ts` / `withdraw.ts`) |
-| Scroll depth | Automatic — all pages | Provided by `script.scroll` extension, no code needed |
+| Goal name         | Where it fires                      | Notes                                                       |
+| ----------------- | ----------------------------------- | ----------------------------------------------------------- |
+| `Read the Docs`   | Hero CTA, CtaStrip secondary button | Fires on click                                              |
+| `Try the Demo`    | Hero secondary CTA                  | Fires on click                                              |
+| `Get API Key`     | CtaStrip primary button             | Fires on click                                              |
+| `Code Tab Change` | Hero code snippet tabs              | Includes `tab` prop (`send.ts` / `scan.ts` / `withdraw.ts`) |
+| Scroll depth      | Automatic — all pages               | Provided by `script.scroll` extension, no code needed       |
 
 To add a new goal:
+
 1. Call `trackEvent('Your Goal Name')` where appropriate.
 2. Go to **usewraith.xyz → Plausible dashboard → Goals → Add Goal** and add
    a matching Custom Event entry.
