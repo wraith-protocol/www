@@ -104,6 +104,42 @@ pnpm build      # TypeScript check + Vite production build
 pnpm format     # Prettier
 ```
 
+## Status page
+
+We keep a public service status page at `status.usewraith.xyz` so support and users can verify
+system health without asking in chat first.
+
+### Provider
+
+Use either BetterUptime or Instatus. The footer badge polls a JSON status endpoint and changes
+between green, yellow, and red based on the latest incident state.
+
+### Monitors to configure
+
+- `usewraith.xyz`
+- `demo.usewraith.xyz`
+- `docs.usewraith.xyz`
+- npm registry HEAD request for `@wraith-protocol/sdk`
+- Gateway health endpoint once public
+- Spectre health endpoint once public
+
+### DNS + environment
+
+Create a public status page and point `status.usewraith.xyz` to the provider via CNAME. Then set:
+
+```bash
+VITE_STATUS_PAGE_URL=https://status.usewraith.xyz
+VITE_STATUS_API_URL=https://status.usewraith.xyz/api/v2/status.json
+```
+
+The footer badge reads those values at build time and will automatically reflect the latest status.
+
+### Verification checklist
+
+- Confirm `status.usewraith.xyz` resolves over DNS.
+- Trigger a manual incident or synthetic failure in the provider to verify the badge flips to yellow/red.
+- Confirm the badge links back to the public incident history and subscribe flow.
+
 ## Commit conventions
 
 Commits follow [Conventional Commits](https://www.conventionalcommits.org/)
