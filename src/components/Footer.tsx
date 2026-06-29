@@ -1,5 +1,37 @@
 import { Link } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
+
+const columns = [
+  {
+    title: 'PRODUCT',
+    links: [
+      { label: 'Docs', href: 'https://docs.usewraith.xyz' },
+      { label: 'Demo', href: 'https://demo.usewraith.xyz' },
+      { label: 'Console', href: 'https://console.usewraith.xyz' },
+      { label: 'Compare', href: '#compare' },
+      { label: 'FAQ', href: '/faq' },
+      { label: 'Changelog', href: 'https://docs.usewraith.xyz/changelog' },
+    ],
+  },
+  {
+    title: 'DEVELOPERS',
+    links: [
+      { label: 'SDK', href: 'https://docs.usewraith.xyz/sdk/overview' },
+      { label: 'API Reference', href: 'https://docs.usewraith.xyz/api' },
+      { label: 'GitHub', href: 'https://github.com/wraith-protocol' },
+      { label: 'npm', href: 'https://www.npmjs.com/package/@wraith-protocol/sdk' },
+    ],
+  },
+  {
+    title: 'RESOURCES',
+    links: [
+      { label: 'ERC-5564 spec', href: 'https://eips.ethereum.org/EIPS/eip-5564' },
+      { label: 'ERC-6538 spec', href: 'https://eips.ethereum.org/EIPS/eip-6538' },
+      { label: 'Security', href: 'https://docs.usewraith.xyz/security' },
+      { label: 'Press', href: '/press' },
+      { label: 'Stellar Integration', href: '/stellar' },
+    ],
+  },
+];
 
 const acknowledgments = [
   { label: 'Stellar', src: '/logos/stellar-mark.svg' },
@@ -55,8 +87,8 @@ export default function Footer() {
                 {t('footer.brand')}
               </span>
             </div>
-            <p className="max-w-[240px] font-body text-[13px] leading-[1.5] text-outline">
-              {t('footer.tagline')}
+            <p className="max-w-[240px] font-body text-[13px] leading-normal text-outline">
+              Private payments, plainly.
             </p>
           </div>
 

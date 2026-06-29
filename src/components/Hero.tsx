@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import type { KeyboardEvent as ReactKeyboardEvent } from 'react';
+import { useState, type KeyboardEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { trackEvent } from '../analytics';
@@ -116,7 +115,9 @@ export default function Hero() {
 
   const activeTabIndex = tabs.indexOf(activeTab);
 
-  const handleTabKeyDown = (event: ReactKeyboardEvent<HTMLButtonElement>) => {
+  const copyToClipboard = (text: string) => navigator.clipboard.writeText(text);
+
+  const handleTabKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
     let nextIndex = activeTabIndex;
 
     if (event.key === 'ArrowRight') nextIndex = (activeTabIndex + 1) % tabs.length;
@@ -239,7 +240,6 @@ export default function Hero() {
                 id={`code-tab-${tab}`}
                 role="tab"
                 aria-selected={activeTab === tab}
-                aria-controls={`code-panel-${tab}`}
                 tabIndex={activeTab === tab ? 0 : -1}
                 onClick={() => handleTabChange(tab)}
                 onKeyDown={handleTabKeyDown}

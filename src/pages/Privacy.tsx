@@ -60,7 +60,10 @@ export default function Privacy() {
               — an open-source, EU-hosted analytics platform — to understand how visitors interact
               with this site.
             </p>
-            <p>Plausible collects the following <strong className="text-on-surface">aggregate</strong> data per page visit:</p>
+            <p>
+              Plausible collects the following{' '}
+              <strong className="text-on-surface">aggregate</strong> data per page visit:
+            </p>
             <ul className="ml-4 list-disc space-y-1">
               <li>Page URL and referrer</li>
               <li>Browser name and version (no fingerprinting)</li>
@@ -68,7 +71,10 @@ export default function Privacy() {
               <li>Country and region (derived from IP; the IP itself is never stored)</li>
               <li>Device type (desktop / tablet / mobile)</li>
               <li>Scroll depth percentage</li>
-              <li>Goal events: &ldquo;Read the Docs&rdquo;, &ldquo;Try the Demo&rdquo;, &ldquo;Get API Key&rdquo;, &ldquo;Code Tab Change&rdquo;</li>
+              <li>
+                Goal events: &ldquo;Read the Docs&rdquo;, &ldquo;Try the Demo&rdquo;, &ldquo;Get API
+                Key&rdquo;, &ldquo;Code Tab Change&rdquo;
+              </li>
             </ul>
           </Section>
 
@@ -81,8 +87,9 @@ export default function Privacy() {
               <li>No personal information (name, email, wallet address, etc.).</li>
             </ul>
             <p>
-              Because Plausible is cookieless, <strong className="text-on-surface">no consent banner is required</strong> under
-              GDPR, PECR, or ePrivacy Directive. See Plausible&apos;s own{' '}
+              Because Plausible is cookieless,{' '}
+              <strong className="text-on-surface">no consent banner is required</strong> under GDPR,
+              PECR, or ePrivacy Directive. See Plausible&apos;s own{' '}
               <a
                 href="https://plausible.io/data-policy"
                 target="_blank"
@@ -96,9 +103,7 @@ export default function Privacy() {
           </Section>
 
           <Section title="Why Plausible?">
-            <p>
-              We chose Plausible over Google Analytics or other trackers because it is:{' '}
-            </p>
+            <p>We chose Plausible over Google Analytics or other trackers because it is: </p>
             <ul className="ml-4 list-disc space-y-1">
               <li>
                 <strong className="text-on-surface">Cookieless by design</strong> — the script uses

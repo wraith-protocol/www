@@ -215,22 +215,30 @@ const faqSections: FaqSection[] = [
   },
 ];
 
-const sectionLabelStyles = 'font-mono text-[10px] font-semibold uppercase tracking-[1.8px] text-outline';
+const sectionLabelStyles =
+  'font-mono text-[10px] font-semibold uppercase tracking-[1.8px] text-outline';
 
 export default function Faq() {
-  const [openEntryId, setOpenEntryId] = useState<string | null>(faqSections[0]?.entries[0]?.id ?? null);
+  const [openEntryId, setOpenEntryId] = useState<string | null>(
+    faqSections[0]?.entries[0]?.id ?? null,
+  );
 
   useEffect(() => {
     const hash = window.location.hash.replace('#', '');
     if (!hash) return;
 
-    const entryExists = faqSections.some((section) => section.entries.some((entry) => entry.id === hash));
+    const entryExists = faqSections.some((section) =>
+      section.entries.some((entry) => entry.id === hash),
+    );
     if (entryExists) {
       setOpenEntryId(hash);
     }
   }, []);
 
-  const entryCount = useMemo(() => faqSections.reduce((count, section) => count + section.entries.length, 0), []);
+  const entryCount = useMemo(
+    () => faqSections.reduce((count, section) => count + section.entries.length, 0),
+    [],
+  );
 
   return (
     <div className="min-h-screen bg-surface text-on-surface">
@@ -241,7 +249,10 @@ export default function Faq() {
             WRAITH PROTOCOL
           </span>
         </Link>
-        <Link to="/" className="font-body text-[13px] text-outline transition-colors hover:text-on-surface">
+        <Link
+          to="/"
+          className="font-body text-[13px] text-outline transition-colors hover:text-on-surface"
+        >
           Back home
         </Link>
       </header>
@@ -271,7 +282,10 @@ export default function Faq() {
         </div>
 
         <div className="grid gap-8 lg:grid-cols-[220px_minmax(0,1fr)]">
-          <nav className="flex flex-col gap-3 lg:sticky lg:top-6 lg:h-fit" aria-label="FAQ sections">
+          <nav
+            className="flex flex-col gap-3 lg:sticky lg:top-6 lg:h-fit"
+            aria-label="FAQ sections"
+          >
             <span className={sectionLabelStyles}>Jump to</span>
             <div className="flex flex-col gap-2">
               {faqSections.map((section) => (
@@ -298,9 +312,15 @@ export default function Faq() {
                     const toggleId = `faq-toggle-${entry.id}`;
                     const panelId = `faq-panel-${entry.id}`;
                     return (
-                      <div key={entry.id} className="rounded-sm border border-outline-variant bg-surface-container">
+                      <div
+                        key={entry.id}
+                        className="rounded-sm border border-outline-variant bg-surface-container"
+                      >
                         <div className="px-4 py-4 sm:px-5">
-                          <h3 id={entry.id} className="font-heading text-[16px] font-semibold tracking-[-0.3px] text-on-surface">
+                          <h3
+                            id={entry.id}
+                            className="font-heading text-[16px] font-semibold tracking-[-0.3px] text-on-surface"
+                          >
                             <a
                               href={`#${entry.id}`}
                               className="mr-2 text-outline transition-colors hover:text-on-surface"
@@ -317,9 +337,7 @@ export default function Faq() {
                               onClick={() => setOpenEntryId(isOpen ? null : entry.id)}
                               className="flex w-full items-center justify-between text-left"
                             >
-                              <span className="block w-full text-left">
-                                {entry.question}
-                              </span>
+                              <span className="block w-full text-left">{entry.question}</span>
                               <span className="font-mono text-[10px] font-semibold uppercase tracking-[1.6px] text-outline transition-colors hover:text-on-surface">
                                 {isOpen ? 'Hide' : 'Show'}
                               </span>
@@ -327,7 +345,12 @@ export default function Faq() {
                           </h3>
                         </div>
                         {isOpen && (
-                          <div id={panelId} role="region" aria-labelledby={toggleId} className="border-t border-outline-variant px-4 py-4 sm:px-5">
+                          <div
+                            id={panelId}
+                            role="region"
+                            aria-labelledby={toggleId}
+                            className="border-t border-outline-variant px-4 py-4 sm:px-5"
+                          >
                             <p className="font-body text-[14px] leading-[1.7] text-on-surface-variant">
                               {entry.answer}
                             </p>
