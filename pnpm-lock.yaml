@@ -3052,8 +3052,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  husky@9.1.7: {}
-
   ieee754@1.2.1: {}
 
   import-fresh@3.3.1:
