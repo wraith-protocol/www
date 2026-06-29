@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build && tsx scripts/og.ts",
+    "build": "tsc -b && vite build && tsx scripts/og.ts && tsx scripts/sitemap.ts",
     "og:generate": "tsx scripts/og.ts",
     "preview": "vite preview",
     "test": "vitest run",
