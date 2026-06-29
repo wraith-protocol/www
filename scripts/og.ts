@@ -201,7 +201,7 @@ function loadFont(filename: string): ArrayBuffer {
   return buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength) as ArrayBuffer;
 }
 
-type FontDef = { name: string; data: ArrayBuffer; weight: number; style: 'normal' };
+type FontDef = { name: string; data: ArrayBuffer; weight: 400 | 700; style: 'normal' };
 
 async function renderPng(config: RouteConfig, fonts: FontDef[]): Promise<Buffer> {
   const svg = await satori(ogCard(config), { width: 1200, height: 630, fonts });
@@ -209,10 +209,62 @@ async function renderPng(config: RouteConfig, fonts: FontDef[]): Promise<Buffer>
   return Buffer.from(resvg.render().asPng());
 }
 
-function patchOgImage(html: string, imageUrl: string): string {
-  return html
+function patchMetadata(html: string, config: RouteConfig): string {
+  const imageUrl = `https://usewraith.xyz/og/${config.slug}.png`;
+  let patched = html
     .replace(/(<meta\s+property="og:image"\s+content=")[^"]*(")/g, `$1${imageUrl}$2`)
     .replace(/(<meta\s+name="twitter:image"\s+content=")[^"]*(")/g, `$1${imageUrl}$2`);
+
+  const title = config.routePath === '/' ? config.title : `${config.title} — Wraith Protocol`;
+  const desc = config.subtitle;
+
+  patched = patched
+    .replace(/<title>[^<]*<\/title>/g, `<title>${title}</title>`)
+    .replace(/(<meta\s+property="og:title"\s+content=")[^"]*(")/g, `$1${title}$2`)
+    .replace(/(<meta\s+name="twitter:title"\s+content=")[^"]*(")/g, `$1${title}$2`);
+
+  if (desc) {
+    patched = patched
+      .replace(/(<meta\s+name="description"\s+content=")[^"]*(")/g, `$1${desc}$2`)
+      .replace(/(<meta\s+property="og:description"\s+content=")[^"]*(")/g, `$1${desc}$2`)
+      .replace(/(<meta\s+name="twitter:description"\s+content=")[^"]*(")/g, `$1${desc}$2`);
+  }
+
+  // Breadcrumb JSON-LD
+  const breadcrumbListElement: any[] = [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Home',
+      item: 'https://usewraith.xyz',
+    },
+  ];
+
+  if (config.routePath !== '/') {
+    breadcrumbListElement.push({
+      '@type': 'ListItem',
+      position: 2,
+      name: config.title,
+      item: `https://usewraith.xyz${config.routePath}`,
+    });
+  }
+
+  const breadcrumbJson = JSON.stringify(
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: breadcrumbListElement,
+    },
+    null,
+    2,
+  );
+
+  const breadcrumbScriptRegex =
+    /<script\s+type="application\/ld\+json"\s+id="breadcrumb-jsonld">[\s\S]*?<\/script>/;
+  const newBreadcrumbScript = `<script type="application/ld+json" id="breadcrumb-jsonld">\n${breadcrumbJson}\n    </script>`;
+  patched = patched.replace(breadcrumbScriptRegex, newBreadcrumbScript);
+
+  return patched;
 }
 
 async function main() {
@@ -246,8 +298,7 @@ async function main() {
     const png = await renderPng(config, fonts);
     writeFileSync(join(ogDir, `${config.slug}.png`), png);
 
-    const imageUrl = `https://usewraith.xyz/og/${config.slug}.png`;
-    const html = patchOgImage(baseHtml, imageUrl);
+    const html = patchMetadata(baseHtml, config);
 
     if (config.routePath === '/') {
       writeFileSync(join(distDir, 'index.html'), html, 'utf8');
