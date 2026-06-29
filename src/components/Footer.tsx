@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 const columns = [
@@ -37,6 +38,61 @@ const acknowledgments = [
   { label: 'Stellar', src: '/logos/stellar-mark.svg' },
   { label: 'Drips', src: '/logos/drips-mark.svg' },
 ];
+
+type StatusTone = 'green' | 'yellow' | 'red' | 'neutral';
+
+type StatusState = {
+  label: string;
+  tone: StatusTone;
+};
+
+const statusPageUrl = import.meta.env.VITE_STATUS_PAGE_URL || 'https://status.usewraith.xyz';
+const statusApiUrl =
+  import.meta.env.VITE_STATUS_API_URL || 'https://status.usewraith.xyz/api/v2/status.json';
+
+function normalizeStatus(payload: unknown): StatusState {
+  const candidate = payload as Record<string, unknown>;
+  const maybeStatus =
+    (candidate?.status as Record<string, unknown> | undefined) ??
+    (candidate?.page as Record<string, unknown> | undefined) ??
+    (candidate?.data as Record<string, unknown> | undefined) ??
+    candidate;
+
+  const indicator =
+    (maybeStatus?.indicator as string | undefined) ||
+    (maybeStatus?.status as string | undefined) ||
+    (maybeStatus?.description as string | undefined) ||
+    (candidate?.indicator as string | undefined) ||
+    (candidate?.status as string | undefined);
+
+  const lowered = indicator?.toLowerCase() ?? '';
+
+  if (['up', 'none', 'operational', 'resolved', 'ok'].includes(lowered)) {
+    return { label: 'All systems normal', tone: 'green' };
+  }
+
+  if (
+    [
+      'minor',
+      'degraded',
+      'partial_outage',
+      'warning',
+      'investigating',
+      'monitoring',
+      'identified',
+      'hasissues',
+      'maintenance',
+    ].includes(lowered)
+  ) {
+    return { label: 'Minor service issues', tone: 'yellow' };
+  }
+
+  if (['down', 'major', 'critical', 'incident', 'outage', 'error'].includes(lowered)) {
+    return { label: 'Service disruption', tone: 'red' };
+  }
+
+  return { label: 'All systems normal', tone: 'green' };
+}
 
 export default function Footer() {
   const { t } = useTranslation();
@@ -146,7 +202,28 @@ export default function Footer() {
           <span className="font-mono text-[10px] font-semibold tracking-[1.5px] text-outline">
             {t('footer.built')}
           </span>
-          <div className="flex items-center gap-6">
+          <div className="flex flex-wrap items-center gap-4 sm:gap-6">
+            <a
+              href={statusPageUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Open Wraith Protocol status page"
+              className={`inline-flex items-center gap-2 rounded-none border px-2.5 py-1.5 font-body text-[11px] uppercase tracking-[1.5px] transition-colors duration-150 ${toneClasses[status.tone]}`}
+            >
+              <span
+                aria-hidden="true"
+                className={`h-2.5 w-2.5 rounded-full ${
+                  status.tone === 'green'
+                    ? 'bg-[#22c55e]'
+                    : status.tone === 'yellow'
+                      ? 'bg-[#c4c7c5]'
+                      : status.tone === 'red'
+                        ? 'bg-[#ee7d77]'
+                        : 'bg-outline'
+                }`}
+              />
+              <span>{status.label}</span>
+            </a>
             <Link
               to="/privacy"
               className="font-body text-xs text-outline transition-colors duration-150 hover:text-on-surface-variant"
