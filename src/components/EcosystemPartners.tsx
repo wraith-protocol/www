@@ -7,6 +7,7 @@ const partners = [
     description: 'Foundational protocol development & ecosystem support.',
     logo: '/logos/stellar-partners/sdf.svg',
     link: 'https://stellar.org',
+    width: 32,
   },
   {
     name: 'Drips',
@@ -14,6 +15,7 @@ const partners = [
     description: 'Continuous funding and token streaming for projects.',
     logo: '/logos/stellar-partners/drips.svg',
     link: 'https://www.drips.network',
+    width: 32,
   },
   {
     name: 'Freighter',
@@ -21,6 +23,7 @@ const partners = [
     description: 'Stellar-native non-custodial browser wallet extension.',
     logo: '/logos/stellar-partners/freighter.svg',
     link: 'https://freighter.app',
+    width: 32,
   },
   {
     name: 'Albedo',
@@ -28,6 +31,7 @@ const partners = [
     description: 'Secure identity and transaction signer for Stellar apps.',
     logo: '/logos/stellar-partners/albedo.svg',
     link: 'https://albedo.link',
+    width: 32,
   },
   {
     name: 'xBull',
@@ -35,6 +39,7 @@ const partners = [
     description: 'Feature-rich Stellar wallet for desktop and mobile.',
     logo: '/logos/stellar-partners/xbull.svg',
     link: 'https://xbull.app',
+    width: 32,
   },
   {
     name: 'LOBSTR',
@@ -42,6 +47,7 @@ const partners = [
     description: 'Comprehensive wallet and exchange platform on Stellar.',
     logo: '/logos/stellar-partners/lobstr.svg',
     link: 'https://lobstr.co',
+    width: 23,
   },
 ];
 
@@ -83,7 +89,9 @@ export default function EcosystemPartners() {
                 <img
                   src={partner.logo}
                   alt={`${partner.shortName} Logo`}
-                  className="h-8 max-w-[120px] object-contain grayscale opacity-60 transition-all duration-200 group-hover:grayscale-0 group-hover:opacity-100"
+                  width={partner.width}
+                  height={32}
+                  className="h-8 object-contain grayscale opacity-60 transition-all duration-200 group-hover:grayscale-0 group-hover:opacity-100"
                 />
                 <span className="font-mono text-[10px] text-outline opacity-0 transition-opacity duration-200 group-hover:opacity-100">
                   VISIT ↗

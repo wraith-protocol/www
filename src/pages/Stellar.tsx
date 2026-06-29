@@ -19,7 +19,7 @@ export default function Stellar() {
       {/* Minimal nav */}
       <header className="flex items-center justify-between px-6 py-5 md:px-12 border-b border-outline-variant-30 bg-surface/85 backdrop-blur-sm fixed top-0 z-50 w-full">
         <Link to="/" className="flex items-center gap-3">
-          <img src="/logo.png" alt="Wraith" className="h-6 opacity-90" />
+          <img src="/logo.png" alt="Wraith" width={30} height={24} className="h-6 opacity-90" />
           <span className="font-heading text-[13px] font-bold tracking-[2px] text-on-surface">
             WRAITH PROTOCOL
           </span>

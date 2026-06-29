@@ -62,7 +62,7 @@ export default function Press() {
       <header className="fixed top-0 z-50 w-full border-b border-outline-variant-30 bg-surface/80 backdrop-blur-sm">
         <div className="mx-auto flex w-full items-center justify-between px-12 py-5">
           <a href="/" className="flex items-center gap-3">
-            <img src="/logo.png" alt="" className="h-6 opacity-90" />
+            <img src="/logo.png" alt="" width={30} height={24} className="h-6 opacity-90" />
             <span className="font-heading text-[15px] font-bold tracking-[2px] text-on-surface">
               WRAITH
             </span>
