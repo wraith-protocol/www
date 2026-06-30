@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useInView } from '../hooks/useInView';
 
 /**
@@ -106,6 +107,7 @@ type StatCardProps = {
 };
 
 function StatCard({ label, count, loading, error, inView, delay }: StatCardProps) {
+  const { t } = useTranslation();
   const isZero = count === 0 && !loading && !error;
   return (
     <div
@@ -126,7 +128,9 @@ function StatCard({ label, count, loading, error, inView, delay }: StatCardProps
           <span className="font-heading text-[32px] font-bold tracking-[-1.2px] text-error">
             &mdash;
           </span>
-          <span className="font-body text-[13px] leading-[1.65] text-error">Unable to fetch</span>
+          <span className="font-body text-[13px] leading-[1.65] text-error">
+            {t('stellarMetrics.unableToFetch')}
+          </span>
         </>
       ) : isZero ? (
         <span className="font-body text-sm leading-[1.6] text-on-surface-variant">

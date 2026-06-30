@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { changeLocale, type Locale } from '../i18n';
 
 export default function Header() {
   const { t, i18n } = useTranslation();
@@ -136,13 +138,21 @@ export default function Header() {
           >
             Stellar
           </Link>
+          <Link
+            to="/roadmap"
+            className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
+          >
+            {t('header.nav.roadmap')}
+          </Link>
         </nav>
 
         <div className="hidden items-center gap-3 md:flex">
           <button
             onClick={toggleTheme}
             className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
-            aria-label={t(theme === 'dark' ? 'header.theme.switchToLight' : 'header.theme.switchToDark')}
+            aria-label={t(
+              theme === 'dark' ? 'header.theme.switchToLight' : 'header.theme.switchToDark',
+            )}
             aria-pressed={theme === 'light'}
             title={t(theme === 'dark' ? 'header.theme.switchToLight' : 'header.theme.switchToDark')}
           >
@@ -204,14 +214,21 @@ export default function Header() {
             <button
               onClick={toggleTheme}
               className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant text-left"
-              aria-label={t(theme === 'dark' ? 'header.theme.switchToLight' : 'header.theme.switchToDark')}
+              aria-label={t(
+                theme === 'dark' ? 'header.theme.switchToLight' : 'header.theme.switchToDark',
+              )}
               aria-pressed={theme === 'light'}
-              title={t(theme === 'dark' ? 'header.theme.switchToLight' : 'header.theme.switchToDark')}
+              title={t(
+                theme === 'dark' ? 'header.theme.switchToLight' : 'header.theme.switchToDark',
+              )}
             >
               {theme === 'dark' ? t('header.theme.lightMode') : t('header.theme.darkMode')}
             </button>
             <button
-              onClick={() => { changeLocale(nextLocale); closeMenu(); }}
+              onClick={() => {
+                changeLocale(nextLocale);
+                closeMenu();
+              }}
               className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant text-left"
               aria-label={t('header.locale.switchTo', { lang: nextLocale.toUpperCase() })}
             >
@@ -273,6 +290,13 @@ export default function Header() {
               className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
             >
               Stellar
+            </Link>
+            <Link
+              to="/roadmap"
+              onClick={closeMenu}
+              className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
+            >
+              {t('header.nav.roadmap')}
             </Link>
             <a
               href="https://github.com/wraith-protocol"

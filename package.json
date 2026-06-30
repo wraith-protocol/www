@@ -19,6 +19,7 @@
   "dependencies": {
     "@stellar/stellar-sdk": "^13.3.0",
     "@wraith-protocol/sdk": "^1.4.5",
+    "i18next": "^26.2.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "react-i18next": "^17.0.8",

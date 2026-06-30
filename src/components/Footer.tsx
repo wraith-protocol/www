@@ -1,38 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-
-const columns = [
-  {
-    title: 'PRODUCT',
-    links: [
-      { label: 'Docs', href: 'https://docs.usewraith.xyz' },
-      { label: 'Demo', href: 'https://demo.usewraith.xyz' },
-      { label: 'Console', href: 'https://console.usewraith.xyz' },
-      { label: 'Compare', href: '#compare' },
-      { label: 'FAQ', href: '/faq' },
-      { label: 'Changelog', href: 'https://docs.usewraith.xyz/changelog' },
-    ],
-  },
-  {
-    title: 'DEVELOPERS',
-    links: [
-      { label: 'SDK', href: 'https://docs.usewraith.xyz/sdk/overview' },
-      { label: 'API Reference', href: 'https://docs.usewraith.xyz/api' },
-      { label: 'GitHub', href: 'https://github.com/wraith-protocol' },
-      { label: 'npm', href: 'https://www.npmjs.com/package/@wraith-protocol/sdk' },
-    ],
-  },
-  {
-    title: 'RESOURCES',
-    links: [
-      { label: 'ERC-5564 spec', href: 'https://eips.ethereum.org/EIPS/eip-5564' },
-      { label: 'ERC-6538 spec', href: 'https://eips.ethereum.org/EIPS/eip-6538' },
-      { label: 'Security', href: 'https://docs.usewraith.xyz/security' },
-      { label: 'Press', href: '/press' },
-      { label: 'Stellar Integration', href: '/stellar' },
-    ],
-  },
-];
+import { useTranslation } from 'react-i18next';
 
 const acknowledgments = [
   { label: 'Stellar', src: '/logos/stellar-mark.svg' },
@@ -96,6 +64,53 @@ function normalizeStatus(payload: unknown): StatusState {
 
 export default function Footer() {
   const { t } = useTranslation();
+  const [status, setStatus] = useState<StatusState>({
+    label: 'Checking status...',
+    tone: 'neutral',
+  });
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const refreshStatus = async () => {
+      try {
+        const response = await fetch(statusApiUrl, {
+          headers: { Accept: 'application/json' },
+        });
+
+        if (!response.ok) {
+          throw new Error('Status endpoint unavailable');
+        }
+
+        const payload = await response.json();
+
+        if (isMounted) {
+          setStatus(normalizeStatus(payload));
+        }
+      } catch {
+        if (isMounted) {
+          setStatus({ label: 'Status unavailable', tone: 'neutral' });
+        }
+      }
+    };
+
+    void refreshStatus();
+    const intervalId = window.setInterval(() => {
+      void refreshStatus();
+    }, 60000);
+
+    return () => {
+      isMounted = false;
+      window.clearInterval(intervalId);
+    };
+  }, []);
+
+  const toneClasses: Record<StatusTone, string> = {
+    green: 'border border-[#22c55e]/30 bg-[#22c55e]/15 text-[#22c55e]',
+    yellow: 'border border-[#c4c7c5]/40 bg-[#c4c7c5]/10 text-[#c4c7c5]',
+    red: 'border border-[#ee7d77]/40 bg-[#ee7d77]/15 text-[#ee7d77]',
+    neutral: 'border border-outline-variant/40 bg-surface-container text-outline',
+  };
 
   const columns = [
     {

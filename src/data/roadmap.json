@@ -1,0 +1,64 @@
+{
+  "docsUrl": "https://docs.usewraith.xyz/roadmap",
+  "milestones": [
+    {
+      "id": "phase-1",
+      "phase": "Phase 1",
+      "title": "Foundation",
+      "status": "shipped",
+      "summary": "The core protocol: stealth address cryptography, smart contracts, AI agent, and TEE deployment.",
+      "highlights": [
+        "Cryptographic primitives across EVM, Stellar, Solana, and CKB",
+        "ERC-5564 / ERC-6538 standards with atomic send-and-announce",
+        "Gas-sponsored withdrawals via EIP-7702 and human-readable .wraith names",
+        "AI agent system deployed to a Phala (Intel TDX) TEE"
+      ]
+    },
+    {
+      "id": "phase-2",
+      "phase": "Phase 2",
+      "title": "Unified Platform",
+      "status": "shipped",
+      "summary": "Every chain consolidated into a single SDK with a unified Spectre TEE server.",
+      "highlights": [
+        "@wraith-protocol/sdk with per-chain subpath exports",
+        "Unified Spectre TEE server with a ChainConnector interface",
+        "Smart contracts across EVM, Stellar, Solana, and CKB",
+        "Multichain demo app and developer documentation"
+      ]
+    },
+    {
+      "id": "phase-3",
+      "phase": "Phase 3",
+      "title": "Platform Launch",
+      "status": "in-progress",
+      "summary": "A public developer API with managed infrastructure and consumer-facing products.",
+      "highlights": [
+        "Managed API with developer keys and rate limiting",
+        "Developer console for analytics and billing",
+        "Mainnet contract deployments and a mobile consumer wallet",
+        "Expanded EVM chains: Ethereum, Base, Polygon, Arbitrum, Optimism"
+      ]
+    },
+    {
+      "id": "phase-4",
+      "phase": "Phase 4",
+      "title": "Chain Expansion",
+      "status": "planned",
+      "summary": "New chain families and on-chain private messaging.",
+      "highlights": [
+        "Support for Hedera, Starknet, Sui, Aptos, and TON",
+        "On-chain private messaging via ECDH encryption",
+        "ERC-4337 Paymaster support as an alternative to EIP-7702"
+      ]
+    },
+    {
+      "id": "phase-5",
+      "phase": "Phase 5",
+      "title": "Research",
+      "status": "planned",
+      "summary": "FHE-DKSAP: Fully Homomorphic Encryption-based Dual-Key Stealth Address Protocol.",
+      "highlights": ["Trustless outsourced scanning without exposing viewing keys"]
+    }
+  ]
+}

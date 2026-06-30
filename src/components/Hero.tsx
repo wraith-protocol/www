@@ -2,7 +2,6 @@ import { useState, type KeyboardEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { trackEvent } from '../analytics';
-import { copyToClipboard } from '../utils/clipboard';
 
 type CodeLine = {
   content: string;
@@ -174,9 +173,7 @@ export default function Hero() {
         <p className="font-body text-[17px] leading-[1.6] text-on-surface-variant">
           {t('hero.description')}
         </p>
-        <p className="font-body text-[14px] leading-[1.6] text-tertiary">
-          {t('hero.stellarNote')}
-        </p>
+        <p className="font-body text-[14px] leading-[1.6] text-tertiary">{t('hero.stellarNote')}</p>
 
         <div className="flex flex-wrap items-center gap-3">
           <a
