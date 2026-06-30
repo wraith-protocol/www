@@ -138,6 +138,12 @@ export default function Header() {
           >
             Stellar
           </Link>
+          <Link
+            to="/roadmap"
+            className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
+          >
+            {t('header.nav.roadmap')}
+          </Link>
         </nav>
 
         <div className="hidden items-center gap-3 md:flex">
@@ -284,6 +290,13 @@ export default function Header() {
               className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
             >
               Stellar
+            </Link>
+            <Link
+              to="/roadmap"
+              onClick={closeMenu}
+              className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
+            >
+              {t('header.nav.roadmap')}
             </Link>
             <a
               href="https://github.com/wraith-protocol"

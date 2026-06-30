@@ -21,6 +21,7 @@ const Faq = lazy(() => import('./pages/Faq'));
 const Privacy = lazy(() => import('./pages/Privacy'));
 const UseCases = lazy(() => import('./pages/UseCases'));
 const Stellar = lazy(() => import('./pages/Stellar'));
+const Roadmap = lazy(() => import('./pages/Roadmap'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 function Home() {

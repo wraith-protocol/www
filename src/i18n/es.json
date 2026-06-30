@@ -1,4 +1,7 @@
 {
+  "stellarMetrics": {
+    "unableToFetch": "No se pudo cargar"
+  },
   "header": {
     "brand": "WRAITH",
     "nav": {
@@ -7,7 +10,8 @@
       "demo": "Demo",
       "console": "Consola",
       "press": "Prensa",
-      "useCases": "Casos de uso"
+      "useCases": "Casos de uso",
+      "roadmap": "Hoja de ruta"
     },
     "launchApp": "Abrir app",
     "github": "GitHub ↗",

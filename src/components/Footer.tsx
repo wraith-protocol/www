@@ -27,6 +27,53 @@ const status: StatusState = { label: 'All systems normal', tone: 'green' };
 
 export default function Footer() {
   const { t } = useTranslation();
+  const [status, setStatus] = useState<StatusState>({
+    label: 'Checking status...',
+    tone: 'neutral',
+  });
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const refreshStatus = async () => {
+      try {
+        const response = await fetch(statusApiUrl, {
+          headers: { Accept: 'application/json' },
+        });
+
+        if (!response.ok) {
+          throw new Error('Status endpoint unavailable');
+        }
+
+        const payload = await response.json();
+
+        if (isMounted) {
+          setStatus(normalizeStatus(payload));
+        }
+      } catch {
+        if (isMounted) {
+          setStatus({ label: 'Status unavailable', tone: 'neutral' });
+        }
+      }
+    };
+
+    void refreshStatus();
+    const intervalId = window.setInterval(() => {
+      void refreshStatus();
+    }, 60000);
+
+    return () => {
+      isMounted = false;
+      window.clearInterval(intervalId);
+    };
+  }, []);
+
+  const toneClasses: Record<StatusTone, string> = {
+    green: 'border border-[#22c55e]/30 bg-[#22c55e]/15 text-[#22c55e]',
+    yellow: 'border border-[#c4c7c5]/40 bg-[#c4c7c5]/10 text-[#c4c7c5]',
+    red: 'border border-[#ee7d77]/40 bg-[#ee7d77]/15 text-[#ee7d77]',
+    neutral: 'border border-outline-variant/40 bg-surface-container text-outline',
+  };
 
   const columns = [
     {

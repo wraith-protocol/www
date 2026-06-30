@@ -50,4 +50,20 @@ describe('homepage accessibility', () => {
       (await screen.findAllByRole('button', { name: /show answer for/i })).length,
     ).toBeGreaterThanOrEqual(20);
   });
+
+  it('renders the roadmap page with milestone timeline and no axe violations', async () => {
+    window.history.replaceState({}, '', '/roadmap');
+
+    const { container } = render(<App />);
+
+    expect(
+      await screen.findByRole('heading', { name: /private payments for every chain/i, level: 1 }),
+    ).toBeInTheDocument();
+    expect(
+      await screen.findByRole('heading', { name: /foundation/i, level: 2 }),
+    ).toBeInTheDocument();
+
+    const results = await axe(container);
+    expect(results.violations).toEqual([]);
+  });
 });
