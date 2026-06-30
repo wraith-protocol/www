@@ -49,16 +49,10 @@ for (const { code, strings, ogLocale } of locales) {
   );
 
   // og:locale
-  out = out.replace(
-    /(<meta\s+property="og:locale"\s+content=")[^"]*(")/,
-    `$1${ogLocale}$2`,
-  );
+  out = out.replace(/(<meta\s+property="og:locale"\s+content=")[^"]*(")/, `$1${ogLocale}$2`);
 
   // og:title
-  out = out.replace(
-    /(<meta\s+property="og:title"\s+content=")[^"]*(")/,
-    `$1${og.ogTitle}$2`,
-  );
+  out = out.replace(/(<meta\s+property="og:title"\s+content=")[^"]*(")/, `$1${og.ogTitle}$2`);
 
   // og:description
   out = out.replace(
@@ -67,10 +61,7 @@ for (const { code, strings, ogLocale } of locales) {
   );
 
   // twitter:title
-  out = out.replace(
-    /(<meta\s+name="twitter:title"\s+content=")[^"]*(")/,
-    `$1${og.ogTitle}$2`,
-  );
+  out = out.replace(/(<meta\s+name="twitter:title"\s+content=")[^"]*(")/, `$1${og.ogTitle}$2`);
 
   // twitter:description
   out = out.replace(
