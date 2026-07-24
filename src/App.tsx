@@ -4,6 +4,7 @@ import Header from './components/Header';
 import Hero from './components/Hero';
 import Features from './components/Features';
 import Layout from './components/Layout';
+import TrustStrip from './components/TrustStrip';
 
 // Lazy load below-the-fold homepage components
 const Architecture = lazy(() => import('./components/Architecture'));
@@ -33,6 +34,7 @@ function Home() {
       <Header />
       <main id="main-content" tabIndex={-1}>
         <Hero />
+        <TrustStrip />
         <Features />
         <Suspense fallback={null}>
           <Architecture />

@@ -259,7 +259,7 @@ export default function Stellar() {
             {/* Left: copy */}
             <div className="flex w-full flex-col gap-8 md:w-1/2" data-reveal={heroInView}>
               <h1 className="font-heading text-[36px] font-bold leading-[1.05] tracking-[-2px] text-on-surface sm:text-[48px] md:text-[56px]">
-                Stealth payments on Stellar
+                Stellar Integration
               </h1>
               <p className="font-body text-[17px] leading-[1.6] text-on-surface-variant">
                 Wraith brings ERC-5564 stealth address semantics to Stellar — using native ed25519
