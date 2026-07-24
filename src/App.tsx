@@ -12,6 +12,7 @@ const Chains = lazy(() => import('./components/Chains'));
 const StellarMetrics = lazy(() => import('./components/StellarMetrics'));
 const Compare = lazy(() => import('./components/Compare'));
 const Showcase = lazy(() => import('./components/Showcase'));
+const CaseStudiesStrip = lazy(() => import('./components/CaseStudiesStrip'));
 const EcosystemPartners = lazy(() => import('./components/EcosystemPartners'));
 const CtaStrip = lazy(() => import('./components/CtaStrip'));
 const Footer = lazy(() => import('./components/Footer'));
@@ -22,6 +23,7 @@ const Privacy = lazy(() => import('./pages/Privacy'));
 const UseCases = lazy(() => import('./pages/UseCases'));
 const Stellar = lazy(() => import('./pages/Stellar'));
 const Roadmap = lazy(() => import('./pages/Roadmap'));
+const CaseStudies = lazy(() => import('./pages/CaseStudies'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 function Home() {
@@ -41,6 +43,7 @@ function Home() {
           <StellarMetrics />
           <Compare />
           <Showcase />
+          <CaseStudiesStrip />
           <EcosystemPartners />
           <CtaStrip />
         </Suspense>
@@ -62,6 +65,8 @@ export default function App() {
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/use-cases" element={<UseCases />} />
           <Route path="/roadmap" element={<Roadmap />} />
+          <Route path="/case-studies" element={<CaseStudies />} />
+          <Route path="/case-studies/:slug" element={<CaseStudies />} />
           {/* Wrap Stellar with Layout */}
           <Route
             path="/stellar"

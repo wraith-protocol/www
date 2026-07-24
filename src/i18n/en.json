@@ -307,5 +307,41 @@
     "metaDescription": "Wraith Protocol enables private payments on any blockchain using stealth addresses. One SDK, multiple chains.",
     "ogTitle": "Wraith Protocol",
     "ogDescription": "Private payments for every chain. Stealth addresses, multichain SDK, and AI-powered privacy agents."
+  },
+  "caseStudies": {
+    "eyebrow": "CASE STUDIES",
+    "heading": "Real-world privacy solutions.",
+    "description": "Teams and organizations using Wraith to enable private payments in production. From payroll processors to DAOs, see how stealth addresses solve real privacy challenges.",
+    "totalStudies": "TOTAL STUDIES",
+    "study": "study",
+    "studies": "studies",
+    "filterByChain": "FILTER BY CHAIN",
+    "allChains": "All Chains",
+    "readStudy": "Read Case Study",
+    "noStudies": "NO STUDIES FOUND",
+    "noStudiesDescription": "Try selecting a different chain filter.",
+    "backToAll": "Back to all case studies",
+    "useCase": "USE CASE",
+    "integration": "INTEGRATED",
+    "summary": "Summary",
+    "challenge": "Challenge",
+    "solution": "Solution",
+    "results": "Results",
+    "privacyImprovement": "PRIVACY IMPROVEMENT",
+    "integrationTime": "INTEGRATION TIME",
+    "txProcessed": "TRANSACTIONS PROCESSED",
+    "chainsUsed": "CHAINS USED",
+    "testimonial": "Testimonial",
+    "technicalDetails": "Technical Details",
+    "sdkVersion": "SDK VERSION",
+    "implementation": "IMPLEMENTATION",
+    "challenges": "CHALLENGES"
+  },
+  "caseStudiesStrip": {
+    "eyebrow": "REAL USAGE",
+    "heading": "Case studies",
+    "description": "Production stories from teams using Wraith.",
+    "viewAll": "VIEW ALL",
+    "readMore": "Read More"
   }
 }
