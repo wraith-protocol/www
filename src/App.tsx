@@ -7,6 +7,7 @@ import Layout from './components/Layout';
 import TrustStrip from './components/TrustStrip';
 
 // Lazy load below-the-fold homepage components
+const StealthAnimation = lazy(() => import('./components/StealthAnimation'));
 const Architecture = lazy(() => import('./components/Architecture'));
 const ForDevelopers = lazy(() => import('./components/ForDevelopers'));
 const Chains = lazy(() => import('./components/Chains'));
@@ -39,6 +40,7 @@ function Home() {
         <TrustStrip />
         <Features />
         <Suspense fallback={null}>
+          <StealthAnimation />
           <Architecture />
           <ForDevelopers />
           <Chains />
