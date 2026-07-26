@@ -19,7 +19,7 @@
   "integrations": {
     "eyebrow": "Ecosystem",
     "count": 10,
-    "label": "Live chain & wallet integrations",
+    "label": "Live chain, wallet, and explorer integrations",
     "link": "https://docs.usewraith.xyz/ecosystem"
   },
   "uptime": {

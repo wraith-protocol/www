@@ -34,9 +34,9 @@
       "testnet": "LIVE ON 4 TESTNETS",
       "partner": "Stellar partner"
     },
-    "heading": "Private payments for every chain.",
-    "description": "A stealth-address toolkit built on ERC-5564 and ERC-6538. Drop it into your app and send receiver-unlinkable payments across Horizen, Stellar, Solana, and CKB.",
-    "stellarNote": "Memo-enabled stealth support on Stellar, plus coordinated privacy flows for multi-chain apps.",
+    "heading": "Private payments your users can actually use.",
+    "description": "Wraith gives product teams a stealth-address SDK for receiver-unlinkable payments across Horizen, Stellar, Solana, and CKB.",
+    "stellarNote": "Stellar support is live on testnet with memo-based stealth flows that fit familiar wallet UX.",
     "cta": {
       "docs": "Read the Docs",
       "demo": "Try the Demo",
@@ -61,8 +61,8 @@
   },
   "features": {
     "eyebrow": "Why Wraith",
-    "heading": "Everything you need for stealth payments.",
-    "description": "Three primitives, wired correctly. No custom crypto on your side.",
+    "heading": "The core pieces for a real launch.",
+    "description": "Three primitives, wired together so you can add stealth payments without custom crypto on your side.",
     "compareLink": "See how we compare to alternatives →",
     "stealth": {
       "title": "Stealth Addresses",
@@ -82,7 +82,7 @@
   },
   "architecture": {
     "eyebrow": "How It Works",
-    "heading": "Announce. Derive. Scan.",
+    "heading": "How a payment stays private.",
     "sender": {
       "label": "SENDER",
       "description": "Derives a stealth address from the recipient's meta-address using a fresh ephemeral key."
@@ -98,7 +98,7 @@
   },
   "forDevelopers": {
     "eyebrow": "For Developers",
-    "heading": "Three ways to ship.",
+    "heading": "Pick the integration path that fits.",
     "fullDocs": "Full Docs ↗",
     "sdk": {
       "label": "SDK",
@@ -124,7 +124,7 @@
   },
   "chains": {
     "eyebrow": "Supported Chains",
-    "heading": "Built for a multi-chain world.",
+    "heading": "Built for the chains we support today.",
     "partner": "Partner",
     "stellarNote": {
       "eyebrow": "Stellar-first stealth support",
@@ -141,7 +141,7 @@
   },
   "compare": {
     "eyebrow": "Comparative Analysis",
-    "heading": "Honest comparison to alternatives.",
+    "heading": "Why Wraith instead of pooled privacy tools.",
     "description": "Privacy is not one-size-fits-all. Different mechanisms make distinct trade-offs between user convenience, regulatory posture, and mathematical complexity.",
     "scrollHint": "Swipe table horizontally to view all columns",
     "table": {
@@ -254,14 +254,14 @@
   },
   "cta": {
     "eyebrow": "Ready to Build",
-    "heading": "Start shipping private payments today.",
+    "heading": "Ready to add private payments?",
     "getKeys": "Get API Keys",
     "readDocs": "Read the Docs"
   },
   "showcase": {
-    "eyebrow": "Built with Wraith",
-    "heading": "Projects using Wraith.",
-    "description": "Pilot integrations, reference implementations, and partner POCs.",
+    "eyebrow": "Case studies preview",
+    "heading": "Reference builds and partner previews.",
+    "description": "Pilot integrations, demo flows, and proof-of-concept work on the current product surface.",
     "visit": "Visit"
   },
   "footer": {

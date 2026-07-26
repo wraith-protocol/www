@@ -34,9 +34,9 @@
       "testnet": "EN VIVO EN 4 REDES DE PRUEBA",
       "partner": "Socio de Stellar"
     },
-    "heading": "Pagos privados para cada cadena.",
-    "description": "Un kit de herramientas de dirección oculta basado en ERC-5564 y ERC-6538. Intégralo en tu app y envía pagos no vinculables al receptor en Horizen, Stellar, Solana y CKB.",
-    "stellarNote": "Soporte stealth con memo en Stellar, más flujos de privacidad coordinados para apps multicadena.",
+    "heading": "Pagos privados que tus usuarios realmente pueden usar.",
+    "description": "Wraith ofrece a los equipos de producto un SDK de direcciones ocultas para pagos no vinculables al receptor en Horizen, Stellar, Solana y CKB.",
+    "stellarNote": "El soporte de Stellar ya está en testnet con flujos stealth basados en memo que encajan con una UX de wallet familiar.",
     "cta": {
       "docs": "Leer la documentación",
       "demo": "Probar la demo",
@@ -61,8 +61,8 @@
   },
   "features": {
     "eyebrow": "Por qué Wraith",
-    "heading": "Todo lo que necesitas para pagos privados.",
-    "description": "Tres primitivas, conectadas correctamente. Sin criptografía personalizada de tu parte.",
+    "heading": "Las piezas centrales para un lanzamiento real.",
+    "description": "Tres primitivas conectadas entre sí para que puedas añadir pagos stealth sin criptografía personalizada de tu parte.",
     "compareLink": "Compara con alternativas →",
     "stealth": {
       "title": "Direcciones Ocultas",
@@ -82,7 +82,7 @@
   },
   "architecture": {
     "eyebrow": "Cómo funciona",
-    "heading": "Anuncia. Deriva. Escanea.",
+    "heading": "Cómo se mantiene privado un pago.",
     "sender": {
       "label": "EMISOR",
       "description": "Deriva una dirección oculta a partir de la meta-dirección del receptor usando una clave efímera nueva."
@@ -98,7 +98,7 @@
   },
   "forDevelopers": {
     "eyebrow": "Para Desarrolladores",
-    "heading": "Tres formas de publicar.",
+    "heading": "Elige la vía de integración que encaje.",
     "fullDocs": "Documentación completa ↗",
     "sdk": {
       "label": "SDK",
@@ -124,7 +124,7 @@
   },
   "chains": {
     "eyebrow": "Cadenas Soportadas",
-    "heading": "Construido para un mundo multicadena.",
+    "heading": "Construido para las cadenas que soportamos hoy.",
     "partner": "Socio",
     "stellarNote": {
       "eyebrow": "Soporte stealth primero en Stellar",
@@ -141,7 +141,7 @@
   },
   "compare": {
     "eyebrow": "Análisis Comparativo",
-    "heading": "Comparación honesta con alternativas.",
+    "heading": "Por qué Wraith en lugar de herramientas de privacidad agrupada.",
     "description": "La privacidad no es universal. Diferentes mecanismos hacen compromisos distintos entre conveniencia del usuario, postura regulatoria y complejidad matemática.",
     "scrollHint": "Desliza la tabla horizontalmente para ver todas las columnas",
     "table": {
@@ -254,14 +254,14 @@
   },
   "cta": {
     "eyebrow": "Listo para construir",
-    "heading": "Comienza a enviar pagos privados hoy.",
+    "heading": "¿Listo para añadir pagos privados?",
     "getKeys": "Obtener claves de API",
     "readDocs": "Leer la documentación"
   },
   "showcase": {
-    "eyebrow": "Construido con Wraith",
-    "heading": "Proyectos usando Wraith.",
-    "description": "Integraciones piloto, implementaciones de referencia y POCs de socios.",
+    "eyebrow": "Vista previa de casos de estudio",
+    "heading": "Implementaciones de referencia y avances de socios.",
+    "description": "Integraciones piloto, flujos de demo y trabajo de pruebas de concepto sobre la superficie actual del producto.",
     "visit": "Visitar"
   },
   "footer": {
