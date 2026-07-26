@@ -173,15 +173,15 @@
   --color-primary: #2d2d2d;
   --color-on-surface: #1a1918;
   --color-on-surface-variant: #424242;
-  --color-outline: #757575;
+  --color-outline: #626262;
   --color-outline-variant: #bdbdbd;
   --color-outline-variant-30: #bdbdbd4d;
-  --color-error: #d32f2f;
+  --color-error: #ba1a1a;
   --color-error-10: #d32f2f1a;
   --color-error-30: #d32f2f4d;
   --color-tertiary: #1b5e20;
   --color-tertiary-10: #1b5e201a;
-  --color-blue: #1976d2;
+  --color-blue: #0d5ca6;
   --color-blue-10: #1976d21a;
 }
 
