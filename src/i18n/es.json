@@ -307,5 +307,41 @@
     "metaDescription": "Wraith Protocol habilita pagos privados en cualquier blockchain usando direcciones ocultas. Un SDK, múltiples cadenas.",
     "ogTitle": "Wraith Protocol",
     "ogDescription": "Pagos privados para cada cadena. Direcciones ocultas, SDK multicadena y agentes de privacidad con IA."
+  },
+  "caseStudies": {
+    "eyebrow": "CASOS DE ESTUDIO",
+    "heading": "Soluciones de privacidad en el mundo real.",
+    "description": "Equipos y organizaciones usando Wraith para habilitar pagos privados en producción. Desde procesadores de nómina hasta DAOs, ve cómo las direcciones ocultas resuelven desafíos reales de privacidad.",
+    "totalStudies": "ESTUDIOS TOTALES",
+    "study": "estudio",
+    "studies": "estudios",
+    "filterByChain": "FILTRAR POR CADENA",
+    "allChains": "Todas las Cadenas",
+    "readStudy": "Leer Caso de Estudio",
+    "noStudies": "NO SE ENCONTRARON ESTUDIOS",
+    "noStudiesDescription": "Prueba seleccionar un filtro de cadena diferente.",
+    "backToAll": "Volver a todos los casos de estudio",
+    "useCase": "CASO DE USO",
+    "integration": "INTEGRADO",
+    "summary": "Resumen",
+    "challenge": "Desafío",
+    "solution": "Solución",
+    "results": "Resultados",
+    "privacyImprovement": "MEJORA DE PRIVACIDAD",
+    "integrationTime": "TIEMPO DE INTEGRACIÓN",
+    "txProcessed": "TRANSACCIONES PROCESADAS",
+    "chainsUsed": "CADENAS USADAS",
+    "testimonial": "Testimonio",
+    "technicalDetails": "Detalles Técnicos",
+    "sdkVersion": "VERSIÓN DEL SDK",
+    "implementation": "IMPLEMENTACIÓN",
+    "challenges": "DESAFÍOS"
+  },
+  "caseStudiesStrip": {
+    "eyebrow": "USO REAL",
+    "heading": "Casos de estudio",
+    "description": "Historias de producción de equipos usando Wraith.",
+    "viewAll": "VER TODOS",
+    "readMore": "Leer Más"
   }
 }

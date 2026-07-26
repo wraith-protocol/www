@@ -73,7 +73,7 @@ export default function TrustStrip() {
   return (
     <section
       ref={ref}
-      aria-label="Integrations, security, and uptime"
+      aria-label="Trust and reliability signals"
       className="border-t border-outline-variant-30 px-6 py-12 md:px-12"
     >
       <div className="mx-auto grid max-w-[1344px] gap-4 sm:grid-cols-2 lg:grid-cols-4">
