@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 type DataPoint = 'sender' | 'recipient' | 'amount' | 'memo' | 'timestamp' | 'asset' | 'sequence';
 
@@ -148,6 +149,7 @@ function TransactionCard({
 }
 
 export default function PrivacyComparison() {
+  const { t } = useTranslation();
   const [hoveredField, setHoveredField] = useState<DataPoint | null>(null);
   const [reducedMotion] = useState(() => {
     return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -195,11 +197,15 @@ export default function PrivacyComparison() {
         <div className="flex gap-4 flex-wrap text-[12px] font-mono">
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 border-2 border-error bg-error-10 rounded-sm" />
-            <span className="text-on-surface-variant">Public Data</span>
+            <span className="text-on-surface-variant">
+              {t('privacyComparison.legend.publicData')}
+            </span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 border-2 border-tertiary bg-tertiary-10 rounded-sm" />
-            <span className="text-on-surface-variant">Private Data</span>
+            <span className="text-on-surface-variant">
+              {t('privacyComparison.legend.privateData')}
+            </span>
           </div>
         </div>
         <p className="font-body text-[12px] leading-[1.6] text-outline ml-auto hidden sm:block">

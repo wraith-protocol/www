@@ -343,5 +343,11 @@
     "description": "Production stories from teams using Wraith.",
     "viewAll": "VIEW ALL",
     "readMore": "Read More"
+  },
+  "privacyComparison": {
+    "legend": {
+      "publicData": "Public Data",
+      "privateData": "Private Data"
+    }
   }
 }
