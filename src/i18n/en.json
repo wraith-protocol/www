@@ -343,5 +343,23 @@
     "description": "Production stories from teams using Wraith.",
     "viewAll": "VIEW ALL",
     "readMore": "Read More"
+  },
+  "integrationsCarousel": {
+    "ariaLabel": "Featured integrations",
+    "eyebrow": "ECOSYSTEM",
+    "heading": "Featured integrations.",
+    "description": "Wallets, chains, and funding partners already wired into Wraith — explore each integration.",
+    "viewAll": "VIEW ECOSYSTEM",
+    "view": "View",
+    "dotsLabel": "Carousel position",
+    "goTo": "Show {{name}}"
+  },
+  "ecosystem": {
+    "eyebrow": "ECOSYSTEM",
+    "heading": "Integrations & partners.",
+    "description": "Explore the wallets, chains, and infrastructure partners integrated with Wraith Protocol.",
+    "backToAll": "Back to ecosystem",
+    "visitWebsite": "Visit website",
+    "notFound": "Integration not found"
   }
 }

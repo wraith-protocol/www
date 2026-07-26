@@ -1,0 +1,82 @@
+{
+  "featured": [
+    {
+      "slug": "freighter",
+      "name": "Freighter",
+      "tagline": "Stellar-native browser wallet",
+      "description": "Non-custodial browser extension used across the Stellar ecosystem. Wraith plugs into Freighter for stealth payment signing and discovery.",
+      "logo": "/logos/stellar-partners/freighter.svg",
+      "logoWidth": 32,
+      "category": "Wallet",
+      "chains": ["Stellar"],
+      "website": "https://freighter.app"
+    },
+    {
+      "slug": "lobstr",
+      "name": "LOBSTR",
+      "tagline": "Wallet and exchange on Stellar",
+      "description": "Mobile-first Stellar wallet and exchange. Featured for stealth-ready receive flows and announcement scanning.",
+      "logo": "/logos/stellar-partners/lobstr.svg",
+      "logoWidth": 23,
+      "category": "Wallet",
+      "chains": ["Stellar"],
+      "website": "https://lobstr.co"
+    },
+    {
+      "slug": "albedo",
+      "name": "Albedo",
+      "tagline": "Identity and transaction signer",
+      "description": "Secure signer for Stellar apps. Enables Wraith demos and partners to request signatures without holding keys.",
+      "logo": "/logos/stellar-partners/albedo.svg",
+      "logoWidth": 32,
+      "category": "Signer",
+      "chains": ["Stellar"],
+      "website": "https://albedo.link"
+    },
+    {
+      "slug": "xbull",
+      "name": "xBull",
+      "tagline": "Desktop and mobile Stellar wallet",
+      "description": "Feature-rich wallet for desktop and mobile. Integration path for stealth address receive and scan UX.",
+      "logo": "/logos/stellar-partners/xbull.svg",
+      "logoWidth": 32,
+      "category": "Wallet",
+      "chains": ["Stellar"],
+      "website": "https://xbull.app"
+    },
+    {
+      "slug": "drips",
+      "name": "Drips",
+      "tagline": "Continuous funding infrastructure",
+      "description": "Token streaming and continuous funding. Wraith Wave contributions and partner bounties are routed through Drips.",
+      "logo": "/logos/stellar-partners/drips.svg",
+      "logoWidth": 32,
+      "category": "Funding",
+      "chains": ["Ethereum", "Stellar"],
+      "website": "https://www.drips.network"
+    },
+    {
+      "slug": "stellar",
+      "name": "Stellar",
+      "tagline": "Protocol and ecosystem support",
+      "description": "Foundational Stellar Development Foundation support via the Stellar Wave program — memo-enabled stealth payments on Stellar.",
+      "logo": "/logos/stellar-partners/sdf.svg",
+      "logoWidth": 32,
+      "category": "Protocol",
+      "chains": ["Stellar"],
+      "website": "https://stellar.org"
+    },
+    {
+      "slug": "horizen",
+      "name": "Horizen",
+      "tagline": "EVM stealth pilot network",
+      "description": "Pilot integration bringing Wraith stealth addresses to the Horizen EON ecosystem with live testnet demos.",
+      "logo": null,
+      "logoInitials": "HZ",
+      "logoWidth": 32,
+      "category": "Chain",
+      "chains": ["Horizen", "EVM"],
+      "website": "https://horizen.io"
+    }
+  ]
+}

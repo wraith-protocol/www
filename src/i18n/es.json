@@ -343,5 +343,23 @@
     "description": "Historias de producción de equipos usando Wraith.",
     "viewAll": "VER TODOS",
     "readMore": "Leer Más"
+  },
+  "integrationsCarousel": {
+    "ariaLabel": "Integraciones destacadas",
+    "eyebrow": "ECOSISTEMA",
+    "heading": "Integraciones destacadas.",
+    "description": "Wallets, cadenas y socios de financiación ya conectados a Wraith — explora cada integración.",
+    "viewAll": "VER ECOSISTEMA",
+    "view": "Ver",
+    "dotsLabel": "Posición del carrusel",
+    "goTo": "Mostrar {{name}}"
+  },
+  "ecosystem": {
+    "eyebrow": "ECOSISTEMA",
+    "heading": "Integraciones y socios.",
+    "description": "Explora las wallets, cadenas e infraestructura integradas con Wraith Protocol.",
+    "backToAll": "Volver al ecosistema",
+    "visitWebsite": "Visitar sitio",
+    "notFound": "Integración no encontrada"
   }
 }
