@@ -1,7 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
-  testDir: './tests/a11y',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
@@ -9,12 +8,17 @@ export default defineConfig({
   reporter: 'html',
   use: {
     baseURL: 'http://localhost:4173',
-    traceOn: 'on-first-retry',
-    snapshotDir: null,
+    trace: 'on-first-retry',
   },
   projects: [
     {
-      name: 'chromium',
+      name: 'e2e-chromium',
+      testDir: './e2e',
+      use: { ...devices['Desktop Chrome'] },
+    },
+    {
+      name: 'a11y-chromium',
+      testDir: './tests/a11y',
       use: { ...devices['Desktop Chrome'] },
     },
   ],
@@ -22,6 +26,6 @@ export default defineConfig({
     command: 'pnpm build && pnpm preview -- --port 4173',
     url: 'http://localhost:4173',
     reuseExistingServer: !process.env.CI,
-    timeout: 120000,
+    timeout: 120_000,
   },
 });
