@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useInView } from '../hooks/useInView';
 
 type AnimationStep = 'idle' | 'sender' | 'generate' | 'announce' | 'scan' | 'receiver' | 'complete';
@@ -43,6 +44,7 @@ const stepDescriptions: Record<AnimationStep, { title: string; description: stri
 const steps: AnimationStep[] = ['sender', 'generate', 'announce', 'scan', 'receiver', 'complete'];
 
 export default function StealthAnimation() {
+  const { t } = useTranslation();
   const { ref, isInView } = useInView({ threshold: 0.1 });
   const [currentStep, setCurrentStep] = useState<AnimationStep>('idle');
   const [isPlaying, setIsPlaying] = useState(false);
@@ -230,19 +232,19 @@ export default function StealthAnimation() {
               <ul className="flex flex-col gap-2 font-body text-[13px] text-on-surface-variant">
                 <li className="flex items-start gap-2">
                   <span className="text-tertiary mt-1">✓</span>
-                  <span>Sender and receiver addresses are never linked on-chain</span>
+                  <span>{t('stealthAnimation.benefits.unlinkable')}</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-tertiary mt-1">✓</span>
-                  <span>Each payment uses a unique, one-time address</span>
+                  <span>{t('stealthAnimation.benefits.unique')}</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-tertiary mt-1">✓</span>
-                  <span>Only the recipient can detect and access their payments</span>
+                  <span>{t('stealthAnimation.benefits.detectOnly')}</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-tertiary mt-1">✓</span>
-                  <span>No coordination required—meta-address published once</span>
+                  <span>{t('stealthAnimation.benefits.noCoordination')}</span>
                 </li>
               </ul>
             </div>
