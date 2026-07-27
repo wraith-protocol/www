@@ -25,6 +25,7 @@ const UseCases = lazy(() => import('./pages/UseCases'));
 const Stellar = lazy(() => import('./pages/Stellar'));
 const Roadmap = lazy(() => import('./pages/Roadmap'));
 const CaseStudies = lazy(() => import('./pages/CaseStudies'));
+const Careers = lazy(() => import('./pages/Careers'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 function Home() {
@@ -75,6 +76,14 @@ export default function App() {
             element={
               <Layout>
                 <Stellar />
+              </Layout>
+            }
+          />
+          <Route
+            path="/careers"
+            element={
+              <Layout>
+                <Careers />
               </Layout>
             }
           />
