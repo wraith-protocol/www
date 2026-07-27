@@ -5,8 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build && node scripts/inline-css.js && tsx scripts/og.ts && tsx scripts/sitemap.ts",
+    "build": "tsc -b && vite build && node scripts/inline-css.js && tsx scripts/og.ts && tsx scripts/sitemap.ts && tsx scripts/rss.ts",
     "og:generate": "tsx scripts/og.ts",
+    "rss:generate": "tsx scripts/rss.ts",
     "preview": "vite preview",
     "test": "vitest run",
     "test:a11y": "vitest run src/__tests__/a11y.test.tsx",

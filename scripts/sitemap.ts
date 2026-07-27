@@ -33,6 +33,18 @@ try {
   }
 
   const routes = getRoutes(distDir);
+  
+  const blogDir = join(rootDir, 'src', 'content', 'blog');
+  if (existsSync(blogDir)) {
+    const blogFiles = readdirSync(blogDir).filter((f) => f.endsWith('.mdx'));
+    if (!routes.includes('/blog')) routes.push('/blog');
+    for (const f of blogFiles) {
+      const slug = f.replace(/\.mdx$/, '');
+      const blogRoute = `/blog/${slug}`;
+      if (!routes.includes(blogRoute)) routes.push(blogRoute);
+    }
+  }
+
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${routes
