@@ -133,6 +133,12 @@ export default function Header() {
             {t('header.nav.useCases')}
           </a>
           <Link
+            to="/grants"
+            className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
+          >
+            {t('header.nav.grants')}
+          </Link>
+          <Link
             to="/stellar"
             className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
           >
@@ -284,6 +290,13 @@ export default function Header() {
             >
               {t('header.nav.useCases')}
             </a>
+            <Link
+              to="/grants"
+              onClick={closeMenu}
+              className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
+            >
+              {t('header.nav.grants')}
+            </Link>
             <Link
               to="/stellar"
               onClick={closeMenu}
