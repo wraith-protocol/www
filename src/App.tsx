@@ -4,6 +4,7 @@ import Header from './components/Header';
 import Hero from './components/Hero';
 import Features from './components/Features';
 import Layout from './components/Layout';
+import TrustStrip from './components/TrustStrip';
 
 // Lazy load below-the-fold homepage components
 const Architecture = lazy(() => import('./components/Architecture'));
@@ -24,7 +25,7 @@ const UseCases = lazy(() => import('./pages/UseCases'));
 const Stellar = lazy(() => import('./pages/Stellar'));
 const Roadmap = lazy(() => import('./pages/Roadmap'));
 const CaseStudies = lazy(() => import('./pages/CaseStudies'));
-const Blog = lazy(() => import('./pages/Blog'));
+const Careers = lazy(() => import('./pages/Careers'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 function Home() {
@@ -36,6 +37,7 @@ function Home() {
       <Header />
       <main id="main-content" tabIndex={-1}>
         <Hero />
+        <TrustStrip />
         <Features />
         <Suspense fallback={null}>
           <Architecture />
@@ -75,6 +77,14 @@ export default function App() {
             element={
               <Layout>
                 <Stellar />
+              </Layout>
+            }
+          />
+          <Route
+            path="/careers"
+            element={
+              <Layout>
+                <Careers />
               </Layout>
             }
           />

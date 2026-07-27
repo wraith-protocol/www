@@ -124,6 +124,7 @@ export default function Footer() {
         { label: t('footer.resources.security'), href: 'https://docs.usewraith.xyz/security' },
         { label: t('footer.resources.press'), href: '/press' },
         { label: 'Stellar Integration', href: '/stellar' },
+        { label: 'Careers', href: '/careers' },
       ],
     },
   ];
