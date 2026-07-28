@@ -31,6 +31,7 @@ const Grants = lazy(() => import('./pages/Grants'));
 const CaseStudies = lazy(() => import('./pages/CaseStudies'));
 const Careers = lazy(() => import('./pages/Careers'));
 const About = lazy(() => import('./pages/About'));
+const Vitals = lazy(() => import('./pages/Vitals'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 const Contributors = lazy(() => import('./pages/Contributors'));
 
@@ -79,6 +80,7 @@ export default function App() {
             <Route path="/roadmap" element={<Roadmap />} />
             <Route path="/case-studies" element={<CaseStudies />} />
             <Route path="/case-studies/:slug" element={<CaseStudies />} />
+            <Route path="/vitals" element={<Vitals />} />
             {/* Wrap Stellar with Layout */}
             <Route
               path="/stellar"

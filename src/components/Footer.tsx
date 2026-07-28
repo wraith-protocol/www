@@ -126,6 +126,7 @@ export default function Footer() {
         { label: 'Stellar Integration', href: '/stellar' },
         { label: 'Careers', href: '/careers' },
         { label: 'About', href: '/about' },
+        { label: 'Web Vitals', href: '/vitals' },
       ],
     },
   ];
