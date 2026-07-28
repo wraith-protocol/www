@@ -1,29 +1,12 @@
 import { useState, type FormEvent } from 'react';
 import { Helmet } from 'react-helmet-async';
+import { useTranslation } from 'react-i18next';
 import { trackEvent } from '../analytics';
 
 type SubmitStatus = 'idle' | 'loading' | 'success' | 'error';
 
-const values = [
-  {
-    title: 'Privacy is the default, not a feature',
-    body: 'We build stealth-address infrastructure because we believe unlinkable payments should be the baseline, not a premium add-on. The same principle shows up in how we run this site: no cookies, no trackers, no dark patterns.',
-  },
-  {
-    title: 'Small team, high ownership',
-    body: "There's no layer between you and the outcome. Contributors scope their own work, ship it, and own the result — from cryptography to copy.",
-  },
-  {
-    title: 'Open by default',
-    body: 'The protocol, the SDK, and this website are all open source. Issues, roadmaps, and decisions happen in the open on GitHub, not behind closed doors.',
-  },
-  {
-    title: 'Async-first, craft-obsessed',
-    body: "We're distributed and async. What we ask for in return is care: sharp, considered work over fast, sloppy work. Every page here ships at Lighthouse 95+ and WCAG 2.1 AA.",
-  },
-];
-
 function CareersSignupForm() {
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [company, setCompany] = useState(''); // honeypot — real users never fill this in
   const [status, setStatus] = useState<SubmitStatus>('idle');
@@ -51,7 +34,7 @@ function CareersSignupForm() {
       const payload = await response.json().catch(() => null);
 
       if (!response.ok) {
-        throw new Error(payload?.error || 'Something went wrong. Please try again.');
+        throw new Error(payload?.error || t('careers.signup.errorDefault'));
       }
 
       trackEvent('Careers Stay In Touch');
@@ -59,7 +42,7 @@ function CareersSignupForm() {
       setEmail('');
     } catch (error) {
       setStatus('error');
-      setErrorMessage(error instanceof Error ? error.message : 'Something went wrong.');
+      setErrorMessage(error instanceof Error ? error.message : t('careers.signup.errorDefault'));
     }
   };
 
@@ -67,7 +50,7 @@ function CareersSignupForm() {
     return (
       <div className="border border-tertiary bg-tertiary-10 px-5 py-4">
         <p className="font-body text-[14px] leading-[1.6] text-on-surface">
-          You&apos;re on the list. We&apos;ll reach out here first when a role opens up.
+          {t('careers.signup.success')}
         </p>
       </div>
     );
@@ -77,7 +60,7 @@ function CareersSignupForm() {
     <form onSubmit={handleSubmit} className="flex flex-col gap-3 sm:flex-row sm:items-start">
       <div className="flex-1">
         <label htmlFor="careers-email" className="sr-only">
-          Email address
+          {t('careers.signup.emailLabel')}
         </label>
         <input
           id="careers-email"
@@ -85,7 +68,7 @@ function CareersSignupForm() {
           required
           value={email}
           onChange={(event) => setEmail(event.target.value)}
-          placeholder="you@example.com"
+          placeholder={t('careers.signup.emailPlaceholder')}
           className="w-full border border-outline-variant bg-surface-container px-4 py-3 font-body text-[14px] text-on-surface placeholder:text-outline focus:border-on-surface focus:outline-none"
         />
         {/* Honeypot field — hidden from sighted users, left blank by real people */}
@@ -110,26 +93,41 @@ function CareersSignupForm() {
         disabled={status === 'loading'}
         className="flex h-12 shrink-0 items-center justify-center bg-primary px-7 font-heading text-[13px] font-semibold uppercase tracking-[1.5px] text-surface transition-[filter] duration-150 hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
       >
-        {status === 'loading' ? 'Submitting…' : 'Stay in touch'}
+        {status === 'loading' ? t('careers.signup.submitting') : t('careers.signup.stayInTouch')}
       </button>
     </form>
   );
 }
 
 export default function Careers() {
+  const { t } = useTranslation();
+
+  const values = [
+    {
+      title: t('careers.workingStyle.values.v1Title'),
+      body: t('careers.workingStyle.values.v1Body'),
+    },
+    {
+      title: t('careers.workingStyle.values.v2Title'),
+      body: t('careers.workingStyle.values.v2Body'),
+    },
+    {
+      title: t('careers.workingStyle.values.v3Title'),
+      body: t('careers.workingStyle.values.v3Body'),
+    },
+    {
+      title: t('careers.workingStyle.values.v4Title'),
+      body: t('careers.workingStyle.values.v4Body'),
+    },
+  ];
+
   return (
     <>
       <Helmet>
-        <title>Careers – Wraith Protocol</title>
-        <meta
-          name="description"
-          content="Wraith Protocol isn't hiring full-time roles right now, but we run paid open-source bounties and want to hear from prospective contributors."
-        />
-        <meta property="og:title" content="Careers – Wraith Protocol" />
-        <meta
-          property="og:description"
-          content="Not hiring full-time right now — but we run paid open-source bounties and want to hear from you."
-        />
+        <title>{t('careers.meta.title')}</title>
+        <meta name="description" content={t('careers.meta.description')} />
+        <meta property="og:title" content={t('careers.meta.title')} />
+        <meta property="og:description" content={t('careers.meta.description')} />
         <meta property="og:url" content="https://usewraith.xyz/careers" />
         <meta property="og:type" content="website" />
       </Helmet>
@@ -137,15 +135,13 @@ export default function Careers() {
       <section className="border-b border-outline-variant-30 px-6 py-24 md:px-12">
         <div className="mx-auto flex max-w-336 flex-col gap-6">
           <span className="font-mono text-[10px] font-semibold uppercase tracking-[2px] text-outline">
-            Careers
+            {t('careers.hero.eyebrow')}
           </span>
           <h1 className="font-heading text-[36px] font-bold leading-[1.05] tracking-[-1.5px] text-on-surface sm:text-[48px] md:text-[56px]">
-            We&apos;re not hiring right now — but we still want to hear from you.
+            {t('careers.hero.title')}
           </h1>
           <p className="max-w-2xl font-body text-[17px] leading-[1.6] text-on-surface-variant">
-            Wraith Protocol is a small, remote, open-source team. We don&apos;t have full-time
-            openings today, but we regularly fund contract work through the Stellar Wave program and
-            always want to know who&apos;s out there for when that changes.
+            {t('careers.hero.description')}
           </p>
         </div>
       </section>
@@ -154,16 +150,13 @@ export default function Careers() {
         <div className="mx-auto flex max-w-336 flex-col gap-10">
           <div className="flex flex-col gap-3">
             <span className="font-mono text-[10px] font-semibold uppercase tracking-[2px] text-outline">
-              Paid contract work
+              {t('careers.bounties.eyebrow')}
             </span>
             <h2 className="font-heading text-[28px] font-bold tracking-[-1.2px] text-on-surface sm:text-[40px]">
-              Contribute now, get paid through Stellar Wave
+              {t('careers.bounties.title')}
             </h2>
             <p className="max-w-2xl font-body text-base leading-[1.6] text-on-surface-variant">
-              Every open issue on our GitHub tagged{' '}
-              <code className="font-mono text-[13px] text-primary">help wanted</code> is scoped,
-              sized, and eligible for the Stellar Wave / Drips reward pool. No interview process —
-              apply on the issue, get assigned, ship it, get paid.
+              {t('careers.bounties.description')}
             </p>
           </div>
 
@@ -179,13 +172,13 @@ export default function Careers() {
                 01
               </span>
               <h3 className="font-heading text-lg font-semibold tracking-[-0.3px] text-on-surface group-hover:text-primary">
-                Browse open bounties
+                {t('careers.bounties.step1Title')}
               </h3>
               <p className="font-body text-[13px] leading-[1.65] text-on-surface-variant">
-                Every issue lists context, scope, tier, and acceptance criteria up front.
+                {t('careers.bounties.step1Body')}
               </p>
               <span className="mt-auto font-mono text-[11px] text-outline transition-colors duration-150 group-hover:text-primary">
-                View on GitHub →
+                {t('careers.bounties.step1Link')}
               </span>
             </a>
 
@@ -194,11 +187,10 @@ export default function Careers() {
                 02
               </span>
               <h3 className="font-heading text-lg font-semibold tracking-[-0.3px] text-on-surface">
-                Apply on the issue
+                {t('careers.bounties.step2Title')}
               </h3>
               <p className="font-body text-[13px] leading-[1.65] text-on-surface-variant">
-                Comment with a short note on why you want it. Maintainers assign based on fit, not
-                pedigree.
+                {t('careers.bounties.step2Body')}
               </p>
             </div>
 
@@ -207,11 +199,10 @@ export default function Careers() {
                 03
               </span>
               <h3 className="font-heading text-lg font-semibold tracking-[-0.3px] text-on-surface">
-                Ship it, get reviewed, get paid
+                {t('careers.bounties.step3Title')}
               </h3>
               <p className="font-body text-[13px] leading-[1.65] text-on-surface-variant">
-                Open a PR linked to the issue. Once it&apos;s merged, Points convert to a share of
-                the Stellar Wave reward pool via Drips.
+                {t('careers.bounties.step3Body')}
               </p>
             </div>
           </div>
@@ -222,10 +213,10 @@ export default function Careers() {
         <div className="mx-auto flex max-w-336 flex-col gap-10">
           <div className="flex flex-col gap-3">
             <span className="font-mono text-[10px] font-semibold uppercase tracking-[2px] text-outline">
-              Values &amp; working style
+              {t('careers.workingStyle.eyebrow')}
             </span>
             <h2 className="font-heading text-[28px] font-bold tracking-[-1.2px] text-on-surface sm:text-[40px]">
-              How we work
+              {t('careers.workingStyle.title')}
             </h2>
           </div>
 
@@ -251,14 +242,13 @@ export default function Careers() {
         <div className="mx-auto flex max-w-336 flex-col gap-6">
           <div className="flex flex-col gap-3">
             <span className="font-mono text-[10px] font-semibold uppercase tracking-[2px] text-outline">
-              Stay in touch
+              {t('careers.stayInTouchSection.eyebrow')}
             </span>
             <h2 className="font-heading text-[28px] font-bold tracking-[-1.2px] text-on-surface sm:text-[40px]">
-              First to know when a full-time role opens
+              {t('careers.stayInTouchSection.title')}
             </h2>
             <p className="max-w-2xl font-body text-base leading-[1.6] text-on-surface-variant">
-              Leave your email and we&apos;ll reach out directly — no spam, no third-party trackers,
-              unsubscribe anytime.
+              {t('careers.stayInTouchSection.description')}
             </p>
           </div>
 

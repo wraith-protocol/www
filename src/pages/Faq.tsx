@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import Footer from '../components/Footer';
 import faqData from '../data/faq.json';
 
@@ -25,6 +26,7 @@ const sectionLabelStyles =
 const ALL_CATEGORIES = 'all';
 
 export default function Faq() {
+  const { t } = useTranslation();
   const firstEntry = faqEntries[0];
   const [openEntryId, setOpenEntryId] = useState<string | null>(firstEntry?.id ?? null);
   const [query, setQuery] = useState('');
@@ -82,36 +84,35 @@ export default function Faq() {
           to="/"
           className="font-body text-[13px] text-outline transition-colors hover:text-on-surface"
         >
-          Back home
+          {t('faqPage.backHome')}
         </Link>
       </header>
 
       <main className="mx-auto flex max-w-[1120px] flex-col gap-12 px-6 py-10 md:px-12 md:py-16">
         <div className="flex flex-col gap-6 border-b border-outline-variant pb-10">
-          <span className={sectionLabelStyles}>Support</span>
+          <span className={sectionLabelStyles}>{t('faqPage.support')}</span>
           <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div className="flex max-w-[700px] flex-col gap-3">
               <h1 className="font-heading text-[34px] font-bold tracking-[-1.2px] text-on-surface sm:text-[48px]">
-                FAQ
+                {t('faqPage.title')}
               </h1>
               <p className="font-body text-[15px] leading-[1.7] text-on-surface-variant">
-                Short answers to the questions that come up most often in Discord, support, and
-                product demos. Each answer is written to be easy to share and easy to find.
+                {t('faqPage.subtitle')}
               </p>
             </div>
             <div className="flex flex-col gap-1 rounded-sm border border-outline-variant px-4 py-3">
               <span className="font-mono text-[10px] font-semibold uppercase tracking-[2px] text-outline">
-                Indexed answers
+                {t('faqPage.indexedAnswers')}
               </span>
               <span className="font-heading text-[18px] font-semibold text-on-surface">
-                {entryCount} entries
+                {t('faqPage.entriesCount', { count: entryCount })}
               </span>
             </div>
           </div>
 
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
             <label htmlFor="faq-search" className="sr-only">
-              Search FAQ
+              {t('faqPage.searchLabel')}
             </label>
             <div className="relative flex-1">
               <input
@@ -119,7 +120,7 @@ export default function Faq() {
                 type="search"
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
-                placeholder="Search questions, answers, or tags…"
+                placeholder={t('faqPage.searchPlaceholder')}
                 className="w-full rounded-sm border border-outline-variant bg-surface-container px-4 py-3 font-body text-[14px] text-on-surface placeholder:text-outline focus:border-on-surface focus:outline-none"
               />
             </div>
@@ -136,7 +137,7 @@ export default function Faq() {
                   : 'border-outline-variant text-on-surface-variant hover:text-on-surface'
               }`}
             >
-              All
+              {t('faqPage.allCategories')}
             </button>
             {faqCategories.map((category) => (
               <button
@@ -157,8 +158,8 @@ export default function Faq() {
 
           <p className="font-body text-[13px] text-on-surface-variant" role="status">
             {hasResults
-              ? `Showing ${filteredEntries.length} of ${entryCount} entries`
-              : 'No matching questions'}
+              ? t('faqPage.showingCount', { filtered: filteredEntries.length, total: entryCount })
+              : t('faqPage.noMatching')}
           </p>
         </div>
 
@@ -167,7 +168,7 @@ export default function Faq() {
             className="flex flex-col gap-3 lg:sticky lg:top-6 lg:h-fit"
             aria-label="FAQ sections"
           >
-            <span className={sectionLabelStyles}>Jump to</span>
+            <span className={sectionLabelStyles}>{t('faqPage.jumpTo')}</span>
             <div className="flex flex-col gap-2">
               {sections.map((section) => (
                 <a
@@ -185,8 +186,7 @@ export default function Faq() {
             {!hasResults && (
               <div className="rounded-sm border border-outline-variant bg-surface-container px-5 py-8 text-center">
                 <p className="font-body text-[14px] text-on-surface-variant">
-                  No questions match "{query}". Try a different search term or clear the category
-                  filter.
+                  {t('faqPage.noMatchQuery', { query })}
                 </p>
               </div>
             )}
@@ -213,7 +213,7 @@ export default function Faq() {
                             <a
                               href={`#${entry.id}`}
                               className="mr-2 text-outline transition-colors hover:text-on-surface"
-                              aria-label={`Direct link to ${entry.question}`}
+                              aria-label={t('faqPage.directLink', { question: entry.question })}
                             >
                               #
                             </a>
@@ -222,13 +222,16 @@ export default function Faq() {
                               type="button"
                               aria-expanded={isOpen}
                               aria-controls={panelId}
-                              aria-label={`${isOpen ? 'Hide' : 'Show'} answer for ${entry.question}`}
+                              aria-label={t('faqPage.toggleAnswer', {
+                                action: isOpen ? t('faqPage.hide') : t('faqPage.show'),
+                                question: entry.question,
+                              })}
                               onClick={() => setOpenEntryId(isOpen ? null : entry.id)}
                               className="flex w-full items-center justify-between text-left"
                             >
                               <span className="block w-full text-left">{entry.question}</span>
                               <span className="font-mono text-[10px] font-semibold uppercase tracking-[1.6px] text-outline transition-colors hover:text-on-surface">
-                                {isOpen ? 'Hide' : 'Show'}
+                                {isOpen ? t('faqPage.hide') : t('faqPage.show')}
                               </span>
                             </button>
                           </h3>
@@ -244,7 +247,10 @@ export default function Faq() {
                               {entry.answer}
                             </p>
                             {entry.tags.length > 0 && (
-                              <ul className="mt-3 flex flex-wrap gap-2" aria-label="Related tags">
+                              <ul
+                                className="mt-3 flex flex-wrap gap-2"
+                                aria-label={t('faqPage.relatedTags')}
+                              >
                                 {entry.tags.map((tag) => (
                                   <li
                                     key={tag}

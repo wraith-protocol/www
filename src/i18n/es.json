@@ -318,6 +318,7 @@
     "filterByChain": "FILTRAR POR CADENA",
     "allChains": "Todas las Cadenas",
     "readStudy": "Leer Caso de Estudio",
+    "notFound": "Caso de estudio no encontrado",
     "noStudies": "NO SE ENCONTRARON ESTUDIOS",
     "noStudiesDescription": "Prueba seleccionar un filtro de cadena diferente.",
     "backToAll": "Volver a todos los casos de estudio",
@@ -343,5 +344,242 @@
     "description": "Historias de producción de equipos usando Wraith.",
     "viewAll": "VER TODOS",
     "readMore": "Leer Más"
+  },
+  "privacyComparison": {
+    "legend": {
+      "publicData": "Datos públicos",
+      "privateData": "Datos privados"
+    }
+  },
+  "careers": {
+    "meta": {
+      "title": "Carreras – Wraith Protocol",
+      "description": "Wraith Protocol no está contratando roles a tiempo completo en este momento, pero ofrecemos recompensas pagadas de código abierto y queremos saber de posibles colaboradores."
+    },
+    "hero": {
+      "eyebrow": "Carreras",
+      "title": "No estamos contratando en este momento, pero aún queremos saber de ti.",
+      "description": "Wraith Protocol es un equipo pequeño, remoto y de código abierto. No tenemos vacantes a tiempo completo hoy, pero financiamos regularmente trabajo por contrato a través del programa Stellar Wave y siempre queremos saber quién está ahí para cuando eso cambie."
+    },
+    "bounties": {
+      "eyebrow": "Trabajo por contrato pagado",
+      "title": "Contribuye ahora, recibe tu pago a través de Stellar Wave",
+      "description": "Cada issue abierto en nuestro GitHub etiquetado como help wanted está acotado, estimado y es elegible para el fondo de recompensas de Stellar Wave / Drips. Sin proceso de entrevista: postúlate en el issue, recibe la asignación, publica y cobra.",
+      "step1Title": "Explorar recompensas abiertas",
+      "step1Body": "Cada issue enumera el contexto, el alcance, el nivel y los criterios de aceptación desde el principio.",
+      "step1Link": "Ver en GitHub →",
+      "step2Title": "Postúlate en el issue",
+      "step2Body": "Comenta con una breve nota sobre por qué lo quieres. Los mantenedores asignan según el ajuste, no el currículum.",
+      "step3Title": "Publica, recibe revisión, recibe tu pago",
+      "step3Body": "Abre un PR vinculado al issue. Una vez fusionado, los Puntos se convierten en una parte del fondo de recompensas de Stellar Wave a través de Drips."
+    },
+    "workingStyle": {
+      "eyebrow": "Valores y estilo de trabajo",
+      "title": "Cómo trabajamos",
+      "values": {
+        "v1Title": "La privacidad es lo predeterminado, no una función",
+        "v1Body": "Construimos infraestructura de direcciones ocultas porque creemos que los pagos no vinculables deberían ser la base, no un complemento premium. El mismo principio se aplica a cómo gestionamos este sitio: sin cookies, sin rastreadores, sin patrones oscuros.",
+        "v2Title": "Equipo pequeño, alta responsabilidad",
+        "v2Body": "No hay capas entre tú y el resultado. Los colaboradores acotan su propio trabajo, lo envían y asumen la responsabilidad del resultado, desde la criptografía hasta la redacción.",
+        "v3Title": "Abierto por defecto",
+        "v3Body": "El protocolo, el SDK y este sitio web son todos de código abierto. Los problemas, las hojas de ruta y las decisiones ocurren abiertamente en GitHub, no a puerta cerrada.",
+        "v4Title": "Prioridad asíncrona, obsesionados con la calidad",
+        "v4Body": "Somos distribuidos y asíncronos. Lo que pedimos a cambio es cuidado: trabajo fino y considerado antes que rápido y descuidado. Cada página se entrega a Lighthouse 95+ y WCAG 2.1 AA."
+      }
+    },
+    "stayInTouchSection": {
+      "eyebrow": "Mantente en contacto",
+      "title": "El primero en saber cuándo se abre un puesto a tiempo completo",
+      "description": "Deja tu correo electrónico y te contactaremos directamente: sin spam, sin rastreadores de terceros, cancélalo en cualquier momento."
+    },
+    "signup": {
+      "emailLabel": "Dirección de correo electrónico",
+      "emailPlaceholder": "tu@ejemplo.com",
+      "submitting": "Enviando…",
+      "stayInTouch": "Mantenerse en contacto",
+      "success": "Estás en la lista. Te contactaremos por aquí primero cuando se abra un puesto.",
+      "errorDefault": "Algo salió mal. Por favor, inténtalo de nuevo."
+    }
+  },
+  "faqPage": {
+    "backHome": "Volver al inicio",
+    "support": "Soporte",
+    "title": "Preguntas frecuentes",
+    "subtitle": "Respuestas cortas a las preguntas que surgen con más frecuencia en Discord, soporte y demostraciones de productos. Cada respuesta está escrita para ser fácil de compartir y encontrar.",
+    "indexedAnswers": "Respuestas indexadas",
+    "entriesCount": "{{count}} entradas",
+    "searchLabel": "Buscar preguntas frecuentes",
+    "searchPlaceholder": "Buscar preguntas, respuestas o etiquetas…",
+    "allCategories": "Todas",
+    "showingCount": "Mostrando {{filtered}} de {{total}} entradas",
+    "noMatching": "No hay preguntas coincidentes",
+    "jumpTo": "Ir a",
+    "noMatchQuery": "Ninguna pregunta coincide con \"{{query}}\". Intenta con otro término de búsqueda o limpia el filtro de categoría.",
+    "directLink": "Enlace directo a {{question}}",
+    "toggleAnswer": "{{action}} respuesta para {{question}}",
+    "hide": "Ocultar",
+    "show": "Mostrar",
+    "relatedTags": "Etiquetas relacionadas"
+  },
+  "notFound": {
+    "backHome": "Volver al inicio",
+    "error404": "Error 404",
+    "title": "Esta dirección es demasiado oculta para nosotros",
+    "description": "La página que buscabas no dejó rastro. Es posible que se haya movido o que el enlace que te trajo aquí nunca haya sido real. Prueba una de las siguientes rutas.",
+    "tryThese": "Prueba una de estas",
+    "orSearch": "O busca en el sitio",
+    "searchPlaceholder": "Buscar en usewraith.xyz",
+    "searchButton": "Buscar",
+    "brokenLink": "¿Encontraste un enlace roto?",
+    "reportGithub": "Repórtalo en GitHub",
+    "suggestions": {
+      "homeLabel": "Inicio",
+      "homeDesc": "Volver a la página principal.",
+      "docsLabel": "Documentación",
+      "docsDesc": "Referencia del SDK y guías.",
+      "demoLabel": "Demostración",
+      "demoDesc": "Pagos ocultos en acción.",
+      "consoleLabel": "Consola",
+      "consoleDesc": "Gestiona claves, agentes y uso."
+    }
+  },
+  "pressPage": {
+    "home": "← Inicio",
+    "eyebrow": "KIT DE PRENSA",
+    "title": "Recursos de marca",
+    "description": "Recursos, textos y contactos para prensa y socios.",
+    "sections": {
+      "descriptions": "DESCRIPCIONES",
+      "logos": "LOGOTIPOS",
+      "brandColors": "COLORES DE MARCA",
+      "typography": "TIPOGRAFÍA",
+      "coverage": "COBERTURA EN MEDIOS",
+      "download": "DESCARGAR",
+      "contact": "CONTACTO DE PRENSA"
+    },
+    "labels": {
+      "oneLine": "Una línea",
+      "fiftyWord": "50 palabras",
+      "boilerplate": "Boilerplate (~200 palabras)",
+      "clickToCopy": "Haz clic en una muestra para copiar el valor hexadecimal.",
+      "downloadNotice": "Los archivos SVG individuales están disponibles arriba. Un archivo ZIP del kit de prensa completo está disponible bajo solicitud; envíanos un correo a",
+      "contactNotice": "Para solicitudes de entrevistas, consultas de asociación o preguntas sobre el uso de recursos. Intentamos responder en un plazo de un día hábil.",
+      "copyDescription": "Copiar descripción de prensa",
+      "copiedToClipboard": "Descripción de prensa copiada al portapapeles",
+      "couldNotCopy": "No se pudo copiar la descripción de prensa",
+      "copy": "COPIAR",
+      "copied": "COPIADO",
+      "failed": "ERROR"
+    }
+  },
+  "privacyPage": {
+    "title": "Política de privacidad",
+    "meta": "Última actualización: junio de 2025 · usewraith.xyz",
+    "intro": "Wraith Protocol es un proyecto que prioriza la privacidad. Aplicamos el mismo principio a este sitio web: recopilar solo lo que necesitamos para mejorar el producto y nada que pueda identificarte personalmente.",
+    "sections": {
+      "whatWeCollect": "Lo que recopilamos",
+      "whatWeDoNotCollect": "Lo que NO recopilamos",
+      "whyPlausible": "¿Por qué Plausible?",
+      "thirdParty": "Servicios de terceros",
+      "yourRights": "Tus derechos",
+      "changes": "Cambios en esta política"
+    },
+    "listItems": {
+      "noCookies": "No se establecen cookies.",
+      "noIdentifiers": "Sin identificadores persistentes ni huellas digitales del dispositivo.",
+      "noTracking": "Sin rastreo entre sitios.",
+      "noIp": "Sin direcciones IP almacenadas o registradas.",
+      "noPersonal": "Sin información personal.",
+      "whyPlausibleSummary": "Elegimos Plausible porque está diseñado sin cookies, alojado en la UE, es de código abierto y liviano."
+    },
+    "backToHome": "← Volver al inicio"
+  },
+  "roadmapPage": {
+    "skipToContent": "Saltar al contenido",
+    "eyebrow": "Hoja de ruta",
+    "title": "Construyendo pagos privados para cada cadena",
+    "description": "Dónde ha estado Wraith Protocol y hacia dónde se dirige: desde la criptografía básica de direcciones ocultas hasta una plataforma gestionada y más allá.",
+    "fullRoadmap": "Leer la hoja de ruta completa →",
+    "followAlong": "Sigue nuestro progreso mientras lanzamos",
+    "docsNotice": "La hoja de ruta evoluciona a medida que se alcanzan los hitos. Para obtener el desglose detallado y el estado más reciente, consulta la documentación.",
+    "viewDocs": "Ver documentación de la hoja de ruta",
+    "statuses": {
+      "shipped": "Lanzado",
+      "inProgress": "En progreso",
+      "planned": "Planificado"
+    }
+  },
+  "useCasesPage": {
+    "skipToContent": "Saltar al contenido",
+    "title": "Casos de uso",
+    "description": "Diferentes audiencias necesitan diferentes soluciones de privacidad. Explora cómo Wraith impulsa la privacidad de pagos para diversos casos de uso.",
+    "painPoints": "Puntos de dolor",
+    "wraithSolution": "Solución Wraith",
+    "readyToAdd": "¿Listo para añadir privacidad en los pagos?",
+    "ctaButtons": {
+      "docs": "Documentación",
+      "tryDemo": "Probar demostración",
+      "launchConsole": "Abrir consola"
+    }
+  },
+  "stellarPage": {
+    "metaTitle": "Pagos ocultos en Stellar – Wraith Protocol",
+    "metaDescription": "Pagos ocultos ed25519 de bajo costo y subsegundos en Stellar con contratos inteligentes Soroban. Construye rieles de pago privados con el SDK de Wraith.",
+    "badges": {
+      "liveTestnet": "RED DE PRUEBAS EN VIVO",
+      "stellarPartner": "Becario Stellar Wave"
+    },
+    "title": "Pagos ocultos en Stellar",
+    "subtitle": "Pagos ocultos ed25519 de bajo costo y subsegundos construidos con contratos inteligentes Soroban. Privacidad nativa para el receptor de XLM y tokens Soroban.",
+    "cta": {
+      "readDocs": "Leer documentación de Stellar",
+      "tryDemo": "Probar demo de Stellar"
+    },
+    "props": {
+      "txCost": "Costo de tx",
+      "txCostSub": "por pago oculto",
+      "finality": "Finalidad",
+      "finalitySub": "práctica en subsegundos",
+      "keyCurve": "Curva de clave",
+      "keyCurveSub": "nativa de Stellar",
+      "contracts": "Contratos",
+      "contractsSub": "Rust · WASM"
+    },
+    "howItWorks": {
+      "eyebrow": "Arquitectura",
+      "title": "Cómo funcionan los pagos ocultos en Stellar",
+      "steps": {
+        "step1Title": "Claves ed25519",
+        "step1Body": "Wraith utiliza pares de claves ed25519 nativos de Stellar. Las claves de gasto y visualización se derivan de una sola firma de billetera: no se requiere una nueva frase semilla.",
+        "step2Title": "X25519 ECDH",
+        "step2Body": "Se genera un par de claves efímeras por pago. El emisor y el receptor derivan un secreto compartido a través de X25519 ECDH: el secreto nunca toca la cadena.",
+        "step3Title": "Anuncio en Soroban",
+        "step3Body": "La clave pública efímera se registra en un contrato de registro Soroban. Los receptores escanean los anuncios fuera de la cadena para encontrar los pagos dirigidos a ellos.",
+        "step4Title": "Dirección oculta StrKey",
+        "step4Body": "Cada pago llega a una dirección G… única y nueva. El enlace entre emisor, receptor y monto nunca es visible en el libro mayor público."
+      }
+    },
+    "deployments": {
+      "eyebrow": "Contratos",
+      "title": "Despliegues en red de prueba",
+      "network": "Soroban Testnet (Futurenet / Testnet)",
+      "contractCol": "Contrato",
+      "addressCol": "Dirección",
+      "explorerCol": "Explorador",
+      "viewExplorer": "Ver ↗"
+    },
+    "codeSection": {
+      "eyebrow": "Integración",
+      "title": "Envía, escanea y retira en TypeScript",
+      "copy": "COPIAR",
+      "copied": "COPIADO",
+      "failed": "ERROR"
+    },
+    "ctaSection": {
+      "title": "Construye pagos privados en Stellar hoy",
+      "description": "El SDK de Wraith proporciona todo lo que necesitas para añadir flujos de pago ocultos a tu billetera Stellar, dApp o plataforma.",
+      "getStarted": "Empezar",
+      "viewGithub": "Ver en GitHub"
+    }
   }
 }

@@ -1,121 +1,112 @@
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import Footer from '../components/Footer';
 
 type Persona = {
   id: string;
-  title: string;
-  description: string;
-  painPoints: string[];
-  solution: string;
+  titleKey: string;
+  descriptionKey: string;
+  painPointKeys: string[];
+  solutionKey: string;
   docLink: string;
-  docLabel: string;
+  docLabelKey: string;
   icon: string;
 };
 
 const personas: Persona[] = [
   {
     id: 'open-source',
-    title: 'Open-source Maintainer',
+    titleKey: 'useCasesPage.personas.openSource.title',
     icon: '⚙️',
-    description:
-      'Receiving donations for open-source projects while protecting donor anonymity and avoiding public exposure of contributor relationships.',
-    painPoints: [
-      'Donors want anonymity to avoid targeted harassment or surveillance',
-      'Public transaction history exposes all supporter relationships',
-      'Self-hosting privacy solutions is complex and risky',
+    descriptionKey: 'useCasesPage.personas.openSource.description',
+    painPointKeys: [
+      'useCasesPage.personas.openSource.painPoints.0',
+      'useCasesPage.personas.openSource.painPoints.1',
+      'useCasesPage.personas.openSource.painPoints.2',
     ],
-    solution:
-      'Wraith enables receivers to collect donations through unlinkable payment flows. Each donation goes to a unique address that cannot be traced back to previous donations. Contributors stay anonymous, and Wraith handles the cryptography—no infrastructure required.',
+    solutionKey: 'useCasesPage.personas.openSource.solution',
     docLink: 'https://docs.usewraith.xyz',
-    docLabel: 'Docs',
+    docLabelKey: 'useCasesPage.ctaButtons.docs',
   },
   {
     id: 'dao-payroll',
-    title: 'DAO Paying Contributors',
+    titleKey: 'useCasesPage.personas.daoPayroll.title',
     icon: '🏛️',
-    description:
-      'Distributing private payroll to DAO contributors without exposing salary information or organizational structure on-chain.',
-    painPoints: [
-      'Public payroll reveals who works for the DAO and their roles',
-      'Salary amounts are visible to competitors and bad actors',
-      'Contributors prefer payment privacy for security',
+    descriptionKey: 'useCasesPage.personas.daoPayroll.description',
+    painPointKeys: [
+      'useCasesPage.personas.daoPayroll.painPoints.0',
+      'useCasesPage.personas.daoPayroll.painPoints.1',
+      'useCasesPage.personas.daoPayroll.painPoints.2',
     ],
-    solution:
-      'Wraith lets DAOs send private payroll where each contributor receives funds through an unlinkable address. No transaction history reveals who received what, and the organizational structure stays private. Perfect for sensitive or strategic hires.',
+    solutionKey: 'useCasesPage.personas.daoPayroll.solution',
     docLink: 'https://docs.usewraith.xyz/sdk/overview',
-    docLabel: 'SDK Docs',
+    docLabelKey: 'useCasesPage.ctaButtons.docs',
   },
   {
     id: 'saas-payments',
-    title: 'SaaS Platform',
+    titleKey: 'useCasesPage.personas.saasPayments.title',
     icon: '💳',
-    description:
-      'Processing customer payments without exposing your customer list or buyer relationships to competitors and market analysts.',
-    painPoints: [
-      'Customer lists are visible on-chain, exposing business relationships',
-      'Competitors analyze payment flows to understand your business',
-      'Customers demand payment privacy',
+    descriptionKey: 'useCasesPage.personas.saasPayments.description',
+    painPointKeys: [
+      'useCasesPage.personas.saasPayments.painPoints.0',
+      'useCasesPage.personas.saasPayments.painPoints.1',
+      'useCasesPage.personas.saasPayments.painPoints.2',
     ],
-    solution:
-      'Wraith enables SaaS platforms to accept payments where customer transactions cannot be linked together. Each customer gets a unique payment flow, and your customer list stays private. Scale without exposing your growth.',
+    solutionKey: 'useCasesPage.personas.saasPayments.solution',
     docLink: 'https://docs.usewraith.xyz',
-    docLabel: 'Docs',
+    docLabelKey: 'useCasesPage.ctaButtons.docs',
   },
   {
     id: 'activist-support',
-    title: 'Activist & Journalist',
+    titleKey: 'useCasesPage.personas.activistSupport.title',
     icon: '✊',
-    description:
-      'Receiving funding from supporters without creating a traceable record that could endanger supporters or compromise operational security.',
-    painPoints: [
-      'Public supporters lists put people at risk of persecution or harassment',
-      'Governments can track funding sources and target supporters',
-      'Traditional funding creates permanent records',
+    descriptionKey: 'useCasesPage.personas.activistSupport.description',
+    painPointKeys: [
+      'useCasesPage.personas.activistSupport.painPoints.0',
+      'useCasesPage.personas.activistSupport.painPoints.1',
+      'useCasesPage.personas.activistSupport.painPoints.2',
     ],
-    solution:
-      'Wraith provides journalists and activists with a way to receive funding safely. Supporters send funds through unlinkable payments that cannot be traced back to them. Each donation is independently anonymous—no permanent record linking donors together.',
+    solutionKey: 'useCasesPage.personas.activistSupport.solution',
     docLink: 'https://demo.usewraith.xyz',
-    docLabel: 'Demo',
+    docLabelKey: 'useCasesPage.ctaButtons.tryDemo',
   },
   {
     id: 'remittances',
-    title: 'Family & Remittances',
+    titleKey: 'useCasesPage.personas.remittances.title',
     icon: '👨‍👩‍👧‍👦',
-    description:
-      'Sending money to family members in different countries while keeping financial flows private from local authorities or bad actors.',
-    painPoints: [
-      'Remittance flows are visible and could attract theft or extortion',
-      'Authoritarian regimes track outbound funds from diaspora',
-      'Expensive traditional remittance services expose transaction details',
+    descriptionKey: 'useCasesPage.personas.remittances.description',
+    painPointKeys: [
+      'useCasesPage.personas.remittances.painPoints.0',
+      'useCasesPage.personas.remittances.painPoints.1',
+      'useCasesPage.personas.remittances.painPoints.2',
     ],
-    solution:
-      'Wraith lets families send remittances through unlinkable payments. Each transfer goes to a unique address that cannot be linked to previous transfers. Nobody can track how much money is flowing or when, keeping families safe.',
+    solutionKey: 'useCasesPage.personas.remittances.solution',
     docLink: 'https://docs.usewraith.xyz',
-    docLabel: 'Docs',
+    docLabelKey: 'useCasesPage.ctaButtons.docs',
   },
   {
     id: 'b2b-invoicing',
-    title: 'B2B Supply Chain',
+    titleKey: 'useCasesPage.personas.b2bInvoicing.title',
     icon: '📦',
-    description:
-      'Managing supplier payments without exposing your supplier relationships, which are a competitive advantage and valuable business intelligence.',
-    painPoints: [
-      'Supplier lists are visible on-chain, revealing your supply chain',
-      'Payment patterns expose production volumes and business cycles',
-      'Competitors use this intel to out-bid you or target your suppliers',
+    descriptionKey: 'useCasesPage.personas.b2bInvoicing.description',
+    painPointKeys: [
+      'useCasesPage.personas.b2bInvoicing.painPoints.0',
+      'useCasesPage.personas.b2bInvoicing.painPoints.1',
+      'useCasesPage.personas.b2bInvoicing.painPoints.2',
     ],
-    solution:
-      'Wraith enables B2B invoicing where supplier payments cannot be linked together. Each invoice payment goes through an unlinkable flow, keeping your supplier relationships and payment patterns private. Protect your competitive edge.',
+    solutionKey: 'useCasesPage.personas.b2bInvoicing.solution',
     docLink: 'https://docs.usewraith.xyz/sdk/overview',
-    docLabel: 'SDK Docs',
+    docLabelKey: 'useCasesPage.ctaButtons.docs',
   },
 ];
 
 export default function UseCases() {
+  const { t } = useTranslation();
+
   return (
     <div className="bg-surface text-on-surface">
       <a href="#main-content" className="skip-link">
-        Skip to content
+        {t('useCasesPage.skipToContent')}
       </a>
 
       <header className="fixed top-0 z-50 w-full border-b border-outline-variant-30 bg-surface/80 backdrop-blur-sm">
@@ -133,11 +124,10 @@ export default function UseCases() {
         {/* Hero */}
         <section className="border-b border-outline-variant-30 px-12 py-24">
           <div className="mx-auto max-w-3xl">
-            <h1 className="font-heading text-5xl font-bold tracking-tight">Use Cases</h1>
-            <p className="mt-6 text-lg text-outline">
-              Different audiences need different privacy solutions. Explore how Wraith powers
-              payment privacy for diverse use cases.
-            </p>
+            <h1 className="font-heading text-5xl font-bold tracking-tight">
+              {t('useCasesPage.title')}
+            </h1>
+            <p className="mt-6 text-lg text-outline">{t('useCasesPage.description')}</p>
           </div>
         </section>
 
@@ -152,20 +142,20 @@ export default function UseCases() {
                 >
                   <div>
                     <div className="mb-3 text-3xl">{persona.icon}</div>
-                    <h2 className="font-heading text-2xl font-bold">{persona.title}</h2>
+                    <h2 className="font-heading text-2xl font-bold">{t(persona.titleKey)}</h2>
                   </div>
 
-                  <p className="text-sm text-outline">{persona.description}</p>
+                  <p className="text-sm text-outline">{t(persona.descriptionKey)}</p>
 
                   <div>
                     <h3 className="mb-3 font-heading text-sm font-semibold uppercase tracking-widest text-on-surface-variant">
-                      Pain Points
+                      {t('useCasesPage.painPoints')}
                     </h3>
                     <ul className="space-y-2">
-                      {persona.painPoints.map((point, idx) => (
+                      {persona.painPointKeys.map((key, idx) => (
                         <li key={idx} className="flex gap-3 text-sm text-outline">
                           <span className="mt-1 flex-shrink-0 text-primary">•</span>
-                          <span>{point}</span>
+                          <span>{t(key)}</span>
                         </li>
                       ))}
                     </ul>
@@ -173,9 +163,9 @@ export default function UseCases() {
 
                   <div className="border-t border-outline-variant-30 pt-6">
                     <h3 className="mb-3 font-heading text-sm font-semibold uppercase tracking-widest text-on-surface-variant">
-                      Wraith Solution
+                      {t('useCasesPage.wraithSolution')}
                     </h3>
-                    <p className="text-sm text-outline">{persona.solution}</p>
+                    <p className="text-sm text-outline">{t(persona.solutionKey)}</p>
                   </div>
 
                   <div className="flex gap-3 pt-2">
@@ -185,7 +175,7 @@ export default function UseCases() {
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-2 text-sm font-semibold text-primary transition-colors duration-150 hover:text-primary-hover"
                     >
-                      {persona.docLabel} →
+                      {t(persona.docLabelKey)} →
                     </a>
                   </div>
                 </article>
@@ -197,7 +187,7 @@ export default function UseCases() {
         {/* CTA */}
         <section className="border-t border-outline-variant-30 px-12 py-24">
           <div className="mx-auto max-w-3xl text-center">
-            <h2 className="font-heading text-4xl font-bold">Ready to add payment privacy?</h2>
+            <h2 className="font-heading text-4xl font-bold">{t('useCasesPage.readyToAdd')}</h2>
             <p className="mt-4 text-lg text-outline">
               Start with the docs, explore the demo, or launch the console.
             </p>
@@ -208,7 +198,7 @@ export default function UseCases() {
                 rel="noopener noreferrer"
                 className="inline-flex h-11 items-center justify-center bg-primary px-6 font-heading text-sm font-semibold uppercase tracking-wider text-surface transition-[filter] duration-150 hover:brightness-110"
               >
-                Documentation
+                {t('useCasesPage.ctaButtons.docs')}
               </a>
               <a
                 href="https://demo.usewraith.xyz"
@@ -216,7 +206,7 @@ export default function UseCases() {
                 rel="noopener noreferrer"
                 className="inline-flex h-11 items-center justify-center border border-outline px-6 font-heading text-sm font-semibold uppercase tracking-wider transition-colors duration-150 hover:bg-surface-dim"
               >
-                Try Demo
+                {t('useCasesPage.ctaButtons.tryDemo')}
               </a>
               <a
                 href="https://console.usewraith.xyz"
@@ -224,7 +214,7 @@ export default function UseCases() {
                 rel="noopener noreferrer"
                 className="inline-flex h-11 items-center justify-center border border-outline px-6 font-heading text-sm font-semibold uppercase tracking-wider transition-colors duration-150 hover:bg-surface-dim"
               >
-                Launch Console
+                {t('useCasesPage.ctaButtons.launchConsole')}
               </a>
             </div>
           </div>

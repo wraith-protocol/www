@@ -1,6 +1,7 @@
 import { useState, type KeyboardEvent } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useInView } from '../hooks/useInView';
 import { trackEvent } from '../analytics';
 import EcosystemPartners from '../components/EcosystemPartners';
@@ -101,7 +102,7 @@ const codeByTab: Record<Tab, CodeLine[]> = {
   ],
 };
 
-const colorMap = {
+const colorMap: Record<CodeLine['color'], string> = {
   code: 'text-on-surface-variant',
   comment: 'text-outline',
   highlight: 'text-primary',
@@ -112,65 +113,23 @@ const colorMap = {
 const contracts = [
   {
     name: 'Stealth Factory',
-    // TODO: replace with real testnet contract address after deployment
     address: 'CD3XPLACEHOLDER000000000000000000000000000000000000000000000',
     explorer: 'https://testnet.steexp.com/contract/CD3XPLACEHOLDER',
   },
   {
     name: 'Announcement Registry',
-    // TODO: replace with real testnet contract address after deployment
     address: 'GABCPLACEHOLDER000000000000000000000000000000000000000000000',
     explorer: 'https://testnet.steexp.com/contract/GABCPLACEHOLDER',
   },
   {
     name: 'Escrow',
-    // TODO: replace with real testnet contract address after deployment
     address: 'GESCPLACEHOLDER000000000000000000000000000000000000000000000',
     explorer: 'https://testnet.steexp.com/contract/GESCPLACEHOLDER',
   },
 ];
 
-// ─── How it works steps ───────────────────────────────────────────────────────
-
-const steps = [
-  {
-    index: '01',
-    title: 'ed25519 keys',
-    body: "Wraith uses Stellar's native ed25519 key pairs. Spending and viewing keys are derived from a single wallet signature — no new seed phrase required.",
-    mono: 'spending key · viewing key',
-  },
-  {
-    index: '02',
-    title: 'X25519 ECDH',
-    body: 'An ephemeral keypair is generated per payment. Sender and recipient derive a shared secret via X25519 ECDH — the secret never touches the chain.',
-    mono: 'ephemeral pub · shared secret',
-  },
-  {
-    index: '03',
-    title: 'Soroban announcement',
-    body: 'The ephemeral public key is recorded in a Soroban registry contract. Recipients scan announcements off-chain to find payments addressed to them.',
-    mono: 'Soroban · registry contract',
-  },
-  {
-    index: '04',
-    title: 'StrKey stealth address',
-    body: 'Each payment lands at a fresh one-time G… address. The link between sender, recipient, and amount is never visible on the public ledger.',
-    mono: 'st:xlm: · G... one-time address',
-  },
-];
-
-// ─── Value props ──────────────────────────────────────────────────────────────
-
-const props = [
-  { label: 'Tx cost', value: '<$0.001', sub: 'per stealth payment' },
-  { label: 'Finality', value: '~5s', sub: 'sub-second practical' },
-  { label: 'Key curve', value: 'ed25519', sub: 'native to Stellar' },
-  { label: 'Contracts', value: 'Soroban', sub: 'Rust · WASM' },
-];
-
-// ─── Component ────────────────────────────────────────────────────────────────
-
 export default function Stellar() {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<Tab>('send.ts');
   const [copyStatus, setCopyStatus] = useState<'idle' | 'copied' | 'failed'>('idle');
 
@@ -182,6 +141,56 @@ export default function Stellar() {
 
   const activeTabIndex = tabs.indexOf(activeTab);
   const lines = codeByTab[activeTab];
+
+  const steps = [
+    {
+      index: '01',
+      title: t('stellarPage.howItWorks.steps.step1Title'),
+      body: t('stellarPage.howItWorks.steps.step1Body'),
+      mono: 'spending key · viewing key',
+    },
+    {
+      index: '02',
+      title: t('stellarPage.howItWorks.steps.step2Title'),
+      body: t('stellarPage.howItWorks.steps.step2Body'),
+      mono: 'ephemeral pub · shared secret',
+    },
+    {
+      index: '03',
+      title: t('stellarPage.howItWorks.steps.step3Title'),
+      body: t('stellarPage.howItWorks.steps.step3Body'),
+      mono: 'Soroban · registry contract',
+    },
+    {
+      index: '04',
+      title: t('stellarPage.howItWorks.steps.step4Title'),
+      body: t('stellarPage.howItWorks.steps.step4Body'),
+      mono: 'st:xlm: · G... one-time address',
+    },
+  ];
+
+  const props = [
+    {
+      label: t('stellarPage.props.txCost'),
+      value: '<$0.001',
+      sub: t('stellarPage.props.txCostSub'),
+    },
+    {
+      label: t('stellarPage.props.finality'),
+      value: '~5s',
+      sub: t('stellarPage.props.finalitySub'),
+    },
+    {
+      label: t('stellarPage.props.keyCurve'),
+      value: 'ed25519',
+      sub: t('stellarPage.props.keyCurveSub'),
+    },
+    {
+      label: t('stellarPage.props.contracts'),
+      value: 'Soroban',
+      sub: t('stellarPage.props.contractsSub'),
+    },
+  ];
 
   const handleTabChange = (tab: Tab) => {
     setActiveTab(tab);
@@ -218,56 +227,42 @@ export default function Stellar() {
   return (
     <>
       <Helmet>
-        <title>Stealth payments on Stellar – Wraith Protocol</title>
-        <meta
-          name="description"
-          content="Low-cost, sub-second, ed25519 stealth payments on Stellar with Soroban smart contracts. Build private payment rails with the Wraith SDK."
-        />
-        <meta property="og:title" content="Stealth payments on Stellar – Wraith Protocol" />
-        <meta
-          property="og:description"
-          content="Low-cost, sub-second, ed25519 stealth payments on Stellar with Soroban smart contracts."
-        />
-        {/* TODO: replace with real OG image */}
+        <title>{t('stellarPage.metaTitle')}</title>
+        <meta name="description" content={t('stellarPage.metaDescription')} />
+        <meta property="og:title" content={t('stellarPage.metaTitle')} />
+        <meta property="og:description" content={t('stellarPage.metaDescription')} />
         <meta property="og:image" content="https://usewraith.xyz/og/stellar.png" />
         <meta property="og:url" content="https://usewraith.xyz/stellar" />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
       </Helmet>
 
-      {/* Layout already provides <main> — we render sections directly */}
-
-      {/* ── Hero ──────────────────────────────────────────────────────────── */}
+      {/* Hero */}
       <section ref={heroRef} className="border-b border-outline-variant-30 px-6 py-24 md:px-12">
         <div className="mx-auto max-w-336">
-          {/* Badges */}
           <div className="flex flex-wrap items-center gap-3 mb-8" data-reveal={heroInView}>
             <div className="flex items-center gap-2 border border-outline-variant px-2.5 py-1.5">
               <span className="h-1.5 w-1.5 rounded-full bg-tertiary" />
               <span className="font-mono text-[10px] font-semibold tracking-[1.5px] text-on-surface-variant">
-                LIVE TESTNET
+                {t('stellarPage.badges.liveTestnet')}
               </span>
             </div>
             <div className="border border-tertiary px-2.5 py-1.5">
               <span className="font-mono text-[10px] font-semibold uppercase tracking-[1.5px] text-tertiary">
-                SDF PARTNER
+                {t('stellarPage.badges.stellarPartner')}
               </span>
             </div>
           </div>
 
           <div className="flex flex-col gap-16 md:flex-row md:gap-16">
-            {/* Left: copy */}
             <div className="flex w-full flex-col gap-8 md:w-1/2" data-reveal={heroInView}>
               <h1 className="font-heading text-[36px] font-bold leading-[1.05] tracking-[-2px] text-on-surface sm:text-[48px] md:text-[56px]">
                 Stellar Integration
               </h1>
               <p className="font-body text-[17px] leading-[1.6] text-on-surface-variant">
-                Wraith brings ERC-5564 stealth address semantics to Stellar — using native ed25519
-                keys, X25519 ECDH, and Soroban contracts to make every payment unlink&shy;able
-                without changing how Stellar works.
+                {t('stellarPage.subtitle')}
               </p>
 
-              {/* CTA row */}
               <div className="flex flex-wrap items-center gap-3">
                 <a
                   href="https://demo.usewraith.xyz/stellar"
@@ -276,7 +271,7 @@ export default function Stellar() {
                   onClick={() => trackEvent('Stellar Demo CTA')}
                   className="flex h-12 items-center justify-center bg-primary px-7 font-heading text-[13px] font-semibold uppercase tracking-[1.5px] text-surface transition-[filter] duration-150 hover:brightness-110"
                 >
-                  Try Stellar Demo
+                  {t('stellarPage.cta.tryDemo')}
                 </a>
                 <a
                   href="https://docs.usewraith.xyz/chains/stellar"
@@ -285,7 +280,7 @@ export default function Stellar() {
                   onClick={() => trackEvent('Stellar Docs CTA')}
                   className="flex h-12 items-center justify-center border border-outline-variant px-7 font-heading text-[13px] font-semibold uppercase tracking-[1.5px] text-primary transition-colors duration-150 hover:bg-surface-bright"
                 >
-                  Read Stellar docs
+                  {t('stellarPage.cta.readDocs')}
                 </a>
                 <a
                   href="https://spectre.usewraith.xyz"
@@ -298,8 +293,7 @@ export default function Stellar() {
                 </a>
               </div>
 
-              {/* Value prop stats — matches Hero.tsx stat block */}
-              <div className="flex flex-wrap items-center gap-8 pt-4">
+              <div className="grid grid-cols-2 gap-4 border-t border-outline-variant-30 pt-8 sm:grid-cols-4">
                 {props.map((p) => (
                   <div key={p.label} className="flex flex-col gap-1">
                     <span className="font-mono text-[10px] font-semibold tracking-[1.5px] text-outline uppercase">
@@ -314,7 +308,6 @@ export default function Stellar() {
               </div>
             </div>
 
-            {/* Right: visual — stealth address anatomy */}
             <div className="flex w-full flex-col md:w-1/2" data-reveal={heroInView}>
               <div className="flex items-center justify-between border border-b-0 border-outline-variant bg-surface-container px-4 py-3">
                 <span className="font-mono text-[11px] text-on-surface-variant">
@@ -372,15 +365,15 @@ export default function Stellar() {
         </div>
       </section>
 
-      {/* ── How it works ──────────────────────────────────────────────────── */}
+      {/* How it works */}
       <section ref={stepsRef} className="border-b border-outline-variant-30 px-6 py-24 md:px-12">
         <div className="mx-auto max-w-336 flex flex-col gap-10">
           <div className="flex flex-col gap-3" data-reveal={stepsInView}>
             <span className="font-mono text-[10px] font-semibold uppercase tracking-[2px] text-outline">
-              Protocol
+              {t('stellarPage.howItWorks.eyebrow')}
             </span>
             <h2 className="font-heading text-[28px] font-bold tracking-[-1.2px] text-on-surface sm:text-[40px]">
-              How it works on Stellar
+              {t('stellarPage.howItWorks.title')}
             </h2>
           </div>
 
@@ -410,15 +403,15 @@ export default function Stellar() {
         </div>
       </section>
 
-      {/* ── Deployment table ──────────────────────────────────────────────── */}
+      {/* Deployment table */}
       <section ref={tableRef} className="border-b border-outline-variant-30 px-6 py-24 md:px-12">
         <div className="mx-auto max-w-336 flex flex-col gap-8" data-reveal={tableInView}>
           <div className="flex flex-col gap-3">
             <span className="font-mono text-[10px] font-semibold uppercase tracking-[2px] text-outline">
-              Deployments
+              {t('stellarPage.deployments.eyebrow')}
             </span>
             <h2 className="font-heading text-[28px] font-bold tracking-[-1.2px] text-on-surface sm:text-[40px]">
-              Testnet contracts
+              {t('stellarPage.deployments.title')}
             </h2>
           </div>
 
@@ -427,13 +420,13 @@ export default function Stellar() {
               <thead>
                 <tr className="border-b border-outline-variant bg-surface-container">
                   <th className="py-3 px-4 text-left font-mono text-[10px] font-semibold tracking-[1.5px] text-outline uppercase">
-                    Contract
+                    {t('stellarPage.deployments.contractCol')}
                   </th>
                   <th className="py-3 px-4 text-left font-mono text-[10px] font-semibold tracking-[1.5px] text-outline uppercase">
-                    Address
+                    {t('stellarPage.deployments.addressCol')}
                   </th>
                   <th className="py-3 px-4 text-left font-mono text-[10px] font-semibold tracking-[1.5px] text-outline uppercase">
-                    Explorer
+                    {t('stellarPage.deployments.explorerCol')}
                   </th>
                 </tr>
               </thead>
@@ -459,7 +452,7 @@ export default function Stellar() {
                         }
                         className="font-mono text-[11px] font-semibold tracking-[1px] text-tertiary hover:brightness-110 transition-[filter]"
                       >
-                        View ↗
+                        {t('stellarPage.deployments.viewExplorer')}
                       </a>
                     </td>
                   </tr>
@@ -467,41 +460,24 @@ export default function Stellar() {
               </tbody>
             </table>
           </div>
-
-          <p className="font-mono text-[10px] tracking-[1px] text-outline">
-            * Addresses are placeholders — replace after testnet deployment.
-          </p>
         </div>
       </section>
 
-      {/* ── Code preview ──────────────────────────────────────────────────── */}
-      {/* Mirrors Hero.tsx code block structure exactly */}
+      {/* Code preview */}
       <section ref={codeRef} className="border-b border-outline-variant-30 px-6 py-24 md:px-12">
         <div className="mx-auto max-w-336 flex flex-col gap-8" data-reveal={codeInView}>
           <div className="flex flex-col gap-3">
             <span className="font-mono text-[10px] font-semibold uppercase tracking-[2px] text-outline">
-              SDK
+              {t('stellarPage.codeSection.eyebrow')}
             </span>
             <h2 className="font-heading text-[28px] font-bold tracking-[-1.2px] text-on-surface sm:text-[40px]">
-              Code examples
+              {t('stellarPage.codeSection.title')}
             </h2>
-            <p className="font-body text-[14px] leading-[1.6] text-on-surface-variant max-w-xl">
-              All functions are tree-shakeable and typed. Import only what you need from{' '}
-              <code className="font-mono text-[13px] text-primary">
-                @wraith-protocol/sdk/chains/stellar
-              </code>
-              .
-            </p>
           </div>
 
-          {/* Tab bar — mirrors Hero.tsx exactly */}
           <div className="flex flex-col">
             <div className="flex items-center justify-between border border-b-0 border-outline-variant bg-surface-container px-4 py-3">
-              <div
-                className="flex items-center gap-0"
-                role="tablist"
-                aria-label="Stellar code examples"
-              >
+              <div role="tablist" className="flex gap-1" aria-label="Code examples">
                 {tabs.map((tab) => (
                   <button
                     key={tab}
@@ -535,9 +511,9 @@ export default function Stellar() {
                 className="flex cursor-pointer items-center gap-1.5 px-2 py-1 transition-colors duration-150 hover:opacity-80"
               >
                 <span className="font-mono text-[10px] font-semibold tracking-[1px] text-outline">
-                  {copyStatus === 'copied' && 'COPIED'}
-                  {copyStatus === 'failed' && 'FAILED'}
-                  {copyStatus === 'idle' && 'COPY'}
+                  {copyStatus === 'copied' && t('stellarPage.codeSection.copied')}
+                  {copyStatus === 'failed' && t('stellarPage.codeSection.failed')}
+                  {copyStatus === 'idle' && t('stellarPage.codeSection.copy')}
                 </span>
               </button>
               <span className="sr-only" aria-live="polite">
@@ -586,7 +562,7 @@ export default function Stellar() {
         </div>
       </section>
 
-      {/* ── CTAs ──────────────────────────────────────────────────────────── */}
+      {/* CTAs */}
       <section ref={ctaRef} className="border-b border-outline-variant-30 px-6 py-24 md:px-12">
         <div className="mx-auto max-w-336 flex flex-col gap-10" data-reveal={ctaInView}>
           <div className="flex flex-col gap-3">
@@ -594,7 +570,7 @@ export default function Stellar() {
               Get started
             </span>
             <h2 className="font-heading text-[28px] font-bold tracking-[-1.2px] text-on-surface sm:text-[40px]">
-              Build on Stellar today
+              {t('stellarPage.ctaSection.title')}
             </h2>
           </div>
 
@@ -606,7 +582,7 @@ export default function Stellar() {
               onClick={() => trackEvent('Stellar Demo CTA bottom')}
               className="flex h-12 items-center justify-center bg-primary px-7 font-heading text-[13px] font-semibold uppercase tracking-[1.5px] text-surface transition-[filter] duration-150 hover:brightness-110"
             >
-              Try Stellar Demo
+              {t('stellarPage.cta.tryDemo')}
             </a>
             <a
               href="https://docs.usewraith.xyz/chains/stellar"
@@ -615,7 +591,7 @@ export default function Stellar() {
               onClick={() => trackEvent('Stellar Docs CTA bottom')}
               className="flex h-12 items-center justify-center border border-outline-variant px-7 font-heading text-[13px] font-semibold uppercase tracking-[1.5px] text-primary transition-colors duration-150 hover:bg-surface-bright"
             >
-              Read Stellar docs
+              {t('stellarPage.cta.readDocs')}
             </a>
             <a
               href="https://spectre.usewraith.xyz"
@@ -630,11 +606,10 @@ export default function Stellar() {
               to="/"
               className="flex h-12 items-center justify-center border border-outline-variant px-7 font-heading text-[13px] font-semibold uppercase tracking-[1.5px] text-primary transition-colors duration-150 hover:bg-surface-bright"
             >
-              ← Back to home
+              ← {t('faqPage.backHome')}
             </Link>
           </div>
 
-          {/* Ecosystem credits */}
           <div className="mt-4 flex flex-col gap-4 border-t border-outline-variant pt-8">
             <span className="font-mono text-[10px] font-semibold uppercase tracking-[2px] text-outline">
               Built with
@@ -660,7 +635,6 @@ export default function Stellar() {
         </div>
       </section>
 
-      {/* ── Ecosystem partners ────────────────────────────────────────────── */}
       <EcosystemPartners />
     </>
   );

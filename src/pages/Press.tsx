@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { copyToClipboard } from '../utils/clipboard';
 
 const BRAND_COLORS = [
@@ -19,6 +20,7 @@ const LOGOS = [
 const COVERAGE: { outlet: string; title: string; date: string; href: string }[] = [];
 
 function CopyBlock({ children }: { children: string }) {
+  const { t } = useTranslation();
   const [copyStatus, setCopyStatus] = useState<'idle' | 'copied' | 'failed'>('idle');
 
   const copy = async () => {
@@ -40,22 +42,24 @@ function CopyBlock({ children }: { children: string }) {
       <button
         type="button"
         onClick={copy}
-        aria-label="Copy press description"
+        aria-label={t('pressPage.labels.copyDescription')}
         className="absolute right-3 top-3 font-mono text-[10px] font-semibold tracking-[1.5px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
       >
-        {copyStatus === 'copied' && 'COPIED'}
-        {copyStatus === 'failed' && 'FAILED'}
-        {copyStatus === 'idle' && 'COPY'}
+        {copyStatus === 'copied' && t('pressPage.labels.copied')}
+        {copyStatus === 'failed' && t('pressPage.labels.failed')}
+        {copyStatus === 'idle' && t('pressPage.labels.copy')}
       </button>
       <span className="sr-only" aria-live="polite">
-        {copyStatus === 'copied' && 'Press description copied to clipboard'}
-        {copyStatus === 'failed' && 'Press description could not be copied'}
+        {copyStatus === 'copied' && t('pressPage.labels.copiedToClipboard')}
+        {copyStatus === 'failed' && t('pressPage.labels.couldNotCopy')}
       </span>
     </div>
   );
 }
 
 export default function Press() {
+  const { t } = useTranslation();
+
   return (
     <div className="min-h-screen bg-surface text-on-surface">
       {/* Header */}
@@ -71,7 +75,7 @@ export default function Press() {
             href="/"
             className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
           >
-            ← Home
+            {t('pressPage.home')}
           </a>
         </div>
       </header>
@@ -80,13 +84,13 @@ export default function Press() {
         {/* Page title */}
         <div className="mb-16 flex flex-col gap-3">
           <span className="font-mono text-[10px] font-semibold tracking-[1.5px] text-outline">
-            PRESS KIT
+            {t('pressPage.eyebrow')}
           </span>
           <h1 className="font-heading text-4xl font-bold tracking-tight text-on-surface md:text-5xl">
-            Brand Resources
+            {t('pressPage.title')}
           </h1>
           <p className="font-body text-[15px] leading-[1.6] text-on-surface-variant">
-            Assets, copy, and contacts for press and partners.
+            {t('pressPage.description')}
           </p>
         </div>
 
@@ -94,11 +98,11 @@ export default function Press() {
           {/* Descriptions */}
           <section className="flex flex-col gap-4">
             <h2 className="font-mono text-[10px] font-semibold tracking-[1.5px] text-outline">
-              DESCRIPTIONS
+              {t('pressPage.sections.descriptions')}
             </h2>
 
             <div className="flex flex-col gap-2">
-              <p className="font-body text-[12px] text-outline">One-line</p>
+              <p className="font-body text-[12px] text-outline">{t('pressPage.labels.oneLine')}</p>
               <CopyBlock>
                 Wraith Protocol is an open-source stealth-address toolkit for private, unlinkable
                 payments across EVM, Stellar, Solana, and CKB.
@@ -106,14 +110,18 @@ export default function Press() {
             </div>
 
             <div className="flex flex-col gap-2">
-              <p className="font-body text-[12px] text-outline">50-word</p>
+              <p className="font-body text-[12px] text-outline">
+                {t('pressPage.labels.fiftyWord')}
+              </p>
               <CopyBlock>
                 {`Wraith Protocol is an open-source, multi-chain stealth-address toolkit built on ERC-5564 and ERC-6538. It lets developers add receiver-unlinkable private payments to any app in minutes. Wraith supports EVM chains, Stellar (with memo-enabled stealth), Solana, and CKB — shipping as a 14.2 KB TypeScript SDK with zero external dependencies.`}
               </CopyBlock>
             </div>
 
             <div className="flex flex-col gap-2">
-              <p className="font-body text-[12px] text-outline">Boilerplate (~200 words)</p>
+              <p className="font-body text-[12px] text-outline">
+                {t('pressPage.labels.boilerplate')}
+              </p>
               <CopyBlock>
                 {`Wraith Protocol is an open-source, developer-first stealth-address infrastructure layer designed to bring practical financial privacy to every blockchain ecosystem. Built on the ERC-5564 and ERC-6538 standards, Wraith enables receiver-unlinkable payments — where each transaction is sent to a one-time stealth address that only the intended recipient can discover and spend from, breaking the on-chain link between sender and receiver.
 
@@ -129,7 +137,7 @@ Wraith Protocol was founded with the conviction that privacy is not a premium fe
           {/* Logo downloads */}
           <section className="flex flex-col gap-4">
             <h2 className="font-mono text-[10px] font-semibold tracking-[1.5px] text-outline">
-              LOGOS
+              {t('pressPage.sections.logos')}
             </h2>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {LOGOS.map(({ file, label, bg }) => (
@@ -158,7 +166,7 @@ Wraith Protocol was founded with the conviction that privacy is not a premium fe
           {/* Brand colors */}
           <section className="flex flex-col gap-4">
             <h2 className="font-mono text-[10px] font-semibold tracking-[1.5px] text-outline">
-              BRAND COLORS
+              {t('pressPage.sections.brandColors')}
             </h2>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
               {BRAND_COLORS.map(({ name, hex }) => (
@@ -186,14 +194,14 @@ Wraith Protocol was founded with the conviction that privacy is not a premium fe
               ))}
             </div>
             <p className="font-body text-[11px] text-outline">
-              Click a swatch to copy the hex value.
+              {t('pressPage.labels.clickToCopy')}
             </p>
           </section>
 
           {/* Typography */}
           <section className="flex flex-col gap-4">
             <h2 className="font-mono text-[10px] font-semibold tracking-[1.5px] text-outline">
-              TYPOGRAPHY
+              {t('pressPage.sections.typography')}
             </h2>
             <div className="flex flex-col gap-3 sm:flex-row">
               <a
@@ -227,7 +235,7 @@ Wraith Protocol was founded with the conviction that privacy is not a premium fe
           {COVERAGE.length > 0 && (
             <section className="flex flex-col gap-4">
               <h2 className="font-mono text-[10px] font-semibold tracking-[1.5px] text-outline">
-                MEDIA COVERAGE
+                {t('pressPage.sections.coverage')}
               </h2>
               <div className="flex flex-col gap-0">
                 {COVERAGE.map(({ outlet, title, date, href }) => (
@@ -254,11 +262,10 @@ Wraith Protocol was founded with the conviction that privacy is not a premium fe
           {/* Download all */}
           <section className="flex flex-col gap-4">
             <h2 className="font-mono text-[10px] font-semibold tracking-[1.5px] text-outline">
-              DOWNLOAD
+              {t('pressPage.sections.download')}
             </h2>
             <p className="font-body text-[13px] leading-[1.6] text-on-surface-variant">
-              Individual SVG files are available above. A ZIP archive of the full press kit is
-              available on request — email us at{' '}
+              {t('pressPage.labels.downloadNotice')}{' '}
               <a
                 href="mailto:press@usewraith.xyz"
                 className="text-primary underline underline-offset-2"
@@ -272,7 +279,7 @@ Wraith Protocol was founded with the conviction that privacy is not a premium fe
           {/* Press contact */}
           <section className="flex flex-col gap-4 border-t border-outline-variant pt-12">
             <h2 className="font-mono text-[10px] font-semibold tracking-[1.5px] text-outline">
-              PRESS CONTACT
+              {t('pressPage.sections.contact')}
             </h2>
             <a
               href="mailto:press@usewraith.xyz"
@@ -281,8 +288,7 @@ Wraith Protocol was founded with the conviction that privacy is not a premium fe
               press@usewraith.xyz
             </a>
             <p className="font-body text-[13px] leading-[1.6] text-on-surface-variant">
-              For interview requests, partnership inquiries, or asset usage questions. We aim to
-              respond within one business day.
+              {t('pressPage.labels.contactNotice')}
             </p>
           </section>
         </div>

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import roadmap from '../data/roadmap.json';
@@ -13,19 +14,22 @@ type Milestone = {
   highlights: string[];
 };
 
-const statusMeta: Record<Status, { label: string; marker: string; badge: string }> = {
+const statusMeta: Record<
+  Status,
+  { key: 'shipped' | 'inProgress' | 'planned'; marker: string; badge: string }
+> = {
   shipped: {
-    label: 'Shipped',
+    key: 'shipped',
     marker: 'bg-tertiary',
     badge: 'border-tertiary text-tertiary',
   },
   'in-progress': {
-    label: 'In Progress',
+    key: 'inProgress',
     marker: 'bg-blue',
     badge: 'border-blue text-blue',
   },
   planned: {
-    label: 'Planned',
+    key: 'planned',
     marker: 'bg-outline',
     badge: 'border-outline-variant text-outline',
   },
@@ -34,10 +38,12 @@ const statusMeta: Record<Status, { label: string; marker: string; badge: string 
 const milestones = roadmap.milestones as Milestone[];
 
 export default function Roadmap() {
+  const { t } = useTranslation();
+
   return (
     <div className="bg-surface text-on-surface">
       <a href="#main-content" className="skip-link">
-        Skip to content
+        {t('roadmapPage.skipToContent')}
       </a>
 
       <Header />
@@ -46,14 +52,13 @@ export default function Roadmap() {
         <section className="border-b border-outline-variant-30 px-6 py-20 md:px-12">
           <div className="mx-auto flex max-w-6xl flex-col gap-5">
             <span className="font-mono text-[10px] font-semibold uppercase tracking-[2px] text-outline">
-              Roadmap
+              {t('roadmapPage.eyebrow')}
             </span>
             <h1 className="font-heading text-[40px] font-bold leading-[1.05] tracking-[-1.5px] text-on-surface sm:text-5xl">
-              Building private payments for every chain
+              {t('roadmapPage.title')}
             </h1>
             <p className="max-w-2xl font-body text-[17px] leading-[1.6] text-on-surface-variant">
-              Where Wraith Protocol has been and where it is going — from the core stealth-address
-              cryptography to a managed platform and beyond.
+              {t('roadmapPage.description')}
             </p>
             <a
               href={roadmap.docsUrl}
@@ -61,7 +66,7 @@ export default function Roadmap() {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 font-heading text-sm font-semibold text-primary transition-colors duration-150 hover:brightness-110"
             >
-              Read the full roadmap →
+              {t('roadmapPage.fullRoadmap')}
             </a>
           </div>
         </section>
@@ -90,7 +95,7 @@ export default function Roadmap() {
                         className={`inline-flex items-center gap-1.5 border px-2 py-1 font-mono text-[9px] font-semibold uppercase tracking-[1.2px] ${meta.badge}`}
                       >
                         <span aria-hidden="true" className={`h-1.5 w-1.5 ${meta.marker}`} />
-                        {meta.label}
+                        {t(`roadmapPage.statuses.${meta.key}`)}
                       </span>
                     </div>
 
@@ -126,11 +131,10 @@ export default function Roadmap() {
         <section className="border-t border-outline-variant-30 px-6 py-20 md:px-12">
           <div className="mx-auto flex max-w-2xl flex-col items-start gap-5">
             <h2 className="font-heading text-3xl font-bold tracking-[-0.5px]">
-              Follow along as we ship
+              {t('roadmapPage.followAlong')}
             </h2>
             <p className="font-body text-[15px] leading-[1.6] text-on-surface-variant">
-              The roadmap evolves as milestones land. For the detailed breakdown and the latest
-              status, head to the docs.
+              {t('roadmapPage.docsNotice')}
             </p>
             <a
               href={roadmap.docsUrl}
@@ -138,7 +142,7 @@ export default function Roadmap() {
               rel="noopener noreferrer"
               className="inline-flex h-11 items-center justify-center bg-primary px-6 font-heading text-sm font-semibold uppercase tracking-wider text-surface transition-[filter] duration-150 hover:brightness-110"
             >
-              View roadmap docs
+              {t('roadmapPage.viewDocs')}
             </a>
           </div>
         </section>

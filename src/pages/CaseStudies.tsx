@@ -398,6 +398,7 @@ function CaseStudiesList() {
 }
 
 export default function CaseStudies() {
+  const { t } = useTranslation();
   const { slug } = useParams<{ slug?: string }>();
 
   if (slug) {
@@ -407,13 +408,13 @@ export default function CaseStudies() {
         <Layout>
           <div className="flex min-h-[400px] flex-col items-center justify-center gap-3 px-6">
             <h1 className="font-heading text-[24px] font-bold text-on-surface">
-              Case Study Not Found
+              {t('caseStudies.notFound')}
             </h1>
             <Link
               to="/case-studies"
               className="font-body text-[13px] text-primary underline underline-offset-2"
             >
-              ← Back to all case studies
+              ← {t('caseStudies.backToAll')}
             </Link>
           </div>
         </Layout>

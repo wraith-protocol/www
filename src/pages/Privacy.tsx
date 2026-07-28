@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import PrivacyComparison from '../components/PrivacyComparison';
 
 const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
@@ -13,6 +14,8 @@ const Section = ({ title, children }: { title: string; children: React.ReactNode
 );
 
 export default function Privacy() {
+  const { t } = useTranslation();
+
   return (
     <div className="min-h-screen bg-surface text-on-surface">
       {/* minimal nav */}
@@ -33,24 +36,20 @@ export default function Privacy() {
               Legal
             </span>
             <h1 className="font-heading text-[36px] font-bold tracking-[-1.5px] text-on-surface sm:text-[48px]">
-              Privacy Policy
+              {t('privacyPage.title')}
             </h1>
-            <p className="font-body text-[14px] text-outline">
-              Last updated: June 2025 &nbsp;·&nbsp; usewraith.xyz
-            </p>
+            <p className="font-body text-[14px] text-outline">{t('privacyPage.meta')}</p>
           </div>
 
           {/* intro */}
           <p className="font-body text-[15px] leading-[1.7] text-on-surface-variant">
-            Wraith Protocol is a privacy-first project. We apply the same principle to this website:
-            collect only what we need to improve the product, and nothing that could identify you
-            personally.
+            {t('privacyPage.intro')}
           </p>
 
           {/* interactive comparison */}
           <PrivacyComparison />
 
-          <Section title="What we collect">
+          <Section title={t('privacyPage.sections.whatWeCollect')}>
             <p>
               We use{' '}
               <a
@@ -65,35 +64,22 @@ export default function Privacy() {
               with this site.
             </p>
             <p>
-              Plausible collects the following{' '}
-              <strong className="text-on-surface">aggregate</strong> data per page visit:
+              Plausible collects aggregate data per page visit including Page URL, browser info, OS,
+              region, device type, scroll depth, and goal events.
             </p>
-            <ul className="ml-4 list-disc space-y-1">
-              <li>Page URL and referrer</li>
-              <li>Browser name and version (no fingerprinting)</li>
-              <li>Operating system</li>
-              <li>Country and region (derived from IP; the IP itself is never stored)</li>
-              <li>Device type (desktop / tablet / mobile)</li>
-              <li>Scroll depth percentage</li>
-              <li>
-                Goal events: &ldquo;Read the Docs&rdquo;, &ldquo;Try the Demo&rdquo;, &ldquo;Get API
-                Key&rdquo;, &ldquo;Code Tab Change&rdquo;
-              </li>
-            </ul>
           </Section>
 
-          <Section title="What we do NOT collect">
+          <Section title={t('privacyPage.sections.whatWeDoNotCollect')}>
             <ul className="ml-4 list-disc space-y-1">
-              <li>No cookies are set — ever.</li>
-              <li>No persistent identifiers or device fingerprints.</li>
-              <li>No cross-site tracking.</li>
-              <li>No IP addresses stored or logged.</li>
-              <li>No personal information (name, email, wallet address, etc.).</li>
+              <li>{t('privacyPage.listItems.noCookies')}</li>
+              <li>{t('privacyPage.listItems.noIdentifiers')}</li>
+              <li>{t('privacyPage.listItems.noTracking')}</li>
+              <li>{t('privacyPage.listItems.noIp')}</li>
+              <li>{t('privacyPage.listItems.noPersonal')}</li>
             </ul>
             <p>
-              Because Plausible is cookieless,{' '}
-              <strong className="text-on-surface">no consent banner is required</strong> under GDPR,
-              PECR, or ePrivacy Directive. See Plausible&apos;s own{' '}
+              Because Plausible is cookieless, no consent banner is required under GDPR, PECR, or
+              ePrivacy Directive. See Plausible&apos;s own{' '}
               <a
                 href="https://plausible.io/data-policy"
                 target="_blank"
@@ -106,38 +92,11 @@ export default function Privacy() {
             </p>
           </Section>
 
-          <Section title="Why Plausible?">
-            <p>We chose Plausible over Google Analytics or other trackers because it is: </p>
-            <ul className="ml-4 list-disc space-y-1">
-              <li>
-                <strong className="text-on-surface">Cookieless by design</strong> — the script uses
-                a daily rotating hash, not a persistent cookie or localStorage value.
-              </li>
-              <li>
-                <strong className="text-on-surface">EU-hosted</strong> — data is processed on
-                servers in the EU (Hetzner, Germany/Finland). No data transfer to the US.
-              </li>
-              <li>
-                <strong className="text-on-surface">Open source</strong> — the full codebase is
-                auditable at{' '}
-                <a
-                  href="https://github.com/plausible/analytics"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-primary hover:underline"
-                >
-                  github.com/plausible/analytics
-                </a>
-                .
-              </li>
-              <li>
-                <strong className="text-on-surface">Lightweight</strong> — the tracking script is
-                under 2 KB gzipped, adding no meaningful latency.
-              </li>
-            </ul>
+          <Section title={t('privacyPage.sections.whyPlausible')}>
+            <p>{t('privacyPage.listItems.whyPlausibleSummary')}</p>
           </Section>
 
-          <Section title="Third-party services">
+          <Section title={t('privacyPage.sections.thirdParty')}>
             <p>
               Beyond Plausible, this site loads fonts from{' '}
               <a
@@ -153,7 +112,7 @@ export default function Privacy() {
             </p>
           </Section>
 
-          <Section title="Your rights">
+          <Section title={t('privacyPage.sections.yourRights')}>
             <p>
               Under GDPR you have the right to access, rectify, and erase personal data held about
               you. Because we store no personal data, there is nothing to access, rectify, or erase.
@@ -165,7 +124,7 @@ export default function Privacy() {
             </p>
           </Section>
 
-          <Section title="Changes to this policy">
+          <Section title={t('privacyPage.sections.changes')}>
             <p>
               We may update this page when our data practices change. The date at the top of this
               page reflects the most recent revision.
@@ -177,7 +136,7 @@ export default function Privacy() {
               to="/"
               className="font-heading text-[11px] font-semibold tracking-[1.5px] text-on-surface-variant transition-colors hover:text-on-surface"
             >
-              ← Back to Home
+              {t('privacyPage.backToHome')}
             </Link>
           </div>
         </div>

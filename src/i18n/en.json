@@ -318,6 +318,7 @@
     "filterByChain": "FILTER BY CHAIN",
     "allChains": "All Chains",
     "readStudy": "Read Case Study",
+    "notFound": "Case Study Not Found",
     "noStudies": "NO STUDIES FOUND",
     "noStudiesDescription": "Try selecting a different chain filter.",
     "backToAll": "Back to all case studies",
@@ -348,6 +349,237 @@
     "legend": {
       "publicData": "Public Data",
       "privateData": "Private Data"
+    }
+  },
+  "careers": {
+    "meta": {
+      "title": "Careers – Wraith Protocol",
+      "description": "Wraith Protocol isn't hiring full-time roles right now, but we run paid open-source bounties and want to hear from prospective contributors."
+    },
+    "hero": {
+      "eyebrow": "Careers",
+      "title": "We're not hiring right now — but we still want to hear from you.",
+      "description": "Wraith Protocol is a small, remote, open-source team. We don't have full-time openings today, but we regularly fund contract work through the Stellar Wave program and always want to know who's out there for when that changes."
+    },
+    "bounties": {
+      "eyebrow": "Paid contract work",
+      "title": "Contribute now, get paid through Stellar Wave",
+      "description": "Every open issue on our GitHub tagged help wanted is scoped, sized, and eligible for the Stellar Wave / Drips reward pool. No interview process — apply on the issue, get assigned, ship it, get paid.",
+      "step1Title": "Browse open bounties",
+      "step1Body": "Every issue lists context, scope, tier, and acceptance criteria up front.",
+      "step1Link": "View on GitHub →",
+      "step2Title": "Apply on the issue",
+      "step2Body": "Comment with a short note on why you want it. Maintainers assign based on fit, not pedigree.",
+      "step3Title": "Ship it, get reviewed, get paid",
+      "step3Body": "Open a PR linked to the issue. Once it's merged, Points convert to a share of the Stellar Wave reward pool via Drips."
+    },
+    "workingStyle": {
+      "eyebrow": "Values & working style",
+      "title": "How we work",
+      "values": {
+        "v1Title": "Privacy is the default, not a feature",
+        "v1Body": "We build stealth-address infrastructure because we believe unlinkable payments should be the baseline, not a premium add-on. The same principle shows up in how we run this site: no cookies, no trackers, no dark patterns.",
+        "v2Title": "Small team, high ownership",
+        "v2Body": "There's no layer between you and the outcome. Contributors scope their own work, ship it, and own the result — from cryptography to copy.",
+        "v3Title": "Open by default",
+        "v3Body": "The protocol, the SDK, and this website are all open source. Issues, roadmaps, and decisions happen in the open on GitHub, not behind closed doors.",
+        "v4Title": "Async-first, craft-obsessed",
+        "v4Body": "We're distributed and async. What we ask for in return is care: sharp, considered work over fast, sloppy work. Every page here ships at Lighthouse 95+ and WCAG 2.1 AA."
+      }
+    },
+    "stayInTouchSection": {
+      "eyebrow": "Stay in touch",
+      "title": "First to know when a full-time role opens",
+      "description": "Leave your email and we'll reach out directly — no spam, no third-party trackers, unsubscribe anytime."
+    },
+    "signup": {
+      "emailLabel": "Email address",
+      "emailPlaceholder": "you@example.com",
+      "submitting": "Submitting…",
+      "stayInTouch": "Stay in touch",
+      "success": "You're on the list. We'll reach out here first when a role opens up.",
+      "errorDefault": "Something went wrong. Please try again."
+    }
+  },
+  "faqPage": {
+    "backHome": "Back home",
+    "support": "Support",
+    "title": "FAQ",
+    "subtitle": "Short answers to the questions that come up most often in Discord, support, and product demos. Each answer is written to be easy to share and easy to find.",
+    "indexedAnswers": "Indexed answers",
+    "entriesCount": "{{count}} entries",
+    "searchLabel": "Search FAQ",
+    "searchPlaceholder": "Search questions, answers, or tags…",
+    "allCategories": "All",
+    "showingCount": "Showing {{filtered}} of {{total}} entries",
+    "noMatching": "No matching questions",
+    "jumpTo": "Jump to",
+    "noMatchQuery": "No questions match \"{{query}}\". Try a different search term or clear the category filter.",
+    "directLink": "Direct link to {{question}}",
+    "toggleAnswer": "{{action}} answer for {{question}}",
+    "hide": "Hide",
+    "show": "Show",
+    "relatedTags": "Related tags"
+  },
+  "notFound": {
+    "backHome": "Back home",
+    "error404": "Error 404",
+    "title": "This address is too stealth for us",
+    "description": "The page you were looking for left no trace. It may have moved, or the link that brought you here was never real. Try one of the routes below.",
+    "tryThese": "Try one of these",
+    "orSearch": "Or search the site",
+    "searchPlaceholder": "Search usewraith.xyz",
+    "searchButton": "Search",
+    "brokenLink": "Found a broken link?",
+    "reportGithub": "Report it on GitHub",
+    "suggestions": {
+      "homeLabel": "Home",
+      "homeDesc": "Back to the landing page.",
+      "docsLabel": "Docs",
+      "docsDesc": "SDK reference and guides.",
+      "demoLabel": "Demo",
+      "demoDesc": "Stealth payments in action.",
+      "consoleLabel": "Console",
+      "consoleDesc": "Manage keys, agents, and usage."
+    }
+  },
+  "pressPage": {
+    "home": "← Home",
+    "eyebrow": "PRESS KIT",
+    "title": "Brand Resources",
+    "description": "Assets, copy, and contacts for press and partners.",
+    "sections": {
+      "descriptions": "DESCRIPTIONS",
+      "logos": "LOGOS",
+      "brandColors": "BRAND COLORS",
+      "typography": "TYPOGRAPHY",
+      "coverage": "MEDIA COVERAGE",
+      "download": "DOWNLOAD",
+      "contact": "PRESS CONTACT"
+    },
+    "labels": {
+      "oneLine": "One-line",
+      "fiftyWord": "50-word",
+      "boilerplate": "Boilerplate (~200 words)",
+      "clickToCopy": "Click a swatch to copy the hex value.",
+      "downloadNotice": "Individual SVG files are available above. A ZIP archive of the full press kit is available on request — email us at",
+      "contactNotice": "For interview requests, partnership inquiries, or asset usage questions. We aim to respond within one business day.",
+      "copyDescription": "Copy press description",
+      "copiedToClipboard": "Press description copied to clipboard",
+      "couldNotCopy": "Press description could not be copied",
+      "copy": "COPY",
+      "copied": "COPIED",
+      "failed": "FAILED"
+    }
+  },
+  "privacyPage": {
+    "title": "Privacy Policy",
+    "meta": "Last updated: June 2025 · usewraith.xyz",
+    "intro": "Wraith Protocol is a privacy-first project. We apply the same principle to this website: collect only what we need to improve the product, and nothing that could identify you personally.",
+    "sections": {
+      "whatWeCollect": "What we collect",
+      "whatWeDoNotCollect": "What we do NOT collect",
+      "whyPlausible": "Why Plausible?",
+      "thirdParty": "Third-party services",
+      "yourRights": "Your rights",
+      "changes": "Changes to this policy"
+    },
+    "listItems": {
+      "noCookies": "No cookies are set.",
+      "noIdentifiers": "No persistent identifiers or device fingerprints.",
+      "noTracking": "No cross-site tracking.",
+      "noIp": "No IP addresses stored or logged.",
+      "noPersonal": "No personal information.",
+      "whyPlausibleSummary": "We chose Plausible because it is cookieless by design, EU-hosted, open source, and lightweight."
+    },
+    "backToHome": "← Back to Home"
+  },
+  "roadmapPage": {
+    "skipToContent": "Skip to content",
+    "eyebrow": "Roadmap",
+    "title": "Building private payments for every chain",
+    "description": "Where Wraith Protocol has been and where it is going — from the core stealth-address cryptography to a managed platform and beyond.",
+    "fullRoadmap": "Read the full roadmap →",
+    "followAlong": "Follow along as we ship",
+    "docsNotice": "The roadmap evolves as milestones land. For the detailed breakdown and the latest status, head to the docs.",
+    "viewDocs": "View roadmap docs",
+    "statuses": {
+      "shipped": "Shipped",
+      "inProgress": "In Progress",
+      "planned": "Planned"
+    }
+  },
+  "useCasesPage": {
+    "skipToContent": "Skip to content",
+    "title": "Use Cases",
+    "description": "Different audiences need different privacy solutions. Explore how Wraith powers payment privacy for diverse use cases.",
+    "painPoints": "Pain Points",
+    "wraithSolution": "Wraith Solution",
+    "readyToAdd": "Ready to add payment privacy?",
+    "ctaButtons": {
+      "docs": "Documentation",
+      "tryDemo": "Try Demo",
+      "launchConsole": "Launch Console"
+    }
+  },
+  "stellarPage": {
+    "metaTitle": "Stealth payments on Stellar – Wraith Protocol",
+    "metaDescription": "Low-cost, sub-second, ed25519 stealth payments on Stellar with Soroban smart contracts. Build private payment rails with the Wraith SDK.",
+    "badges": {
+      "liveTestnet": "LIVE TESTNET",
+      "stellarPartner": "Stellar Wave Grantee"
+    },
+    "title": "Stealth payments on Stellar",
+    "subtitle": "Low-cost, sub-second, ed25519 stealth payments built with Soroban smart contracts. Native recipient privacy for XLM and Soroban tokens.",
+    "cta": {
+      "readDocs": "Read Stellar Docs",
+      "tryDemo": "Try Stellar Demo"
+    },
+    "props": {
+      "txCost": "Tx cost",
+      "txCostSub": "per stealth payment",
+      "finality": "Finality",
+      "finalitySub": "sub-second practical",
+      "keyCurve": "Key curve",
+      "keyCurveSub": "native to Stellar",
+      "contracts": "Contracts",
+      "contractsSub": "Rust · WASM"
+    },
+    "howItWorks": {
+      "eyebrow": "Architecture",
+      "title": "How stealth payments work on Stellar",
+      "steps": {
+        "step1Title": "ed25519 keys",
+        "step1Body": "Wraith uses Stellar's native ed25519 key pairs. Spending and viewing keys are derived from a single wallet signature — no new seed phrase required.",
+        "step2Title": "X25519 ECDH",
+        "step2Body": "An ephemeral keypair is generated per payment. Sender and recipient derive a shared secret via X25519 ECDH — the secret never touches the chain.",
+        "step3Title": "Soroban announcement",
+        "step3Body": "The ephemeral public key is recorded in a Soroban registry contract. Recipients scan announcements off-chain to find payments addressed to them.",
+        "step4Title": "StrKey stealth address",
+        "step4Body": "Each payment lands at a fresh one-time G… address. The link between sender, recipient, and amount is never visible on the public ledger."
+      }
+    },
+    "deployments": {
+      "eyebrow": "Contracts",
+      "title": "Testnet deployments",
+      "network": "Soroban Testnet (Futurenet / Testnet)",
+      "contractCol": "Contract",
+      "addressCol": "Address",
+      "explorerCol": "Explorer",
+      "viewExplorer": "View ↗"
+    },
+    "codeSection": {
+      "eyebrow": "Integration",
+      "title": "Send, scan, and withdraw in TypeScript",
+      "copy": "COPY",
+      "copied": "COPIED",
+      "failed": "FAILED"
+    },
+    "ctaSection": {
+      "title": "Build private Stellar payments today",
+      "description": "The Wraith SDK provides everything you need to add stealth payment flows to your Stellar wallet, dApp, or platform.",
+      "getStarted": "Get Started",
+      "viewGithub": "View GitHub"
     }
   }
 }
