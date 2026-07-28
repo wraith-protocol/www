@@ -10,6 +10,7 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:a11y": "vitest run src/__tests__/a11y.test.tsx",
+    "test:a11y:playwright": "playwright test tests/a11y",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint:i18n": "node scripts/lint-i18n.mjs",
@@ -27,9 +28,11 @@
     "react-router-dom": "^7.18.1"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.12.1",
     "@commitlint/cli": "^20.5.0",
     "@commitlint/config-conventional": "^20.5.0",
     "@fontsource/space-grotesk": "^5.2.10",
+    "@playwright/test": "^1.62.0",
     "@resvg/resvg-js": "^2.6.2",
     "@tailwindcss/vite": "^4.2.2",
     "@testing-library/jest-dom": "^6.9.1",
