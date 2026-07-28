@@ -5,8 +5,10 @@ import Hero from './components/Hero';
 import Features from './components/Features';
 import Layout from './components/Layout';
 import TrustStrip from './components/TrustStrip';
+import { ThemeProvider } from './context/ThemeContext';
 
 // Lazy load below-the-fold homepage components
+const StealthAnimation = lazy(() => import('./components/StealthAnimation'));
 const Architecture = lazy(() => import('./components/Architecture'));
 const ForDevelopers = lazy(() => import('./components/ForDevelopers'));
 const Chains = lazy(() => import('./components/Chains'));
@@ -40,6 +42,7 @@ function Home() {
         <TrustStrip />
         <Features />
         <Suspense fallback={null}>
+          <StealthAnimation />
           <Architecture />
           <ForDevelopers />
           <Chains />
@@ -60,36 +63,38 @@ function Home() {
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <Suspense fallback={null}>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/faq" element={<Faq />} />
-          <Route path="/privacy" element={<Privacy />} />
-          <Route path="/use-cases" element={<UseCases />} />
-          <Route path="/roadmap" element={<Roadmap />} />
-          <Route path="/case-studies" element={<CaseStudies />} />
-          <Route path="/case-studies/:slug" element={<CaseStudies />} />
-          {/* Wrap Stellar with Layout */}
-          <Route
-            path="/stellar"
-            element={
-              <Layout>
-                <Stellar />
-              </Layout>
-            }
-          />
-          <Route
-            path="/careers"
-            element={
-              <Layout>
-                <Careers />
-              </Layout>
-            }
-          />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Suspense>
-    </BrowserRouter>
+    <ThemeProvider>
+      <BrowserRouter>
+        <Suspense fallback={null}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/faq" element={<Faq />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/use-cases" element={<UseCases />} />
+            <Route path="/roadmap" element={<Roadmap />} />
+            <Route path="/case-studies" element={<CaseStudies />} />
+            <Route path="/case-studies/:slug" element={<CaseStudies />} />
+            {/* Wrap Stellar with Layout */}
+            <Route
+              path="/stellar"
+              element={
+                <Layout>
+                  <Stellar />
+                </Layout>
+              }
+            />
+            <Route
+              path="/careers"
+              element={
+                <Layout>
+                  <Careers />
+                </Layout>
+              }
+            />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }
