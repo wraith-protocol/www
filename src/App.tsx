@@ -5,6 +5,7 @@ import Hero from './components/Hero';
 import Features from './components/Features';
 import Layout from './components/Layout';
 import TrustStrip from './components/TrustStrip';
+import PartnerStrip from './components/PartnerStrip';
 
 // Lazy load below-the-fold homepage components
 const Architecture = lazy(() => import('./components/Architecture'));
@@ -25,6 +26,7 @@ const UseCases = lazy(() => import('./pages/UseCases'));
 const Stellar = lazy(() => import('./pages/Stellar'));
 const Roadmap = lazy(() => import('./pages/Roadmap'));
 const CaseStudies = lazy(() => import('./pages/CaseStudies'));
+const Ecosystem = lazy(() => import('./pages/Ecosystem'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 function Home() {
@@ -49,6 +51,7 @@ function Home() {
           <EcosystemPartners />
           <CtaStrip />
         </Suspense>
+        <PartnerStrip />
       </main>
       <Suspense fallback={null}>
         <Footer />
@@ -69,6 +72,14 @@ export default function App() {
           <Route path="/roadmap" element={<Roadmap />} />
           <Route path="/case-studies" element={<CaseStudies />} />
           <Route path="/case-studies/:slug" element={<CaseStudies />} />
+          <Route
+            path="/ecosystem"
+            element={
+              <Layout>
+                <Ecosystem />
+              </Layout>
+            }
+          />
           {/* Wrap Stellar with Layout */}
           <Route
             path="/stellar"
