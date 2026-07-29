@@ -1,0 +1,21 @@
+{
+  "number": 7,
+  "title": "Chain Expansion",
+  "status": "open",
+  "startDate": null,
+  "endDate": null,
+  "budget": "30000",
+  "budgetToken": "USDC",
+  "goals": [
+    "Add support for Hedera, Starknet, Sui, and Aptos",
+    "Ship on-chain private messaging via ECDH encryption",
+    "ERC-4337 Paymaster support as alternative to EIP-7702",
+    "Expand Spectre TEE to multi-node fault-tolerant cluster"
+  ],
+  "highlights": [],
+  "summary": "Wave 7 targets Phase 4 of the roadmap: new chain families and on-chain private messaging. Issues are open — contributors can claim bounties via Drips once issues go live.",
+  "prsmerged": 0,
+  "contributors": [],
+  "issuesUrl": "https://github.com/wraith-protocol/wraith/issues",
+  "winnersNote": null
+}

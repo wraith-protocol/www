@@ -28,6 +28,8 @@ const Stellar = lazy(() => import('./pages/Stellar'));
 const Roadmap = lazy(() => import('./pages/Roadmap'));
 const CaseStudies = lazy(() => import('./pages/CaseStudies'));
 const Careers = lazy(() => import('./pages/Careers'));
+const Waves = lazy(() => import('./pages/Waves'));
+const Wave = lazy(() => import('./pages/Wave'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 function Home() {
@@ -74,6 +76,8 @@ export default function App() {
             <Route path="/roadmap" element={<Roadmap />} />
             <Route path="/case-studies" element={<CaseStudies />} />
             <Route path="/case-studies/:slug" element={<CaseStudies />} />
+            <Route path="/waves" element={<Waves />} />
+            <Route path="/waves/:number" element={<Wave />} />
             {/* Wrap Stellar with Layout */}
             <Route
               path="/stellar"

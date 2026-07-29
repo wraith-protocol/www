@@ -1,0 +1,56 @@
+{
+  "number": 2,
+  "title": "Multi-Chain Core",
+  "status": "completed",
+  "startDate": "2024-03-04",
+  "endDate": "2024-04-14",
+  "budget": "8000",
+  "budgetToken": "USDC",
+  "goals": [
+    "Extend stealth address support to Stellar testnet",
+    "Add Solana keypair adapter to the SDK",
+    "Implement ERC-6538 registry contract",
+    "Ship scanning service MVP using Goldsky subgraph"
+  ],
+  "highlights": [
+    "Stellar memo-enabled stealth transactions working end-to-end",
+    "Solana adapter merged into monorepo",
+    "ERC-6538 registry audited and deployed to Sepolia + Horizen",
+    "Goldsky subgraph indexing announcement events in <2s"
+  ],
+  "summary": "Wave 2 expanded the protocol beyond EVM. Contributors ported the stealth address model to Stellar and Solana, implemented the ERC-6538 registry, and built the first version of the scanning service that would become Spectre.",
+  "prsmerged": 21,
+  "contributors": [
+    {
+      "handle": "0xcypherpunk",
+      "role": "Contracts + Registry",
+      "prs": 6,
+      "optedIn": true
+    },
+    {
+      "handle": "novachain",
+      "role": "Stellar adapter",
+      "prs": 5,
+      "optedIn": true
+    },
+    {
+      "handle": "rustacean99",
+      "role": "Solana adapter",
+      "prs": 4,
+      "optedIn": true
+    },
+    {
+      "handle": "anon-3",
+      "role": "Subgraph",
+      "prs": 4,
+      "optedIn": false
+    },
+    {
+      "handle": "anon-4",
+      "role": "Tests",
+      "prs": 2,
+      "optedIn": false
+    }
+  ],
+  "winnersNote": "Bounties streamed via Drips; stream closed 2024-04-28."
+}

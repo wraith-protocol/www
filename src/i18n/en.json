@@ -11,7 +11,8 @@
       "console": "Console",
       "press": "Press",
       "useCases": "Use Cases",
-      "roadmap": "Roadmap"
+      "roadmap": "Roadmap",
+      "waves": "Waves"
     },
     "launchApp": "Launch App",
     "github": "GitHub ↗",
@@ -356,6 +357,43 @@
       "oneTime": "Each payment uses a unique, one-time address",
       "passive": "Only the recipient can detect and access their payments",
       "noCoordination": "No coordination required—meta-address published once"
+    }
+  },
+  "waves": {
+    "eyebrow": "CONTRIBUTOR WAVES",
+    "heading": "Wave archive.",
+    "description": "Every past wave of contributor work — goals, budgets, merged PRs, and the people who built Wraith. A public record of open-source progress.",
+    "statWaves": "WAVES",
+    "statBudget": "TOTAL PAID",
+    "statPrs": "PRS MERGED",
+    "statContributors": "CONTRIBUTORS",
+    "budget": "BUDGET",
+    "prs": "PRS MERGED",
+    "prsLabel": "PRs",
+    "pr": "PR",
+    "contributors": "CONTRIBUTORS",
+    "goals": "GOALS",
+    "issuesOpen": "Issues open now",
+    "dateTbd": "Dates TBD",
+    "viewWave": "View wave",
+    "viewOpenIssues": "View open issues",
+    "cardAriaLabel": "Wave {{number}}: {{title}} — {{status}}",
+    "backToAll": "Back to all waves",
+    "waveNumber": "Wave {{number}}",
+    "overviewHeading": "Overview",
+    "goalsHeading": "Goals",
+    "highlightsHeading": "Highlights",
+    "contributorsHeading": "Contributors",
+    "contributorsOptInNote": "Only contributors who opted in to public recognition are listed by handle.",
+    "anonNote": "{{count}} additional contributor(s) participated anonymously.",
+    "dripsNote": "Bounties:",
+    "privacyNote": "Contributor handles shown only with explicit opt-in consent. Anonymous contributors are counted but not named.",
+    "notFound": "Wave not found.",
+    "openCta": {
+      "eyebrow": "NOW OPEN",
+      "heading": "This wave is accepting contributors.",
+      "description": "Browse open issues on GitHub, claim a bounty via Drips, and ship.",
+      "button": "View Open Issues"
     }
   }
 }

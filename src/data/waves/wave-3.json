@@ -1,0 +1,56 @@
+{
+  "number": 3,
+  "title": "Spectre TEE",
+  "status": "completed",
+  "startDate": "2024-05-06",
+  "endDate": "2024-06-16",
+  "budget": "12000",
+  "budgetToken": "USDC",
+  "goals": [
+    "Deploy Spectre scanning server inside an Intel TDX TEE (Phala Network)",
+    "Implement the ChainConnector interface for all four supported chains",
+    "Add gas-sponsored withdrawal flow via EIP-7702",
+    "Launch internal developer alpha"
+  ],
+  "highlights": [
+    "Spectre TEE server live on Phala — first trustless scanning in production",
+    "ChainConnector interface unified across EVM, Stellar, Solana, CKB",
+    "EIP-7702 gas sponsorship tested on Holesky",
+    "12 external developers onboarded to private alpha"
+  ],
+  "summary": "The Spectre wave delivered the trust model that sets Wraith apart. By running the scanning server inside a Phala Intel TDX TEE, contributors made it possible to scan for incoming payments without ever exposing viewing keys to the infrastructure operator.",
+  "prsmerged": 28,
+  "contributors": [
+    {
+      "handle": "teatime_tee",
+      "role": "TEE integration",
+      "prs": 8,
+      "optedIn": true
+    },
+    {
+      "handle": "0xcypherpunk",
+      "role": "EIP-7702 sponsorship",
+      "prs": 6,
+      "optedIn": true
+    },
+    {
+      "handle": "novachain",
+      "role": "ChainConnector CKB",
+      "prs": 5,
+      "optedIn": true
+    },
+    {
+      "handle": "anon-5",
+      "role": "Alpha onboarding",
+      "prs": 5,
+      "optedIn": false
+    },
+    {
+      "handle": "anon-6",
+      "role": "Docs",
+      "prs": 4,
+      "optedIn": false
+    }
+  ],
+  "winnersNote": "Bounties streamed via Drips; top contributors received bonus allocation from DAO treasury."
+}

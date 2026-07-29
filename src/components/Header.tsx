@@ -122,6 +122,12 @@ export default function Header() {
           >
             {t('header.nav.roadmap')}
           </Link>
+          <Link
+            to="/waves"
+            className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
+          >
+            {t('header.nav.waves')}
+          </Link>
         </nav>
 
         <div className="hidden items-center gap-3 md:flex">
@@ -275,6 +281,13 @@ export default function Header() {
               className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
             >
               {t('header.nav.roadmap')}
+            </Link>
+            <Link
+              to="/waves"
+              onClick={closeMenu}
+              className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
+            >
+              {t('header.nav.waves')}
             </Link>
             <a
               href="https://github.com/wraith-protocol"

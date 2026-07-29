@@ -11,7 +11,8 @@
       "console": "Consola",
       "press": "Prensa",
       "useCases": "Casos de uso",
-      "roadmap": "Hoja de ruta"
+      "roadmap": "Hoja de ruta",
+      "waves": "Oleadas"
     },
     "launchApp": "Abrir app",
     "github": "GitHub ↗",
@@ -343,5 +344,42 @@
     "description": "Historias de producción de equipos usando Wraith.",
     "viewAll": "VER TODOS",
     "readMore": "Leer Más"
+  },
+  "waves": {
+    "eyebrow": "OLEADAS DE CONTRIBUIDORES",
+    "heading": "Archivo de oleadas.",
+    "description": "Cada oleada pasada de trabajo de contribuidores — objetivos, presupuestos, PRs fusionados y las personas que construyeron Wraith.",
+    "statWaves": "OLEADAS",
+    "statBudget": "TOTAL PAGADO",
+    "statPrs": "PRS FUSIONADOS",
+    "statContributors": "CONTRIBUIDORES",
+    "budget": "PRESUPUESTO",
+    "prs": "PRS FUSIONADOS",
+    "prsLabel": "PRs",
+    "pr": "PR",
+    "contributors": "CONTRIBUIDORES",
+    "goals": "OBJETIVOS",
+    "issuesOpen": "Issues abiertos ahora",
+    "dateTbd": "Fechas por confirmar",
+    "viewWave": "Ver oleada",
+    "viewOpenIssues": "Ver issues abiertos",
+    "cardAriaLabel": "Oleada {{number}}: {{title}} — {{status}}",
+    "backToAll": "Volver a todas las oleadas",
+    "waveNumber": "Oleada {{number}}",
+    "overviewHeading": "Resumen",
+    "goalsHeading": "Objetivos",
+    "highlightsHeading": "Destacados",
+    "contributorsHeading": "Contribuidores",
+    "contributorsOptInNote": "Solo se listan los contribuidores que optaron por reconocimiento público.",
+    "anonNote": "{{count}} contribuidor(es) adicional(es) participaron de forma anónima.",
+    "dripsNote": "Recompensas:",
+    "privacyNote": "Los handles de contribuidores se muestran solo con consentimiento explícito. Los contribuidores anónimos se cuentan pero no se nombran.",
+    "notFound": "Oleada no encontrada.",
+    "openCta": {
+      "eyebrow": "ABIERTO AHORA",
+      "heading": "Esta oleada acepta contribuidores.",
+      "description": "Explora los issues abiertos en GitHub, reclama una recompensa via Drips y envía tu trabajo.",
+      "button": "Ver Issues Abiertos"
+    }
   }
 }

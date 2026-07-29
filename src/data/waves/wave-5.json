@@ -1,0 +1,57 @@
+{
+  "number": 5,
+  "title": "Platform Foundations",
+  "status": "completed",
+  "startDate": "2024-09-09",
+  "endDate": "2024-10-20",
+  "budget": "20000",
+  "budgetToken": "USDC",
+  "goals": [
+    "Build managed API layer with developer key issuance and rate limiting",
+    "Implement developer console UI (analytics, billing preview)",
+    "Deploy mainnet contracts on Horizen EON and Stellar mainnet",
+    "Complete first external security audit"
+  ],
+  "highlights": [
+    "Managed API at api.usewraith.xyz — live for beta users",
+    "Developer console at console.usewraith.xyz — key management + usage graphs",
+    "Horizen EON mainnet contracts deployed and verified",
+    "Stellar mainnet contracts live",
+    "External audit by Halborn — 0 critical findings"
+  ],
+  "summary": "Wave 5 moved Wraith from protocol to platform. Contributors built the managed infrastructure layer — developer keys, rate limiting, the console UI — and shipped the first mainnet contracts. The Halborn audit with zero critical findings cleared the way for production integrations.",
+  "prsmerged": 41,
+  "contributors": [
+    {
+      "handle": "consolebuilder",
+      "role": "Developer console",
+      "prs": 10,
+      "optedIn": true
+    },
+    {
+      "handle": "teatime_tee",
+      "role": "API gateway",
+      "prs": 9,
+      "optedIn": true
+    },
+    {
+      "handle": "0xcypherpunk",
+      "role": "Mainnet contracts",
+      "prs": 8,
+      "optedIn": true
+    },
+    {
+      "handle": "novachain",
+      "role": "Stellar mainnet",
+      "prs": 7,
+      "optedIn": true
+    },
+    {
+      "handle": "anon-8",
+      "role": "Audit remediation",
+      "prs": 7,
+      "optedIn": false
+    }
+  ],
+  "winnersNote": "Drips stream closed 2024-11-03. Audit bonus paid from DAO treasury."
+}

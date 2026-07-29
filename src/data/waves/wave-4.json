@@ -1,0 +1,57 @@
+{
+  "number": 4,
+  "title": "SDK Unification",
+  "status": "completed",
+  "startDate": "2024-07-08",
+  "endDate": "2024-08-18",
+  "budget": "15000",
+  "budgetToken": "USDC",
+  "goals": [
+    "Ship @wraith-protocol/sdk v1.0.0 with per-chain subpath exports",
+    "Write comprehensive API reference documentation",
+    "Build multichain demo application",
+    "Reduce SDK bundle size below 30 kB gzipped"
+  ],
+  "highlights": [
+    "@wraith-protocol/sdk v1.0.0 published — single package, four chains",
+    "Per-chain subpath exports: /evm, /stellar, /solana, /ckb",
+    "Demo app live at demo.usewraith.xyz",
+    "Bundle: 26 kB gzipped — under target",
+    "API docs fully published at docs.usewraith.xyz"
+  ],
+  "summary": "Wave 4 unified the fragmented chain-specific packages into a single ergonomic SDK. The 1.0.0 release shipped with tree-shakeable per-chain exports, a reference demo app, and the first production-grade API documentation — the foundation external developers now build on.",
+  "prsmerged": 33,
+  "contributors": [
+    {
+      "handle": "bundlehero",
+      "role": "SDK architecture",
+      "prs": 9,
+      "optedIn": true
+    },
+    {
+      "handle": "stellardev",
+      "role": "Stellar subpath export",
+      "prs": 7,
+      "optedIn": true
+    },
+    {
+      "handle": "rustacean99",
+      "role": "Solana subpath export",
+      "prs": 6,
+      "optedIn": true
+    },
+    {
+      "handle": "0xcypherpunk",
+      "role": "EVM subpath + demo",
+      "prs": 6,
+      "optedIn": true
+    },
+    {
+      "handle": "anon-7",
+      "role": "Docs",
+      "prs": 5,
+      "optedIn": false
+    }
+  ],
+  "winnersNote": "Drips stream distributed; SDK wave had the highest contributor retention to date."
+}

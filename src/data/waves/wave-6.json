@@ -1,0 +1,63 @@
+{
+  "number": 6,
+  "title": "Ecosystem & Growth",
+  "status": "completed",
+  "startDate": "2024-11-11",
+  "endDate": "2024-12-22",
+  "budget": "25000",
+  "budgetToken": "USDC",
+  "goals": [
+    "Onboard three production integrations using the managed API",
+    "Ship mobile consumer wallet MVP (iOS + Android)",
+    "Expand EVM support to Ethereum mainnet, Base, and Polygon",
+    "Launch .wraith human-readable name service on mainnet"
+  ],
+  "highlights": [
+    "Three production integrations live — payroll, DEX, NFT marketplace",
+    "Mobile wallet TestFlight beta open to 500 users",
+    "Ethereum, Base, and Polygon mainnet contracts deployed",
+    ".wraith name registrations open on Horizen EON",
+    "Total transactions through protocol crossed 50,000"
+  ],
+  "summary": "Wave 6 closed 2024 with the protocol in the hands of real users. Production integrations shipped, the mobile wallet entered beta, EVM coverage expanded to Ethereum mainnet and L2s, and the .wraith name service made stealth addresses human-readable for the first time.",
+  "prsmerged": 47,
+  "contributors": [
+    {
+      "handle": "mobilemaven",
+      "role": "Mobile wallet",
+      "prs": 12,
+      "optedIn": true
+    },
+    {
+      "handle": "bundlehero",
+      "role": "EVM expansion",
+      "prs": 10,
+      "optedIn": true
+    },
+    {
+      "handle": "consolebuilder",
+      "role": "Integration support",
+      "prs": 9,
+      "optedIn": true
+    },
+    {
+      "handle": "0xcypherpunk",
+      "role": ".wraith names",
+      "prs": 8,
+      "optedIn": true
+    },
+    {
+      "handle": "novachain",
+      "role": "Polygon adapter",
+      "prs": 5,
+      "optedIn": true
+    },
+    {
+      "handle": "anon-9",
+      "role": "QA & testing",
+      "prs": 3,
+      "optedIn": false
+    }
+  ],
+  "winnersNote": "Drips stream closed 2025-01-05. Mobile wallet contributors received additional equity-equivalent grant."
+}

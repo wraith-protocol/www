@@ -1,0 +1,50 @@
+{
+  "number": 1,
+  "title": "Genesis Wave",
+  "status": "completed",
+  "startDate": "2024-01-15",
+  "endDate": "2024-02-28",
+  "budget": "5000",
+  "budgetToken": "USDC",
+  "goals": [
+    "Bootstrap the ERC-5564 stealth address cryptographic primitives",
+    "Deploy announcement contracts on first EVM testnet",
+    "Publish initial TypeScript SDK scaffolding",
+    "Write developer documentation skeleton"
+  ],
+  "highlights": [
+    "First functional stealth address generation on EVM",
+    "Published @wraith-protocol/sdk v0.1.0 to npm",
+    "Core ECDH key derivation passing full test suite",
+    "Announcement contract deployed to Sepolia"
+  ],
+  "summary": "The genesis wave established the cryptographic foundation of Wraith Protocol. A small group of contributors built the stealth address primitives from scratch, shipped the first npm package, and deployed the inaugural announcement contract to Sepolia testnet.",
+  "prsmerged": 14,
+  "contributors": [
+    {
+      "handle": "0xcypherpunk",
+      "role": "Cryptography",
+      "prs": 5,
+      "optedIn": true
+    },
+    {
+      "handle": "stellardev",
+      "role": "SDK",
+      "prs": 4,
+      "optedIn": true
+    },
+    {
+      "handle": "anon-1",
+      "role": "Contracts",
+      "prs": 3,
+      "optedIn": false
+    },
+    {
+      "handle": "anon-2",
+      "role": "Docs",
+      "prs": 2,
+      "optedIn": false
+    }
+  ],
+  "winnersNote": "Top contributor bounties distributed via Drips stream ending 2024-03-07."
+}
