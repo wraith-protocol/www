@@ -344,5 +344,19 @@
     "description": "Production stories from teams using Wraith.",
     "viewAll": "VIEW ALL",
     "readMore": "Read More"
+  },
+  "privacyComparison": {
+    "legend": {
+      "publicData": "Public Data",
+      "privateData": "Private Data"
+    }
+  },
+  "stealthAnimation": {
+    "benefits": {
+      "unlinkable": "Sender and receiver addresses are never linked on-chain",
+      "oneTime": "Each payment uses a unique, one-time address",
+      "passive": "Only the recipient can detect and access their payments",
+      "noCoordination": "No coordination required—meta-address published once"
+    }
   }
 }

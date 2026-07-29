@@ -1,0 +1,58 @@
+{
+  "mission": "Wraith Protocol builds privacy-preserving payment infrastructure — stealth addresses, unlinkable transactions, and confidential DeFi — so that financial privacy is the default, not a premium add-on.",
+  "team": [
+    {
+      "name": "Alex Chen",
+      "role": "Founder & Protocol Architect",
+      "bio": "Cryptographer and systems engineer. Previously built privacy tooling at a Tier-1 exchange. Leads protocol design and stealth address research.",
+      "photo": "/team/alex.jpg",
+      "github": "https://github.com/alexchen-wraith",
+      "twitter": "https://x.com/alexchen_wraith"
+    },
+    {
+      "name": "Priya Sharma",
+      "role": "Lead Engineer",
+      "bio": "Full-stack engineer focused on SDK ergonomics and developer experience. Previously core contributor to a privacy-focused L2. Owns the Wraith SDK and integration tooling.",
+      "photo": "/team/priya.jpg",
+      "github": "https://github.com/priyash-wraith",
+      "twitter": "https://x.com/priyash_wraith"
+    },
+    {
+      "name": "Marcus Okonkwo",
+      "role": "Cryptography Engineer",
+      "bio": "Applied cryptographer specializing in zero-knowledge proofs and elliptic curve pairings. Leads implementation of EIP-5564 stealth meta-address protocol.",
+      "photo": "/team/marcus.jpg",
+      "github": "https://github.com/marcusok-wraith",
+      "twitter": "https://x.com/marcusok_wraith"
+    },
+    {
+      "name": "Elena Kovac",
+      "role": "Protocol Researcher",
+      "bio": "Researcher focused on anonymity sets, linking attacks, and on-chain privacy metrics. Published in top privacy conferences. Drives threat modeling and security audits.",
+      "photo": "/team/elena.jpg",
+      "github": "https://github.com/elenak-wraith",
+      "twitter": "https://x.com/elenak_wraith"
+    }
+  ],
+  "advisors": [
+    {
+      "name": "Dr. James Morrison",
+      "role": "Advisor — Cryptography",
+      "bio": "Professor of Applied Cryptography at ETH Zurich. Advises on ZK circuit design and security proofs for the stealth address protocol.",
+      "photo": "/team/james.jpg"
+    },
+    {
+      "name": "Sarah Okafor",
+      "role": "Advisor — Regulatory & Compliance",
+      "bio": "Financial privacy lawyer and former regulator. Advises on the intersection of privacy-preserving protocols and global compliance frameworks.",
+      "photo": "/team/sarah.jpg"
+    }
+  ],
+  "contributors": [
+    {
+      "name": "Open Source Contributors",
+      "role": "Community",
+      "bio": "Wraith Protocol is shaped by a growing community of open-source contributors. Every merged PR is recognized in our changelog and contributor graph."
+    }
+  ]
+}

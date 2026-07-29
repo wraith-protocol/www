@@ -1,40 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { useTheme } from '../context/ThemeContext';
 import { changeLocale, Locale } from '../i18n';
 
 export default function Header() {
   const { t, i18n } = useTranslation();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+  const { theme, toggleTheme } = useTheme();
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
   const currentLocale = (i18n.language.split('-')[0] ?? 'en') as Locale;
   const nextLocale: Locale = currentLocale === 'en' ? 'es' : 'en';
-
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('wraith-theme') as 'dark' | 'light' | null;
-    const prefersDark =
-      typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: dark)').matches;
-
-    const initialTheme = savedTheme || (prefersDark ? 'dark' : 'light');
-    setTheme(initialTheme);
-    document.documentElement.setAttribute('data-theme', initialTheme);
-    const metaTheme = document.querySelector('meta[name="theme-color"]');
-
-    metaTheme?.setAttribute('content', initialTheme === 'dark' ? '#0e0e0e' : '#faf9f7');
-  }, []);
-
-  const toggleTheme = () => {
-    const newTheme = theme === 'dark' ? 'light' : 'dark';
-    setTheme(newTheme);
-    document.documentElement.setAttribute('data-theme', newTheme);
-    const metaTheme = document.querySelector('meta[name="theme-color"]');
-
-    metaTheme?.setAttribute('content', newTheme === 'dark' ? '#0e0e0e' : '#faf9f7');
-    localStorage.setItem('wraith-theme', newTheme);
-  };
 
   useEffect(() => {
     if (!menuOpen) return;
