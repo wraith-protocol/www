@@ -284,7 +284,7 @@ export default function Hero() {
             {lines.map((line, i) => (
               <div key={`${activeTab}-${i}`} className="flex gap-4 py-1">
                 <span
-                  className="w-4 shrink-0 font-mono text-xs text-outline-variant select-none"
+                  className="w-4 shrink-0 font-mono text-xs text-outline select-none"
                   aria-hidden="true"
                 >
                   {i + 1}
