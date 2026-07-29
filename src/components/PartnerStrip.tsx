@@ -83,7 +83,6 @@ export default function PartnerStrip() {
         onBlur={() => setPaused(false)}
         role="list"
         aria-label={`Scrolling list of ${ecosystemData.partners.length} ecosystem partners`}
-        style={{ animationPlayState: paused ? 'paused' : 'running' } as React.CSSProperties}
       >
         <div
           className={`flex w-max gap-4 px-6 md:px-12 animate-scroll`}

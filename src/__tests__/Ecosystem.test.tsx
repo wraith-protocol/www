@@ -192,6 +192,18 @@ describe('Ecosystem data integrity', () => {
     expect(ecosystemData.categories.length).toBeGreaterThan(0);
   });
 
+  it('does not render categories with zero partners on the ecosystem page', async () => {
+    window.history.replaceState({}, '', '/ecosystem');
+
+    render(<App />);
+
+    await screen.findByRole('heading', { level: 1, name: /ecosystem & partners/i });
+
+    // The "oracles" category has zero partners — it should not appear on the page
+    expect(screen.queryByText('Oracles')).not.toBeInTheDocument();
+    expect(screen.queryByRole('heading', { level: 2, name: 'Oracles' })).not.toBeInTheDocument();
+  });
+
   it('every partner references a valid category', () => {
     const categoryIds = new Set(ecosystemData.categories.map((c) => c.id));
     for (const partner of ecosystemData.partners) {
