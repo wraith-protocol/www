@@ -1,3 +1,10 @@
 {
-  "rewrites": [{ "source": "/((?!press-kit/).*)", "destination": "/index.html" }]
+  "rewrites": [
+    {
+      "source": "/js/script.js",
+      "destination": "https://plausible.io/js/script.scroll.tagged-events.js"
+    },
+    { "source": "/api/event", "destination": "https://plausible.io/api/event" },
+    { "source": "/((?!press-kit/).*)", "destination": "/index.html" }
+  ]
 }

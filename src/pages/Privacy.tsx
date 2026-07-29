@@ -62,7 +62,9 @@ export default function Privacy() {
                 Plausible Analytics
               </a>{' '}
               — an open-source, EU-hosted analytics platform — to understand how visitors interact
-              with this site.
+              with this site. The tracking script and its event requests are proxied through{' '}
+              <code className="text-on-surface">usewraith.xyz</code> itself, so your browser never
+              makes a request to a third-party analytics domain.
             </p>
             <p>
               Plausible collects the following{' '}
@@ -87,6 +89,11 @@ export default function Privacy() {
               <li>No cookies are set — ever.</li>
               <li>No persistent identifiers or device fingerprints.</li>
               <li>No cross-site tracking.</li>
+              <li>
+                No cross-origin requests off this domain — the analytics script and events are
+                proxied through <code className="text-on-surface">usewraith.xyz</code>, not loaded
+                directly from a third-party host.
+              </li>
               <li>No IP addresses stored or logged.</li>
               <li>No personal information (name, email, wallet address, etc.).</li>
             </ul>
@@ -104,6 +111,10 @@ export default function Privacy() {
               </a>{' '}
               for the full breakdown.
             </p>
+            <p>
+              The analytics dashboard itself is internal-only — aggregate traffic and goal data
+              are not published anywhere on this site.
+            </p>
           </Section>
 
           <Section title="Why Plausible?">
@@ -116,6 +127,14 @@ export default function Privacy() {
               <li>
                 <strong className="text-on-surface">EU-hosted</strong> — data is processed on
                 servers in the EU (Hetzner, Germany/Finland). No data transfer to the US.
+              </li>
+              <li>
+                <strong className="text-on-surface">Proxied through our domain</strong> — the
+                script and its event requests are served from{' '}
+                <code className="text-on-surface">usewraith.xyz</code>, not{' '}
+                <code className="text-on-surface">plausible.io</code>, so nothing crosses to a
+                third-party domain from your browser and the script isn&apos;t caught by
+                ad/content blockers that filter known analytics hosts.
               </li>
               <li>
                 <strong className="text-on-surface">Open source</strong> — the full codebase is

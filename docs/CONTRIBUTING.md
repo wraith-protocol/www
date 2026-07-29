@@ -20,14 +20,10 @@ cookie-based tracker.
 
 ### How the script is loaded
 
-`index.html` loads the combined Plausible extension script:
+`index.html` loads the Plausible extension script from our own domain:
 
 ```html
-<script
-  defer
-  data-domain="usewraith.xyz"
-  src="https://plausible.io/js/script.scroll.tagged-events.js"
-></script>
+<script defer data-domain="usewraith.xyz" src="/js/script.js"></script>
 <script>
   window.plausible =
     window.plausible ||
@@ -43,10 +39,29 @@ cookie-based tracker.
   custom goal events (see below).
 - The queue shim lets goal events fire before the script fully loads.
 
-**Note on `integrity` attribute:** Plausible does not currently publish SRI
-hashes for their CDN script because they ship frequent minor updates. If your
-CSP requires SRI, proxy the script through your own infrastructure (see
-[Plausible proxy docs](https://plausible.io/docs/proxy/introduction)).
+**Proxied through our own domain.** `/js/script.js` and `/api/event` are never
+requested directly from `plausible.io` in the browser. `vercel.json` rewrites
+both paths to Plausible's servers server-side:
+
+```json
+[
+  {
+    "source": "/js/script.js",
+    "destination": "https://plausible.io/js/script.scroll.tagged-events.js"
+  },
+  { "source": "/api/event", "destination": "https://plausible.io/api/event" }
+]
+```
+
+Plausible's tracker derives its event endpoint from the script's own origin,
+so once the script is served from `usewraith.xyz` it automatically posts
+events to `usewraith.xyz/api/event` too — no separate config needed. This
+means every request a visitor's browser makes stays on our domain: no
+cross-origin request to `plausible.io`, and the script isn't blocked by
+ad/content blockers that filter third-party analytics domains. See
+[Plausible's proxy docs](https://plausible.io/docs/proxy/introduction) for the
+underlying technique. Note this proxies Plausible's *cloud* service — the
+Plausible app itself (Postgres/ClickHouse) is not self-hosted.
 
 ### Custom goals
 
@@ -92,6 +107,17 @@ Because Plausible sets no cookies and stores no personal data, **no cookie
 consent banner is required** under GDPR, PECR, or the ePrivacy Directive. Do
 not add one. See [Plausible's data policy](https://plausible.io/data-policy)
 for the legal basis.
+
+### Dashboard access
+
+The Plausible dashboard for `usewraith.xyz` is **internal-only**, not public.
+Traffic volume, referrers, and goal completion (Careers CTA clicks, demo
+clicks, etc.) are useful to competitors and not something visitors need to
+see. Access is by team invite in Plausible's team settings — ask an existing
+member to add your account if you need it. Revisit this if there's ever a
+concrete reason to publish a subset of metrics (e.g. an open-source-style
+transparency page); that would be a separate, deliberate decision, not a
+config flip.
 
 ---
 
