@@ -66,4 +66,21 @@ describe('homepage accessibility', () => {
     const results = await axe(container);
     expect(results.violations).toEqual([]);
   });
+
+  it('renders the grants page with current wave info and no axe violations', async () => {
+    window.history.replaceState({}, '', '/grants');
+
+    const { container } = render(<App />);
+
+    expect(
+      await screen.findByRole('heading', {
+        name: /build the future of private payments/i,
+        level: 1,
+      }),
+    ).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: /faq/i, level: 2 })).toBeInTheDocument();
+
+    const results = await axe(container);
+    expect(results.violations).toEqual([]);
+  });
 });
