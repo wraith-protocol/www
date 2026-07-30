@@ -94,6 +94,14 @@ export default function App() {
               }
             />
             <Route
+              path="/grants"
+              element={
+                <Layout>
+                  <Grants />
+                </Layout>
+              }
+            />
+            <Route
               path="/about"
               element={
                 <Layout>

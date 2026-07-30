@@ -150,13 +150,13 @@ describe('Grants page', () => {
     expect(dripsLink).toHaveAttribute('target', '_blank');
   });
 
-  it('links back to the home page', async () => {
+  it('renders the layout header with brand link back home', async () => {
     window.history.replaceState({}, '', '/grants');
 
     render(<App />);
 
-    const backLinks = await screen.findAllByRole('link', { name: /back home/i });
-    expect(backLinks.length).toBeGreaterThanOrEqual(1);
+    const brandLink = await screen.findByRole('link', { name: /^wraith$/i });
+    expect(brandLink).toHaveAttribute('href', 'https://usewraith.xyz');
   });
 
   it('has no axe violations on the grants page', async () => {
