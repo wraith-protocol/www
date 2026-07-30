@@ -28,9 +28,15 @@ for (const { path, name } of pages) {
 }
 
 test('keyboard navigation works on homepage', async ({ page }) => {
+  // Set mobile viewport so the hamburger menu button is visible
+  await page.setViewportSize({ width: 375, height: 812 });
   await page.goto('/');
 
-  const menuButton = page.getByRole('button', { name: /open navigation menu/i });
+  // Use aria-controls which is stable regardless of open/closed state
+  const menuButton = page.locator('button[aria-controls="mobile-menu"]');
+  await expect(menuButton).toBeVisible();
+  await expect(menuButton).toHaveAttribute('aria-expanded', 'false');
+
   await menuButton.click();
   await expect(menuButton).toHaveAttribute('aria-expanded', 'true');
 
