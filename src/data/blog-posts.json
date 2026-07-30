@@ -1,0 +1,20 @@
+[
+  {
+    "slug": "privacy-by-default",
+    "title": "Privacy by default",
+    "excerpt": "How Wraith makes private payments practical for everyday apps.",
+    "content": "<p>Wraith brings privacy by default to payment experiences.</p>",
+    "publishedAt": "2026-07-20T12:00:00.000Z",
+    "author": "Wraith Team",
+    "url": "https://usewraith.xyz/blog/privacy-by-default"
+  },
+  {
+    "slug": "stealth-addresses-explained",
+    "title": "Stealth addresses explained",
+    "excerpt": "A straightforward introduction to stealth addresses and why they matter.",
+    "content": "<p>Stealth addresses allow every payment to land at a fresh destination.</p>",
+    "publishedAt": "2026-07-22T12:00:00.000Z",
+    "author": "Wraith Team",
+    "url": "https://usewraith.xyz/blog/stealth-addresses-explained"
+  }
+]

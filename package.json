@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build && node scripts/inline-css.js && tsx scripts/og.ts && tsx scripts/sitemap.ts",
+    "build": "tsc -b && vite build && node scripts/inline-css.js && tsx scripts/og.ts && tsx scripts/sitemap.ts && node scripts/gen-rss.mjs",
     "og:generate": "tsx scripts/og.ts",
     "preview": "vite preview",
     "test": "vitest run",
@@ -19,7 +19,6 @@
   },
   "dependencies": {
     "@stellar/stellar-sdk": "^13.3.0",
-    "@vercel/og": "^0.11.1",
     "@wraith-protocol/sdk": "^1.4.5",
     "i18next": "^26.2.0",
     "react": "^19.2.5",
@@ -41,6 +40,7 @@
     "@testing-library/user-event": "^14.6.1",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "@vercel/og": "^0.11.1",
     "@vitejs/plugin-react": "^6.0.1",
     "husky": "^9.1.7",
     "jsdom": "^29.1.1",
