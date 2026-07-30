@@ -5,6 +5,7 @@ import Hero from './components/Hero';
 import Features from './components/Features';
 import Layout from './components/Layout';
 import TrustStrip from './components/TrustStrip';
+import PartnerStrip from './components/PartnerStrip';
 import { ThemeProvider } from './context/ThemeContext';
 
 // Lazy load below-the-fold homepage components
