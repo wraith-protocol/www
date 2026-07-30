@@ -30,7 +30,6 @@ const Roadmap = lazy(() => import('./pages/Roadmap'));
 const CaseStudies = lazy(() => import('./pages/CaseStudies'));
 const Careers = lazy(() => import('./pages/Careers'));
 const About = lazy(() => import('./pages/About'));
-const Grants = lazy(() => import('./pages/Grants'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 function Home() {
@@ -100,14 +99,6 @@ export default function App() {
               element={
                 <Layout>
                   <About />
-                </Layout>
-              }
-            />
-            <Route
-              path="/grants"
-              element={
-                <Layout>
-                  <Grants />
                 </Layout>
               }
             />
