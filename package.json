@@ -5,11 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build && node scripts/inline-css.js && tsx scripts/og.ts && tsx scripts/sitemap.ts",
+    "build": "tsc -b && vite build && node scripts/inline-css.js && tsx scripts/og.ts && tsx scripts/sitemap.ts && node scripts/gen-rss.mjs",
     "og:generate": "tsx scripts/og.ts",
     "preview": "vite preview",
     "test": "vitest run",
     "test:a11y": "vitest run src/__tests__/a11y.test.tsx",
+    "test:a11y:playwright": "playwright test tests/a11y",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint:i18n": "node scripts/lint-i18n.mjs",
@@ -27,9 +28,11 @@
     "react-router-dom": "^7.18.1"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.12.1",
     "@commitlint/cli": "^20.5.0",
     "@commitlint/config-conventional": "^20.5.0",
     "@fontsource/space-grotesk": "^5.2.10",
+    "@playwright/test": "^1.62.0",
     "@resvg/resvg-js": "^2.6.2",
     "@tailwindcss/vite": "^4.2.2",
     "@testing-library/jest-dom": "^6.9.1",
@@ -37,6 +40,7 @@
     "@testing-library/user-event": "^14.6.1",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "@vercel/og": "^0.11.1",
     "@vitejs/plugin-react": "^6.0.1",
     "husky": "^9.1.7",
     "jsdom": "^29.1.1",

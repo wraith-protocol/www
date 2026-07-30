@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import PrivacyComparison from '../components/PrivacyComparison';
 
 const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
   <div className="flex flex-col gap-3">
@@ -45,6 +46,9 @@ export default function Privacy() {
             collect only what we need to improve the product, and nothing that could identify you
             personally.
           </p>
+
+          {/* interactive comparison */}
+          <PrivacyComparison />
 
           <Section title="What we collect">
             <p>

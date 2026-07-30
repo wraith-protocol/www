@@ -11,7 +11,8 @@
       "console": "Console",
       "press": "Press",
       "useCases": "Use Cases",
-      "roadmap": "Roadmap"
+      "roadmap": "Roadmap",
+      "grants": "Grants"
     },
     "launchApp": "Launch App",
     "github": "GitHub ↗",
@@ -344,22 +345,18 @@
     "viewAll": "VIEW ALL",
     "readMore": "Read More"
   },
-  "integrationsCarousel": {
-    "ariaLabel": "Featured integrations",
-    "eyebrow": "ECOSYSTEM",
-    "heading": "Featured integrations.",
-    "description": "Wallets, chains, and funding partners already wired into Wraith — explore each integration.",
-    "viewAll": "VIEW ECOSYSTEM",
-    "view": "View",
-    "dotsLabel": "Carousel position",
-    "goTo": "Show {{name}}"
+  "privacyComparison": {
+    "legend": {
+      "publicData": "Public Data",
+      "privateData": "Private Data"
+    }
   },
-  "ecosystem": {
-    "eyebrow": "ECOSYSTEM",
-    "heading": "Integrations & partners.",
-    "description": "Explore the wallets, chains, and infrastructure partners integrated with Wraith Protocol.",
-    "backToAll": "Back to ecosystem",
-    "visitWebsite": "Visit website",
-    "notFound": "Integration not found"
+  "stealthAnimation": {
+    "benefits": {
+      "unlinkable": "Sender and receiver addresses are never linked on-chain",
+      "oneTime": "Each payment uses a unique, one-time address",
+      "passive": "Only the recipient can detect and access their payments",
+      "noCoordination": "No coordination required—meta-address published once"
+    }
   }
 }

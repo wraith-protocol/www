@@ -308,7 +308,7 @@ export default function Stellar() {
                     <span className="font-heading text-xl font-bold text-on-surface">
                       {p.value}
                     </span>
-                    <span className="font-mono text-[10px] text-outline-variant">{p.sub}</span>
+                    <span className="font-mono text-[10px] text-outline">{p.sub}</span>
                   </div>
                 ))}
               </div>
@@ -352,7 +352,7 @@ export default function Stellar() {
                     <span className={`font-mono text-[13px] font-medium break-all ${row.color}`}>
                       {row.value}
                     </span>
-                    <span className="font-mono text-[10px] text-outline-variant">{row.note}</span>
+                    <span className="font-mono text-[10px] text-outline">{row.note}</span>
                   </div>
                 ))}
               </div>
@@ -556,7 +556,7 @@ export default function Stellar() {
                 {lines.map((line, i) => (
                   <div key={`${activeTab}-${i}`} className="flex gap-4 py-1">
                     <span
-                      className="w-4 shrink-0 font-mono text-xs text-outline-variant select-none"
+                      className="w-4 shrink-0 font-mono text-xs text-outline select-none"
                       aria-hidden="true"
                     >
                       {i + 1}

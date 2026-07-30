@@ -1,163 +1,206 @@
-import { Link, useParams } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import Layout from '../components/Layout';
-import { featured } from '../data/integrations.json';
-import type { Integration } from '../components/IntegrationsCarousel';
+import { Helmet } from 'react-helmet-async';
+import { Link } from 'react-router-dom';
+import { useInView } from '../hooks/useInView';
+import ecosystemData from '../data/ecosystem.json';
 
-const integrations = featured as Integration[];
+const categories = ecosystemData.categories;
+const partners = ecosystemData.partners;
 
-function PartnerDetail({ partner }: { partner: Integration }) {
-  const { t } = useTranslation();
+function PartnerCard({
+  partner,
+  index,
+  isInView,
+}: {
+  partner: (typeof partners)[number];
+  index: number;
+  isInView: boolean;
+}) {
+  const categoryLabel =
+    categories.find((c) => c.id === partner.category)?.label ?? partner.category;
 
   return (
-    <Layout>
-      <div className="mx-auto max-w-3xl px-6 py-16 md:px-12">
-        <Link
-          to="/ecosystem"
-          className="mb-8 inline-flex items-center gap-2 font-body text-[13px] text-outline transition-colors hover:text-on-surface"
-        >
-          ← {t('ecosystem.backToAll')}
-        </Link>
-
-        <div className="mb-10 flex flex-col gap-6 border-b border-outline-variant pb-10">
-          <div className="flex items-center gap-4">
-            {partner.logo ? (
-              <img
-                src={partner.logo}
-                alt=""
-                width={partner.logoWidth}
-                height={40}
-                className="h-10 w-auto object-contain"
-              />
-            ) : (
-              <span className="flex h-12 w-12 items-center justify-center border border-outline-variant bg-surface-container font-heading text-sm font-bold text-primary">
-                {partner.logoInitials ?? partner.name.slice(0, 2).toUpperCase()}
-              </span>
-            )}
-            <div className="flex flex-col gap-1">
-              <h1 className="font-heading text-[32px] font-bold tracking-[-1.2px] text-on-surface sm:text-[40px]">
-                {partner.name}
-              </h1>
-              <p className="font-body text-[15px] text-on-surface-variant">{partner.tagline}</p>
-            </div>
-          </div>
-
-          <div className="flex flex-wrap gap-2">
-            <span className="border border-outline-variant-30 px-3 py-2 font-mono text-[10px] font-semibold uppercase tracking-[1.5px] text-outline">
-              {partner.category}
-            </span>
-            {partner.chains.map((chain) => (
-              <span
-                key={chain}
-                className="border border-outline-variant-30 px-3 py-2 font-mono text-[10px] font-semibold uppercase tracking-[1.5px] text-outline"
-              >
-                {chain}
-              </span>
-            ))}
-          </div>
+    <a
+      href={partner.link}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="group flex flex-col gap-5 border border-outline-variant-30 bg-surface-container p-6 transition-all duration-200 hover:border-outline hover:bg-surface-bright"
+      data-reveal={isInView}
+      style={{ transitionDelay: isInView ? `${index * 60}ms` : '0ms' }}
+    >
+      <div className="flex h-10 items-center justify-between">
+        <img
+          src={partner.logo}
+          alt={`${partner.shortName} logo`}
+          width={partner.width}
+          height={28}
+          className="h-7 w-auto object-contain grayscale opacity-60 transition-all duration-200 group-hover:grayscale-0 group-hover:opacity-100"
+        />
+        <span className="font-mono text-[10px] text-outline opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+          VISIT ↗
+        </span>
+      </div>
+      <div className="flex flex-col gap-1.5">
+        <div className="flex items-center justify-between">
+          <span className="font-heading text-[15px] font-semibold text-on-surface">
+            {partner.name}
+          </span>
         </div>
-
-        <p className="mb-10 font-body text-[15px] leading-[1.7] text-on-surface-variant">
+        <span className="font-mono text-[9px] font-semibold uppercase tracking-[1.5px] text-outline">
+          {categoryLabel}
+        </span>
+        <p className="font-body text-xs leading-[1.5] text-on-surface-variant transition-colors duration-150 group-hover:text-on-surface">
           {partner.description}
         </p>
-
-        <a
-          href={partner.website}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 border border-outline-variant bg-surface-container px-5 py-3 font-mono text-[11px] font-semibold uppercase tracking-[1.5px] text-on-surface transition-colors hover:border-outline hover:bg-surface-bright"
-        >
-          {t('ecosystem.visitWebsite')} ↗
-        </a>
       </div>
-    </Layout>
-  );
-}
-
-function EcosystemList() {
-  const { t } = useTranslation();
-
-  return (
-    <Layout>
-      <div className="mx-auto max-w-[1344px] px-6 py-16 md:px-12">
-        <div className="mb-12 flex flex-col gap-3">
-          <span className="font-mono text-[10px] font-semibold uppercase tracking-[2px] text-outline">
-            {t('ecosystem.eyebrow')}
-          </span>
-          <h1 className="font-heading text-[32px] font-bold tracking-[-1.2px] text-on-surface sm:text-[48px]">
-            {t('ecosystem.heading')}
-          </h1>
-          <p className="max-w-[640px] font-body text-base leading-[1.6] text-on-surface-variant">
-            {t('ecosystem.description')}
-          </p>
-        </div>
-
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {integrations.map((partner) => (
-            <Link
-              key={partner.slug}
-              to={`/ecosystem/${partner.slug}`}
-              className="group flex flex-col gap-4 border border-outline-variant bg-surface-container p-6 transition-colors duration-150 hover:bg-surface-bright"
-            >
-              <div className="flex h-10 items-center justify-between">
-                {partner.logo ? (
-                  <img
-                    src={partner.logo}
-                    alt=""
-                    width={partner.logoWidth}
-                    height={32}
-                    className="h-8 w-auto object-contain opacity-70 grayscale transition-all group-hover:opacity-100 group-hover:grayscale-0"
-                  />
-                ) : (
-                  <span className="flex h-8 w-8 items-center justify-center border border-outline-variant bg-surface font-heading text-[11px] font-bold text-primary">
-                    {partner.logoInitials ?? partner.name.slice(0, 2).toUpperCase()}
-                  </span>
-                )}
-                <span className="font-mono text-[9px] uppercase tracking-[1.2px] text-outline">
-                  {partner.category}
-                </span>
-              </div>
-              <div className="flex flex-col gap-1">
-                <h2 className="font-heading text-lg font-semibold text-on-surface group-hover:text-primary">
-                  {partner.name}
-                </h2>
-                <p className="font-body text-[13px] leading-[1.5] text-on-surface-variant">
-                  {partner.tagline}
-                </p>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </div>
-    </Layout>
+    </a>
   );
 }
 
 export default function Ecosystem() {
-  const { slug } = useParams<{ slug?: string }>();
-  const { t } = useTranslation();
+  const { ref: headerRef, isInView: headerInView } = useInView({ threshold: 0.1 });
+  const { ref: walletsRef, isInView: walletsInView } = useInView({ threshold: 0.1 });
+  const { ref: dexesRef, isInView: dexesInView } = useInView({ threshold: 0.1 });
+  const { ref: lendingRef, isInView: lendingInView } = useInView({ threshold: 0.1 });
+  const { ref: indexersRef, isInView: indexersInView } = useInView({ threshold: 0.1 });
 
-  if (slug) {
-    const partner = integrations.find((item) => item.slug === slug);
-    if (!partner) {
-      return (
-        <Layout>
-          <div className="flex min-h-[400px] flex-col items-center justify-center gap-3 px-6">
-            <h1 className="font-heading text-[24px] font-bold text-on-surface">
-              {t('ecosystem.notFound')}
+  const partnerGroups = categories.map((cat) => ({
+    ...cat,
+    items: partners.filter((p) => p.category === cat.id),
+  }));
+
+  const visibleGroups = partnerGroups.filter((g) => g.items.length > 0);
+
+  return (
+    <>
+      <Helmet>
+        <title>Ecosystem & Partners – Wraith Protocol</title>
+        <meta
+          name="description"
+          content="Explore the Wraith Protocol ecosystem — wallets, DEXes, lending protocols, indexers, and oracles integrated with stealth address technology."
+        />
+        <meta property="og:title" content="Ecosystem & Partners – Wraith Protocol" />
+        <meta
+          property="og:description"
+          content="Explore wallets, DEXes, lending protocols, and indexers powering the Wraith Protocol ecosystem."
+        />
+        <meta property="og:url" content="https://usewraith.xyz/ecosystem" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+      </Helmet>
+
+      <div className="bg-surface text-on-surface">
+        {/* Header */}
+        <section
+          ref={headerRef}
+          className="border-b border-outline-variant-30 px-6 pb-24 pt-32 md:px-12"
+        >
+          <div className="mx-auto flex max-w-[1344px] flex-col gap-6" data-reveal={headerInView}>
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="border border-tertiary px-2.5 py-1.5">
+                <span className="font-mono text-[10px] font-semibold uppercase tracking-[1.5px] text-tertiary">
+                  {partners.length} INTEGRATIONS
+                </span>
+              </div>
+              <div className="border border-outline-variant px-2.5 py-1.5">
+                <span className="font-mono text-[10px] font-semibold uppercase tracking-[1.5px] text-outline">
+                  {visibleGroups.length} CATEGORIES
+                </span>
+              </div>
+            </div>
+            <h1 className="font-heading text-[36px] font-bold leading-[1.05] tracking-[-2px] text-on-surface sm:text-[48px] md:text-[56px]">
+              Ecosystem &amp; Partners
             </h1>
-            <Link
-              to="/ecosystem"
-              className="font-body text-[13px] text-primary underline underline-offset-2"
-            >
-              ← {t('ecosystem.backToAll')}
-            </Link>
+            <p className="max-w-[640px] font-body text-[17px] leading-[1.6] text-on-surface-variant">
+              Wraith Protocol integrates with leading wallets, DEXes, lending protocols, indexers,
+              and oracles across the Stellar and EVM ecosystems. Every partner brings stealth
+              privacy to their users through seamless SDK integration.
+            </p>
           </div>
-        </Layout>
-      );
-    }
-    return <PartnerDetail partner={partner} />;
-  }
+        </section>
 
-  return <EcosystemList />;
+        {/* Partner groups */}
+        {visibleGroups.map((group, groupIndex) => {
+          let groupRef;
+          if (group.id === 'wallets') groupRef = walletsRef;
+          else if (group.id === 'dexes') groupRef = dexesRef;
+          else if (group.id === 'lending') groupRef = lendingRef;
+          else if (group.id === 'indexers') groupRef = indexersRef;
+
+          const isInView =
+            group.id === 'wallets'
+              ? walletsInView
+              : group.id === 'dexes'
+                ? dexesInView
+                : group.id === 'lending'
+                  ? lendingInView
+                  : indexersInView;
+
+          return (
+            <section
+              key={group.id}
+              ref={groupRef}
+              className="border-b border-outline-variant-30 px-6 py-20 md:px-12"
+            >
+              <div className="mx-auto flex max-w-[1344px] flex-col gap-10">
+                <div className="flex flex-col gap-3" data-reveal={isInView}>
+                  <span className="font-mono text-[10px] font-semibold uppercase tracking-[2px] text-outline">
+                    {String(groupIndex + 1).padStart(2, '0')}. {group.label.toUpperCase()}
+                  </span>
+                  <h2 className="font-heading text-[28px] font-bold tracking-[-1.2px] text-on-surface sm:text-[40px]">
+                    {group.label}
+                  </h2>
+                  <p className="max-w-[560px] font-body text-sm leading-[1.6] text-on-surface-variant">
+                    {group.description}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                  {group.items.map((partner, i) => (
+                    <PartnerCard
+                      key={partner.name}
+                      partner={partner}
+                      index={i}
+                      isInView={isInView}
+                    />
+                  ))}
+                </div>
+              </div>
+            </section>
+          );
+        })}
+
+        {/* CTA */}
+        <section className="px-6 py-20 md:px-12">
+          <div className="mx-auto flex max-w-[1344px] flex-col items-start gap-6">
+            <span className="font-mono text-[10px] font-semibold uppercase tracking-[2px] text-outline">
+              Get involved
+            </span>
+            <h2 className="font-heading text-[28px] font-bold tracking-[-1.2px] text-on-surface sm:text-[40px]">
+              Integrate Wraith
+            </h2>
+            <p className="max-w-[560px] font-body text-sm leading-[1.6] text-on-surface-variant">
+              Is your project interested in bringing stealth privacy to its users? We&apos;d love to
+              partner. The SDK is open source and integrates in under a day.
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <a
+                href="https://docs.usewraith.xyz/sdk/overview"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex h-12 items-center justify-center bg-primary px-7 font-heading text-[13px] font-semibold uppercase tracking-[1.5px] text-surface transition-[filter] duration-150 hover:brightness-110"
+              >
+                Read the Docs
+              </a>
+              <Link
+                to="/"
+                className="flex h-12 items-center justify-center border border-outline-variant px-7 font-heading text-[13px] font-semibold uppercase tracking-[1.5px] text-primary transition-colors duration-150 hover:bg-surface-bright"
+              >
+                ← Back to Home
+              </Link>
+            </div>
+          </div>
+        </section>
+      </div>
+    </>
+  );
 }
