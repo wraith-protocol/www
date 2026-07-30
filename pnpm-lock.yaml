@@ -11,9 +11,6 @@ importers:
       '@stellar/stellar-sdk':
         specifier: ^13.3.0
         version: 13.3.0
-      '@vercel/og':
-        specifier: ^0.11.1
-        version: 0.11.1
       '@wraith-protocol/sdk':
         specifier: ^1.4.5
         version: 1.4.5(@stellar/stellar-sdk@13.3.0)(typescript@6.0.2)
@@ -66,6 +63,9 @@ importers:
       '@types/react-dom':
         specifier: ^19.2.3
         version: 19.2.3(@types/react@19.2.14)
+      '@vercel/og':
+        specifier: ^0.11.1
+        version: 0.11.1
       '@vitejs/plugin-react':
         specifier: ^6.0.1
         version: 6.0.1(vite@8.0.8(@types/node@25.6.0)(esbuild@0.28.1)(jiti@2.6.1)(tsx@4.22.4))

@@ -218,6 +218,26 @@ body {
   }
 }
 
+/* Marquee scroll animation for PartnerStrip */
+@keyframes marquee-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-scroll {
+  animation: marquee-scroll 40s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-scroll {
+    animation: none;
+  }
+}
+
 a:focus-visible,
 button:focus-visible,
 [tabindex]:focus-visible {
