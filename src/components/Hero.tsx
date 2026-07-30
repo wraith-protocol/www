@@ -278,7 +278,8 @@ export default function Hero() {
           id={`code-panel-${activeTab}`}
           role="tabpanel"
           aria-labelledby={`code-tab-${activeTab}`}
-          className="overflow-x-auto border border-outline-variant bg-surface-container p-6"
+          tabIndex={0}
+          className="overflow-x-auto border border-outline-variant bg-surface-container p-6 outline-none focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-primary"
         >
           <div className="w-max min-w-full">
             {lines.map((line, i) => (
