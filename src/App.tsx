@@ -27,6 +27,7 @@ const Privacy = lazy(() => import('./pages/Privacy'));
 const UseCases = lazy(() => import('./pages/UseCases'));
 const Stellar = lazy(() => import('./pages/Stellar'));
 const Roadmap = lazy(() => import('./pages/Roadmap'));
+const Grants = lazy(() => import('./pages/Grants'));
 const CaseStudies = lazy(() => import('./pages/CaseStudies'));
 const Careers = lazy(() => import('./pages/Careers'));
 const About = lazy(() => import('./pages/About'));
@@ -91,6 +92,14 @@ export default function App() {
               element={
                 <Layout>
                   <Careers />
+                </Layout>
+              }
+            />
+            <Route
+              path="/grants"
+              element={
+                <Layout>
+                  <Grants />
                 </Layout>
               }
             />
