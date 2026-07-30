@@ -96,7 +96,7 @@ export default function Chains() {
                 {chain.status}
               </span>
               <span
-                className={`font-mono text-[11px] ${chain.active ? 'text-outline' : 'text-outline-variant'}`}
+                className={`font-mono text-[11px] ${chain.active ? 'text-outline' : 'text-on-surface-variant'}`}
               >
                 {chain.meta}
               </span>

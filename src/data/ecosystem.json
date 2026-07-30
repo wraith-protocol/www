@@ -1,0 +1,103 @@
+{
+  "categories": [
+    {
+      "id": "wallets",
+      "label": "Wallets",
+      "description": "Non-custodial wallets that support Wraith Protocol stealth addresses."
+    },
+    {
+      "id": "dexes",
+      "label": "DEXes",
+      "description": "Decentralized exchanges integrated with Wraith for private swaps."
+    },
+    {
+      "id": "lending",
+      "label": "Lending Protocols",
+      "description": "Lending and borrowing platforms using Wraith for private positions."
+    },
+    {
+      "id": "indexers",
+      "label": "Indexers & Data",
+      "description": "Blockchain indexers and data providers powering Wraith's discovery layer."
+    },
+    {
+      "id": "oracles",
+      "label": "Oracles",
+      "description": "Oracle networks that provide price feeds and data to Wraith contracts."
+    }
+  ],
+  "partners": [
+    {
+      "name": "Freighter",
+      "shortName": "Freighter",
+      "description": "Non-custodial browser wallet extension for the Stellar network. Users can sign stealth transactions directly from the Freighter interface.",
+      "category": "wallets",
+      "link": "https://freighter.app",
+      "logo": "/logos/ecosystem/freighter.svg",
+      "width": 28
+    },
+    {
+      "name": "LOBSTR",
+      "shortName": "LOBSTR",
+      "description": "Comprehensive Stellar wallet and exchange platform supporting stealth address generation and private payment scanning.",
+      "category": "wallets",
+      "link": "https://lobstr.co",
+      "logo": "/logos/ecosystem/lobstr.svg",
+      "width": 28
+    },
+    {
+      "name": "xBull",
+      "shortName": "xBull",
+      "description": "Feature-rich Stellar wallet for desktop and mobile with built-in Wraith SDK integration for one-click private payments.",
+      "category": "wallets",
+      "link": "https://xbull.app",
+      "logo": "/logos/ecosystem/xbull.svg",
+      "width": 28
+    },
+    {
+      "name": "Albedo",
+      "shortName": "Albedo",
+      "description": "Secure identity and transaction signer for Stellar dApps. Albedo enables privacy-preserving authentication for Wraith users.",
+      "category": "wallets",
+      "link": "https://albedo.link",
+      "logo": "/logos/ecosystem/albedo.svg",
+      "width": 28
+    },
+    {
+      "name": "Reflector",
+      "shortName": "Reflector",
+      "description": "Blockchain indexer and data API providing real-time stealth payment event indexing and announcement scanning across Stellar.",
+      "category": "indexers",
+      "link": "https://reflector.network",
+      "logo": "/logos/ecosystem/reflector.svg",
+      "width": 28
+    },
+    {
+      "name": "Soroswap",
+      "shortName": "Soroswap",
+      "description": "Automated market maker on Soroban enabling private token swaps through Wraith stealth address integration.",
+      "category": "dexes",
+      "link": "https://soroswap.finance",
+      "logo": "/logos/ecosystem/soroswap.svg",
+      "width": 28
+    },
+    {
+      "name": "Aquarius",
+      "shortName": "Aquarius",
+      "description": "Liquidity aggregator and DEX on Stellar offering best-price routing for private stealth swaps via Wraith.",
+      "category": "dexes",
+      "link": "https://aquarius.fi",
+      "logo": "/logos/ecosystem/aquarius.svg",
+      "width": 28
+    },
+    {
+      "name": "Blend",
+      "shortName": "Blend",
+      "description": "Decentralized lending protocol on Soroban. Deposit collateral and borrow assets with stealth privacy through Wraith integration.",
+      "category": "lending",
+      "link": "https://blend.capital",
+      "logo": "/logos/ecosystem/blend.svg",
+      "width": 28
+    }
+  ]
+}
