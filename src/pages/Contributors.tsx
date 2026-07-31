@@ -29,12 +29,13 @@ export default function Contributors() {
         </p>
         <div className="bg-surface-alt rounded-lg p-4 inline-block text-left text-sm text-gray-300 border border-border">
           <p>
-            <strong>Note:</strong> Data is refreshed weekly via an automated script. 
-            If you wish to opt-out of this leaderboard, please submit a PR to add your username to our opt-out list at <code>src/data/contributors-optout.json</code>.
+            <strong>Note:</strong> Data is refreshed weekly via an automated script. If you wish to
+            opt-out of this leaderboard, please submit a PR to add your username to our opt-out list
+            at <code>src/data/contributors-optout.json</code>.
           </p>
         </div>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {contributors.map((contributor) => (
           <a
@@ -44,9 +45,9 @@ export default function Contributors() {
             rel="noopener noreferrer"
             className="flex items-center p-6 bg-surface rounded-xl border border-border hover:border-primary transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/10 group"
           >
-            <img 
-              src={contributor.avatar} 
-              alt={`${contributor.username}'s avatar`} 
+            <img
+              src={contributor.avatar}
+              alt={`${contributor.username}'s avatar`}
               className="w-16 h-16 rounded-full mr-5 bg-surface-alt border-2 border-transparent group-hover:border-primary transition-colors"
             />
             <div>
@@ -54,12 +55,16 @@ export default function Contributors() {
                 {contributor.username}
               </h2>
               <p className="text-sm text-gray-400 mt-1">
-                <span className="font-medium text-gray-200">{contributor.prCount}</span> Contributions
+                <span className="font-medium text-gray-200">{contributor.prCount}</span>{' '}
+                Contributions
               </p>
               {contributor.waves && contributor.waves.length > 0 && (
                 <div className="mt-3 flex flex-wrap gap-2">
-                  {contributor.waves.map(wave => (
-                    <span key={wave} className="text-xs px-2.5 py-1 bg-primary/10 text-primary rounded-full border border-primary/20">
+                  {contributor.waves.map((wave) => (
+                    <span
+                      key={wave}
+                      className="text-xs px-2.5 py-1 bg-primary/10 text-primary rounded-full border border-primary/20"
+                    >
                       {wave}
                     </span>
                   ))}
