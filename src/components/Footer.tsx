@@ -125,6 +125,7 @@ export default function Footer() {
         { label: t('footer.resources.press'), href: '/press' },
         { label: 'Stellar Integration', href: '/stellar' },
         { label: 'Careers', href: '/careers' },
+        { label: 'About', href: '/about' },
       ],
     },
   ];

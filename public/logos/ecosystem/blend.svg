@@ -1,0 +1,7 @@
+<svg viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Blend">
+  <rect width="30" height="30" fill="#6B21A8"/>
+  <rect x="9" y="8" width="12" height="3" fill="white" fill-opacity="0.85"/>
+  <rect x="9" y="13.5" width="12" height="3" fill="white" fill-opacity="0.85"/>
+  <rect x="9" y="19" width="12" height="3" fill="white" fill-opacity="0.85"/>
+  <path d="M13 8v14M17 8v14" stroke="#6B21A8" stroke-width="1"/>
+</svg>
