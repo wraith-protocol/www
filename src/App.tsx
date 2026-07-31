@@ -5,6 +5,7 @@ import Hero from './components/Hero';
 import Features from './components/Features';
 import Layout from './components/Layout';
 import TrustStrip from './components/TrustStrip';
+import PartnerStrip from './components/PartnerStrip';
 import { ThemeProvider } from './context/ThemeContext';
 
 // Lazy load below-the-fold homepage components
@@ -26,8 +27,10 @@ const Privacy = lazy(() => import('./pages/Privacy'));
 const UseCases = lazy(() => import('./pages/UseCases'));
 const Stellar = lazy(() => import('./pages/Stellar'));
 const Roadmap = lazy(() => import('./pages/Roadmap'));
+const Grants = lazy(() => import('./pages/Grants'));
 const CaseStudies = lazy(() => import('./pages/CaseStudies'));
 const Careers = lazy(() => import('./pages/Careers'));
+const About = lazy(() => import('./pages/About'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 const Contributors = lazy(() => import('./pages/Contributors'));
 
@@ -54,6 +57,7 @@ function Home() {
           <EcosystemPartners />
           <CtaStrip />
         </Suspense>
+        <PartnerStrip />
       </main>
       <Suspense fallback={null}>
         <Footer />
@@ -93,10 +97,18 @@ export default function App() {
               }
             />
             <Route
-              path="/contributors"
+              path="/grants"
               element={
                 <Layout>
-                  <Contributors />
+                  <Grants />
+                </Layout>
+              }
+            />
+            <Route
+              path="/about"
+              element={
+                <Layout>
+                  <About />
                 </Layout>
               }
             />
