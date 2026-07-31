@@ -112,6 +112,14 @@ export default function App() {
                 </Layout>
               }
             />
+            <Route
+              path="/contributors"
+              element={
+                <Layout>
+                  <Contributors />
+                </Layout>
+              }
+            />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
