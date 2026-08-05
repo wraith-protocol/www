@@ -344,5 +344,28 @@
     "description": "Historias de producción de equipos usando Wraith.",
     "viewAll": "VER TODOS",
     "readMore": "Leer Más"
+  },
+  "newsletter": {
+    "eyebrow": "MANTENTE AL DÍA",
+    "heading": "Boletín",
+    "description": "Actualizaciones de mainnet, avisos de seguridad y noticias de becas — directo a tu bandeja de entrada. Sin rastreo, sin scripts de terceros. Cancela cuando quieras.",
+    "privacyNote": "Doble confirmación. Usamos Buttondown. Sin cookies ni píxeles de seguimiento.",
+    "labelEmail": "Correo electrónico",
+    "placeholder": "tu@ejemplo.com",
+    "submit": "SUSCRIBIRSE",
+    "submitting": "SUSCRIBIENDO…",
+    "successHeading": "Revisa tu bandeja",
+    "successBody": "Enviamos un correo de confirmación. Haz clic en el enlace para completar tu suscripción.",
+    "errorGeneric": "Algo salió mal. Intenta de nuevo.",
+    "errorInvalidEmail": "Ingresa un correo electrónico válido.",
+    "errorAlreadySubscribed": "Este correo ya está suscrito.",
+    "footerWidget": {
+      "label": "BOLETÍN",
+      "placeholder": "tu@email.com",
+      "subscribe": "SUSCRIBIRSE",
+      "subscribing": "…",
+      "successShort": "Revisa tu bandeja",
+      "errorShort": "Intenta de nuevo"
+    }
   }
 }

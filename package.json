@@ -10,6 +10,7 @@
     "generate:sitemap": "node scripts/gen-sitemap.mjs",
     "preview": "vite preview",
     "test": "vitest run",
+    "test:e2e": "playwright test",
     "test:a11y": "vitest run src/__tests__/a11y.test.tsx",
     "test:a11y:playwright": "playwright test tests/a11y",
     "format": "prettier --write .",

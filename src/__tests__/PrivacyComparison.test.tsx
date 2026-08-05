@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import PrivacyComparison from '../components/PrivacyComparison';
+import '../i18n';
 
 describe('PrivacyComparison', () => {
   it('renders both transaction types', () => {
