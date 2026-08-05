@@ -25,6 +25,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://usewraith.xyz/newsletter</loc>
+    <lastmod>2026-08-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://usewraith.xyz/privacy</loc>
     <lastmod>2026-07-30</lastmod>
     <changefreq>daily</changefreq>

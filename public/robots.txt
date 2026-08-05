@@ -1,4 +1,13 @@
 User-agent: *
 Allow: /
 
+# Exclude staging, preview, administrative, and 404 routes
+Disallow: /staging/
+Disallow: /staging
+Disallow: /_staging/
+Disallow: /preview/
+Disallow: /admin/
+Disallow: /404
+Disallow: /api/
+
 Sitemap: https://usewraith.xyz/sitemap.xml

@@ -358,5 +358,28 @@
       "passive": "Only the recipient can detect and access their payments",
       "noCoordination": "No coordination required—meta-address published once"
     }
+  },
+  "newsletter": {
+    "eyebrow": "STAY UPDATED",
+    "heading": "Newsletter",
+    "description": "Mainnet updates, security advisories, and grant news — straight to your inbox. No tracking, no third-party scripts. Unsubscribe any time.",
+    "privacyNote": "Double opt-in. We use Buttondown. No cookies, no tracking pixels.",
+    "labelEmail": "Email address",
+    "placeholder": "you@example.com",
+    "submit": "SUBSCRIBE",
+    "submitting": "SUBSCRIBING…",
+    "successHeading": "Check your inbox",
+    "successBody": "We've sent a confirmation email. Click the link inside to complete your signup.",
+    "errorGeneric": "Something went wrong. Please try again.",
+    "errorInvalidEmail": "Please enter a valid email address.",
+    "errorAlreadySubscribed": "This email is already subscribed.",
+    "footerWidget": {
+      "label": "NEWSLETTER",
+      "placeholder": "your@email.com",
+      "subscribe": "SUBSCRIBE",
+      "subscribing": "…",
+      "successShort": "Check your inbox",
+      "errorShort": "Try again"
+    }
   }
 }

@@ -24,6 +24,7 @@ const Footer = lazy(() => import('./components/Footer'));
 // Lazy load pages
 const Faq = lazy(() => import('./pages/Faq'));
 const Privacy = lazy(() => import('./pages/Privacy'));
+const Newsletter = lazy(() => import('./pages/Newsletter'));
 const UseCases = lazy(() => import('./pages/UseCases'));
 const Stellar = lazy(() => import('./pages/Stellar'));
 const Roadmap = lazy(() => import('./pages/Roadmap'));
@@ -31,7 +32,9 @@ const Grants = lazy(() => import('./pages/Grants'));
 const CaseStudies = lazy(() => import('./pages/CaseStudies'));
 const Careers = lazy(() => import('./pages/Careers'));
 const About = lazy(() => import('./pages/About'));
+const Vitals = lazy(() => import('./pages/Vitals'));
 const NotFound = lazy(() => import('./pages/NotFound'));
+const Contributors = lazy(() => import('./pages/Contributors'));
 
 function Home() {
   return (
@@ -74,10 +77,12 @@ export default function App() {
             <Route path="/" element={<Home />} />
             <Route path="/faq" element={<Faq />} />
             <Route path="/privacy" element={<Privacy />} />
+            <Route path="/newsletter" element={<Newsletter />} />
             <Route path="/use-cases" element={<UseCases />} />
             <Route path="/roadmap" element={<Roadmap />} />
             <Route path="/case-studies" element={<CaseStudies />} />
             <Route path="/case-studies/:slug" element={<CaseStudies />} />
+            <Route path="/vitals" element={<Vitals />} />
             {/* Wrap Stellar with Layout */}
             <Route
               path="/stellar"
@@ -108,6 +113,14 @@ export default function App() {
               element={
                 <Layout>
                   <About />
+                </Layout>
+              }
+            />
+            <Route
+              path="/contributors"
+              element={
+                <Layout>
+                  <Contributors />
                 </Layout>
               }
             />
