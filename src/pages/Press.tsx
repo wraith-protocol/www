@@ -199,7 +199,8 @@ Wraith Protocol was founded with the conviction that privacy is not a premium fe
               <div className="flex flex-col gap-2">
                 <h3 className="font-heading text-lg font-bold text-on-surface">Clear Space</h3>
                 <p className="font-body text-[14px] text-on-surface-variant">
-                  Always maintain a minimum clear space around the logo to ensure visibility and impact. The minimum clear space is equal to the height of the logomark.
+                  Always maintain a minimum clear space around the logo to ensure visibility and
+                  impact. The minimum clear space is equal to the height of the logomark.
                 </p>
                 <div className="mt-4 flex items-center justify-center border border-outline-variant bg-surface-container p-8">
                   <div className="relative border border-dashed border-primary p-6">
@@ -215,7 +216,11 @@ Wraith Protocol was founded with the conviction that privacy is not a premium fe
                     <span className="absolute -right-3 top-1/2 -translate-y-1/2 bg-surface-container py-2 font-mono text-[10px] text-primary">
                       X
                     </span>
-                    <img src="/press-kit/wraith-logo-dark.svg" alt="Clear space example" className="h-8" />
+                    <img
+                      src="/press-kit/wraith-logo-dark.svg"
+                      alt="Clear space example"
+                      className="h-8"
+                    />
                   </div>
                 </div>
               </div>
@@ -223,12 +228,17 @@ Wraith Protocol was founded with the conviction that privacy is not a premium fe
               <div className="flex flex-col gap-2">
                 <h3 className="font-heading text-lg font-bold text-on-surface">Misuse Examples</h3>
                 <p className="font-body text-[14px] text-on-surface-variant">
-                  To maintain brand integrity, please avoid the following common misuses of our logo.
+                  To maintain brand integrity, please avoid the following common misuses of our
+                  logo.
                 </p>
                 <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
                   <div className="flex flex-col gap-2">
                     <div className="flex h-32 items-center justify-center border border-outline-variant bg-surface-container p-4">
-                      <img src="/press-kit/wraith-logo-dark.svg" alt="Distorted" className="h-8 origin-center scale-y-150" />
+                      <img
+                        src="/press-kit/wraith-logo-dark.svg"
+                        alt="Distorted"
+                        className="h-8 origin-center scale-y-150"
+                      />
                     </div>
                     <p className="text-center font-body text-[12px] text-on-surface-variant">
                       Do not distort or stretch
@@ -236,7 +246,11 @@ Wraith Protocol was founded with the conviction that privacy is not a premium fe
                   </div>
                   <div className="flex flex-col gap-2">
                     <div className="flex h-32 items-center justify-center border border-outline-variant bg-surface-container p-4">
-                      <img src="/press-kit/wraith-logo-dark.svg" alt="Rotated" className="h-8 rotate-12" />
+                      <img
+                        src="/press-kit/wraith-logo-dark.svg"
+                        alt="Rotated"
+                        className="h-8 rotate-12"
+                      />
                     </div>
                     <p className="text-center font-body text-[12px] text-on-surface-variant">
                       Do not rotate
@@ -244,7 +258,11 @@ Wraith Protocol was founded with the conviction that privacy is not a premium fe
                   </div>
                   <div className="flex flex-col gap-2">
                     <div className="flex h-32 items-center justify-center border border-outline-variant bg-surface-container p-4">
-                      <img src="/press-kit/wraith-logo-dark.svg" alt="Wrong color" className="h-8 opacity-50 sepia hue-rotate-180" />
+                      <img
+                        src="/press-kit/wraith-logo-dark.svg"
+                        alt="Wrong color"
+                        className="h-8 opacity-50 sepia hue-rotate-180"
+                      />
                     </div>
                     <p className="text-center font-body text-[12px] text-on-surface-variant">
                       Do not change colors
@@ -323,7 +341,8 @@ Wraith Protocol was founded with the conviction that privacy is not a premium fe
             </h2>
             <div className="flex flex-col gap-4 border border-outline-variant bg-surface-container p-6 sm:flex-row sm:items-center sm:justify-between">
               <p className="max-w-md font-body text-[13px] leading-[1.6] text-on-surface-variant">
-                Download the complete press kit including high-resolution logos (SVG and PNG formats for light and dark modes) and brand guidelines.
+                Download the complete press kit including high-resolution logos (SVG and PNG formats
+                for light and dark modes) and brand guidelines.
               </p>
               <a
                 href="/press-kit.zip"
