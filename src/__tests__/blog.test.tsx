@@ -7,7 +7,8 @@ describe('Blog utility & page', () => {
   it('loads blog posts correctly', () => {
     const posts = getAllPosts();
     expect(posts.length).toBeGreaterThan(0);
-    expect(posts[0].slug).toBe('wave-7-kickoff');
+    expect(posts[0]).toBeDefined();
+    expect(posts[0]?.slug).toBe('wave-7-kickoff');
   });
 
   it('retrieves post by slug', () => {
@@ -20,7 +21,9 @@ describe('Blog utility & page', () => {
     window.history.replaceState({}, '', '/blog');
     render(<App />);
 
-    expect(await screen.findByRole('heading', { name: /wraith protocol blog/i, level: 1 })).toBeInTheDocument();
+    expect(
+      await screen.findByRole('heading', { name: /wraith protocol blog/i, level: 1 }),
+    ).toBeInTheDocument();
     expect(screen.getByText(/wave 7 kick-off/i)).toBeInTheDocument();
   });
 
@@ -28,7 +31,9 @@ describe('Blog utility & page', () => {
     window.history.replaceState({}, '', '/blog/wave-7-kickoff');
     render(<App />);
 
-    expect(await screen.findByRole('heading', { name: /wave 7 kick-off/i, level: 1 })).toBeInTheDocument();
+    expect(
+      await screen.findByRole('heading', { name: /wave 7 kick-off/i, level: 1 }),
+    ).toBeInTheDocument();
     expect(screen.getByText(/welcome to/i)).toBeInTheDocument();
   });
 });
