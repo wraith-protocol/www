@@ -28,7 +28,10 @@ function parseFrontmatter(content: string): Partial<PostMetadata> {
     if (colonIdx > -1) {
       const key = line.slice(0, colonIdx).trim();
       let value = line.slice(colonIdx + 1).trim();
-      if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+      if (
+        (value.startsWith('"') && value.endsWith('"')) ||
+        (value.startsWith("'") && value.endsWith("'"))
+      ) {
         value = value.slice(1, -1);
       }
       metadata[key] = value;

@@ -1,12 +1,12 @@
 ---
-title: "Wave 7 Kick-off + What We Shipped in Wave 6"
-date: "2026-07-27"
-author: "Wraith Protocol Team"
-excerpt: "Announcing the start of Wave 7 alongside a recap of Wave 6 milestones: EVM stealth transactions, SDK v1.4 release, Stellar ecosystem integrations, and TEE privacy enhancements."
-tags: ["announcements", "wave-7", "wave-6", "stealth-payments", "sdk"]
+title: 'Wave 7 Kick-off + What We Shipped in Wave 6'
+date: '2026-07-27'
+author: 'Wraith Protocol Team'
+excerpt: 'Announcing the start of Wave 7 alongside a recap of Wave 6 milestones: EVM stealth transactions, SDK v1.4 release, Stellar ecosystem integrations, and TEE privacy enhancements.'
+tags: ['announcements', 'wave-7', 'wave-6', 'stealth-payments', 'sdk']
 ---
 
-Welcome to **Wave 7** of Wraith Protocol development! 
+Welcome to **Wave 7** of Wraith Protocol development!
 
 Over the past wave, our focus was on expanding privacy guarantees across both EVM and non-EVM chains, improving developer experience with our TypeScript SDK, and strengthening our privacy-preserving infrastructure.
 
@@ -17,13 +17,16 @@ Here is a look back at what we shipped in **Wave 6**, followed by what to expect
 ## 🚀 What We Shipped in Wave 6
 
 ### 1. EVM Stealth Address Expansion
+
 We successfully delivered full support for ERC-5564 stealth payment generations across multiple EVM networks. Users can now execute stealth transfers without revealing linked recipient addresses on-chain.
 
 - **Zero Linkability:** Built-in ephemeral pubkey derivation ensures sender-recipient privacy.
 - **Gas Optimizations:** Reduced contract interaction overhead by ~25% using streamlined cryptographic primitives.
 
 ### 2. SDK v1.4 Release
+
 The `@wraith-protocol/sdk` package received major performance and developer experience updates:
+
 - **Unified Multichain API:** One intuitive interface for EVM chains and Stellar.
 - **Automatic Stealth Key Derivation:** Instant generation of stealth addresses with a single function call.
 - **Enhanced Type Safety:** Comprehensive TypeScript definitions for all chain adapters.
@@ -39,7 +42,9 @@ const { transaction } = buildSendStealth({
 ```
 
 ### 3. TEE Privacy Enclave (Spectre) Upgrades
+
 Our hardware enclave architecture—Spectre—received critical security and latency enhancements:
+
 - Attestation verification workflows for remote nodes.
 - Faster scanning rates for stealth outputs across supported networks.
 
