@@ -9,5 +9,6 @@ declare module '../../scripts/gen-rss.mjs' {
     url?: string;
   };
 
+  export function getPosts(): RssPost[];
   export function buildRssFeed(posts: RssPost[], baseUrl?: string): string;
 }

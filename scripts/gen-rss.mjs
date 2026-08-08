@@ -1,4 +1,4 @@
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
+import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
 
@@ -22,28 +22,84 @@ function toRfc822(date) {
   return new Date(date).toUTCString();
 }
 
-function getPosts() {
+function parseFrontmatter(content) {
+  const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+  if (!match) return { metadata: {}, content };
+  const yaml = match[1];
+  const body = content.slice(match[0].length).trim();
+  const metadata = {};
+
+  yaml.split('\n').forEach((line) => {
+    const colonIdx = line.indexOf(':');
+    if (colonIdx > -1) {
+      const key = line.slice(0, colonIdx).trim();
+      let value = line.slice(colonIdx + 1).trim();
+      if (
+        (value.startsWith('"') && value.endsWith('"')) ||
+        (value.startsWith("'") && value.endsWith("'"))
+      ) {
+        value = value.slice(1, -1);
+      }
+      metadata[key] = value;
+    }
+  });
+
+  return { metadata, content: body };
+}
+
+export function getPosts() {
+  const postsMap = new Map();
+
+  // 1. Read MDX posts from src/content/blog/
+  const blogDir = join(rootDir, 'src', 'content', 'blog');
+  if (existsSync(blogDir)) {
+    const files = readdirSync(blogDir).filter((f) => f.endsWith('.mdx') || f.endsWith('.md'));
+    for (const file of files) {
+      const slug = file.replace(/\.mdx?$/, '');
+      const rawContent = readFileSync(join(blogDir, file), 'utf8');
+      const { metadata, content } = parseFrontmatter(rawContent);
+
+      if (metadata.title) {
+        postsMap.set(slug, {
+          slug,
+          title: metadata.title,
+          excerpt: metadata.excerpt ?? '',
+          content: content ?? '',
+          publishedAt: metadata.publishedAt || metadata.date,
+          author: metadata.author ?? 'Wraith Protocol',
+          url: metadata.url ?? `${siteUrl}/blog/${slug}`,
+        });
+      }
+    }
+  }
+
+  // 2. Read JSON posts from src/data/blog-posts.json
   const manifestPath = join(rootDir, 'src', 'data', 'blog-posts.json');
-  if (!existsSync(manifestPath)) {
-    return [];
+  if (existsSync(manifestPath)) {
+    try {
+      const parsed = JSON.parse(readFileSync(manifestPath, 'utf8'));
+      if (Array.isArray(parsed)) {
+        for (const post of parsed) {
+          if (post?.slug && post?.title && !postsMap.has(post.slug)) {
+            postsMap.set(post.slug, {
+              slug: post.slug,
+              title: post.title,
+              excerpt: post.excerpt ?? '',
+              content: post.content ?? '',
+              publishedAt: post.publishedAt || post.date,
+              author: post.author ?? 'Wraith Protocol',
+              url: post.url ?? `${siteUrl}/blog/${post.slug}`,
+            });
+          }
+        }
+      }
+    } catch {
+      // ignore
+    }
   }
 
-  const parsed = JSON.parse(readFileSync(manifestPath, 'utf8'));
-  if (!Array.isArray(parsed)) {
-    throw new Error('Expected src/data/blog-posts.json to contain an array of posts.');
-  }
-
-  return parsed
-    .filter((post) => Boolean(post?.slug) && Boolean(post?.title))
-    .map((post) => ({
-      slug: post.slug,
-      title: post.title,
-      excerpt: post.excerpt ?? '',
-      content: post.content ?? '',
-      publishedAt: post.publishedAt,
-      author: post.author ?? 'Wraith Protocol',
-      url: post.url ?? `${siteUrl}/blog/${post.slug}`,
-    }))
+  return Array.from(postsMap.values())
+    .filter((post) => Boolean(post.publishedAt))
     .sort((left, right) => Date.parse(right.publishedAt) - Date.parse(left.publishedAt));
 }
 
@@ -86,11 +142,12 @@ function writeFeedFile(targetDir) {
 }
 
 function main() {
+  const posts = getPosts();
   writeFeedFile(publicDir);
   if (existsSync(distDir)) {
     writeFeedFile(distDir);
   }
-  console.log(`feed.xml generated successfully with ${getPosts().length} posts.`);
+  console.log(`feed.xml generated successfully with ${posts.length} posts.`);
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {

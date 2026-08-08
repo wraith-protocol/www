@@ -1,7 +1,18 @@
 import { describe, expect, it } from 'vitest';
-import { buildRssFeed } from '../../scripts/gen-rss.mjs';
+import { buildRssFeed, getPosts } from '../../scripts/gen-rss.mjs';
 
-describe('buildRssFeed', () => {
+describe('gen-rss script', () => {
+  it('getPosts retrieves posts including MDX posts', () => {
+    const posts = getPosts();
+    expect(posts.length).toBeGreaterThan(0);
+
+    const mdxPost = posts.find((p) => p.slug === 'wave-7-kickoff');
+    expect(mdxPost).toBeDefined();
+    expect(mdxPost?.title).toContain('Wave 7 Kick-off');
+    expect(mdxPost?.author).toBe('Wraith Protocol Team');
+    expect(mdxPost?.publishedAt).toBe('2026-07-27');
+  });
+
   it('builds an RSS feed for published posts', () => {
     const xml = buildRssFeed(
       [
