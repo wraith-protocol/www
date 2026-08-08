@@ -62,9 +62,9 @@ function getRoutes(dir: string, base = ''): string[] {
 try {
   const csRoutes = getCaseStudyRoutes();
   const distRoutes = existsSync(distDir) ? getRoutes(distDir) : [];
-  const allRoutes = Array.from(
-    new Set([...knownRoutes, ...csRoutes, ...distRoutes])
-  ).filter((r) => r && r !== '/404' && !r.includes('/staging') && !r.includes('/preview'));
+  const allRoutes = Array.from(new Set([...knownRoutes, ...csRoutes, ...distRoutes])).filter(
+    (r) => r && r !== '/404' && !r.includes('/staging') && !r.includes('/preview'),
+  );
 
   const today = new Date().toISOString().split('T')[0];
 
