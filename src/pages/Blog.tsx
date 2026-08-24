@@ -1,6 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { Link, useParams } from 'react-router-dom';
 import { getAllPosts, getPostBySlug } from '../utils/blog';
+import BlogToc from '../components/BlogToc';
 
 function BlogList() {
   const posts = getAllPosts();
@@ -45,6 +46,8 @@ function BlogList() {
                   <span>{post.author}</span>
                 </>
               )}
+              <span>•</span>
+              <span>{post.readingTimeMin} min read</span>
             </div>
             <h2 className="font-heading text-[22px] font-semibold text-on-surface hover:text-primary">
               <Link to={`/blog/${post.slug}`}>{post.title}</Link>
@@ -94,7 +97,7 @@ function BlogPostDetail({ slug }: { slug: string }) {
   const { Component } = post;
 
   return (
-    <article className="mx-auto max-w-4xl px-6 py-12 md:px-12">
+    <article className="mx-auto max-w-5xl px-6 py-12 md:px-12">
       <Helmet>
         <title>{post.title} – Wraith Protocol</title>
         {post.excerpt && <meta name="description" content={post.excerpt} />}
@@ -115,6 +118,8 @@ function BlogPostDetail({ slug }: { slug: string }) {
               <span>{post.author}</span>
             </>
           )}
+          <span>•</span>
+          <span>{post.readingTimeMin} min read</span>
         </div>
         <h1 className="font-heading text-[32px] font-semibold leading-tight text-on-surface sm:text-[40px]">
           {post.title}
@@ -133,8 +138,12 @@ function BlogPostDetail({ slug }: { slug: string }) {
         )}
       </div>
 
-      <div className="prose prose-invert max-w-none text-on-surface-variant">
-        <Component />
+      <div className="flex flex-col lg:flex-row lg:gap-12">
+        <BlogToc toc={post.toc} wordCount={post.wordCount} />
+        
+        <div className="prose prose-invert min-w-0 max-w-none flex-1 text-on-surface-variant">
+          <Component />
+        </div>
       </div>
     </article>
   );
