@@ -62,6 +62,7 @@ export function getAllPosts(): BlogPost[] {
       const headingRegex = /^(##|###)\s+(.+)$/gm;
       let match;
       while ((match = headingRegex.exec(body)) !== null) {
+        if (!match[1] || !match[2]) continue;
         const level = match[1].length;
         const text = match[2].trim();
         // Remove markdown formatting like **, _ etc if any
