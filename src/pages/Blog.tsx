@@ -1,6 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { Link, useParams } from 'react-router-dom';
 import { getAllPosts, getPostBySlug } from '../utils/blog';
+import BlogToc from '../components/BlogToc';
 
 function BlogList() {
   const posts = getAllPosts();
@@ -45,6 +46,8 @@ function BlogList() {
                   <span>{post.author}</span>
                 </>
               )}
+              <span>•</span>
+              <span>{post.readingTime}</span>
             </div>
             <h2 className="font-heading text-[22px] font-semibold text-on-surface hover:text-primary">
               <Link to={`/blog/${post.slug}`}>{post.title}</Link>
@@ -115,6 +118,8 @@ function BlogPostDetail({ slug }: { slug: string }) {
               <span>{post.author}</span>
             </>
           )}
+          <span>•</span>
+          <span>{post.readingTime}</span>
         </div>
         <h1 className="font-heading text-[32px] font-semibold leading-tight text-on-surface sm:text-[40px]">
           {post.title}
@@ -133,8 +138,11 @@ function BlogPostDetail({ slug }: { slug: string }) {
         )}
       </div>
 
-      <div className="prose prose-invert max-w-none text-on-surface-variant">
-        <Component />
+      <div className="flex flex-col lg:flex-row lg:items-start lg:gap-12">
+        <BlogToc rawContent={post.rawContent} wordCount={post.wordCount} />
+        <div className="prose prose-invert max-w-none min-w-0 flex-1 text-on-surface-variant">
+          <Component />
+        </div>
       </div>
     </article>
   );

@@ -15,6 +15,9 @@ export interface BlogPost {
   author: string;
   excerpt: string;
   tags: string[];
+  readingTime: string;
+  wordCount: number;
+  rawContent: string;
   Component: ComponentType;
 }
 
@@ -24,6 +27,7 @@ interface MDXModule {
 }
 
 const modules = import.meta.glob<MDXModule>('/src/content/blog/*.mdx', { eager: true });
+const rawModules = import.meta.glob('/src/content/blog/*.mdx', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;
 
 export function getAllPosts(): BlogPost[] {
   return Object.entries(modules)
@@ -32,6 +36,13 @@ export function getAllPosts(): BlogPost[] {
       const slug = filename.replace(/\.mdx$/, '');
       const frontmatter = mod.frontmatter || {};
 
+      const rawContent = rawModules[filepath] || '';
+      // Strip frontmatter to get more accurate word count
+      const bodyContent = rawContent.replace(/^---[\s\S]*?---/, '').trim();
+      const words = bodyContent.split(/\s+/).filter(Boolean);
+      const wordCount = words.length;
+      const readingTimeMinutes = Math.max(1, Math.ceil(wordCount / 200));
+
       return {
         slug,
         title: frontmatter.title || slug,
@@ -39,6 +50,9 @@ export function getAllPosts(): BlogPost[] {
         author: frontmatter.author || 'Wraith Team',
         excerpt: frontmatter.excerpt || '',
         tags: Array.isArray(frontmatter.tags) ? frontmatter.tags : [],
+        readingTime: `${readingTimeMinutes} min read`,
+        wordCount,
+        rawContent,
         Component: mod.default,
       };
     })
