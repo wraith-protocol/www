@@ -61,7 +61,7 @@ export default function BlogToc({ rawContent, wordCount }: BlogTocProps) {
           }
         }
       },
-      { rootMargin: '0px 0px -80% 0px' }
+      { rootMargin: '0px 0px -80% 0px' },
     );
 
     toc.forEach((item) => {
@@ -96,17 +96,12 @@ export default function BlogToc({ rawContent, wordCount }: BlogTocProps) {
       </h2>
       <ul className="flex flex-col gap-2 font-mono text-[13px]">
         {toc.map((item) => (
-          <li
-            key={item.id}
-            style={{ paddingLeft: item.level === 3 ? '1rem' : '0' }}
-          >
+          <li key={item.id} style={{ paddingLeft: item.level === 3 ? '1rem' : '0' }}>
             <a
               href={`#${item.id}`}
               onClick={(e) => handleClick(e, item.id)}
               className={`block leading-relaxed transition-colors hover:text-primary ${
-                activeId === item.id
-                  ? 'text-primary font-semibold'
-                  : 'text-on-surface-variant'
+                activeId === item.id ? 'text-primary font-semibold' : 'text-on-surface-variant'
               }`}
             >
               {item.text}

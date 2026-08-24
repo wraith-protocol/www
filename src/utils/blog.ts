@@ -27,7 +27,11 @@ interface MDXModule {
 }
 
 const modules = import.meta.glob<MDXModule>('/src/content/blog/*.mdx', { eager: true });
-const rawModules = import.meta.glob('/src/content/blog/*.mdx', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;
+const rawModules = import.meta.glob('/src/content/blog/*.mdx', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+}) as Record<string, string>;
 
 export function getAllPosts(): BlogPost[] {
   return Object.entries(modules)
