@@ -13,7 +13,7 @@ export default function BlogToc({ toc, wordCount }: { toc: TocItem[]; wordCount:
           }
         });
       },
-      { rootMargin: '0% 0% -80% 0%' }
+      { rootMargin: '0% 0% -80% 0%' },
     );
 
     toc.forEach((item) => {

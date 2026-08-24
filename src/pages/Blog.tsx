@@ -140,7 +140,7 @@ function BlogPostDetail({ slug }: { slug: string }) {
 
       <div className="flex flex-col lg:flex-row lg:gap-12">
         <BlogToc toc={post.toc} wordCount={post.wordCount} />
-        
+
         <div className="prose prose-invert min-w-0 max-w-none flex-1 text-on-surface-variant">
           <Component />
         </div>

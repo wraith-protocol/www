@@ -34,7 +34,11 @@ interface MDXModule {
 }
 
 const modules = import.meta.glob<MDXModule>('/src/content/blog/*.mdx', { eager: true });
-const rawModules = import.meta.glob('/src/content/blog/*.mdx', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;
+const rawModules = import.meta.glob('/src/content/blog/*.mdx', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+}) as Record<string, string>;
 
 // Cache posts to avoid re-parsing on every call
 let cachedPosts: BlogPost[] | null = null;
