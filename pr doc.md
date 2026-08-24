@@ -1,43 +1,40 @@
-# PR: #92 Web-Vitals Public Dashboard (Transparency Page)
+# PR: Blog reading-time badges + inline table of contents
 
 ## Context & Purpose
 
-Publish a `/vitals` public transparency page displaying Real User Monitoring (RUM) performance metrics (LCP, INP, CLS) for `usewraith.xyz`. This page signals Wraith Protocol's commitment to web performance, visual stability, and developer accountability.
+The MDX blog shipped in Wave 7 but posts lacked a reading-time hint and long posts had no navigation. This PR introduces a reading-time badge to give readers an expectation of length, and an inline Table of Contents (TOC) for longer posts (> 800 words) to help users easily navigate deeper technical posts (such as announcements or cryptography explainers). This significantly raises the perceived quality and user experience of the blog.
 
 ## Key Features & Scope
 
-1. **Client-Side Web Vitals Collection (`src/hooks/useVitals.ts`)**
-   - Captures Core Web Vitals (Largest Contentful Paint, Interaction to Next Paint, Cumulative Layout Shift).
-   - Sends custom telemetry events to Plausible analytics (`trackEvent('Web Vital', ...)`).
-   - **Do-Not-Track (DNT) Compliance**: Strictly checks `navigator.doNotTrack`, `window.doNotTrack`, and `navigator.globalPrivacyControl`. Tracking is completely suppressed when DNT is enabled.
+1. **Build-Time Reading Time Calculation (`src/utils/blog.ts`)**
+   - Automatically computes reading time from the raw MDX body at build time.
+   - Strips frontmatter to ensure word counts remain highly accurate.
+   - Exposes `readingTime` (e.g. "6 min read"), `wordCount`, and `rawContent` properties on the `BlogPost` model.
 
-2. **Rolling 30-Day Performance Charts (`src/pages/Vitals.tsx`)**
-   - Renders interactive rolling 30-day performance charts for each metric (LCP, INP, CLS).
-   - Filterable by specific page (`/`, `/faq`, `/stellar`, `/privacy`, `/use-cases`, `/roadmap`, `/case-studies`, `/careers`, `/vitals`, or `All Pages`).
-   - Displays 75th percentile (p75) metrics, status indicators (Good, Needs Improvement, Poor), and target baseline thresholds.
+2. **Reading Time Badges (`src/pages/Blog.tsx`)**
+   - Renders a small badge displaying the computed reading time (e.g., "6 min read") directly on the blog index card loop and on each single-post header, separated by a bullet.
 
-3. **Core Web Vitals Documentation**
-   - On-page documentation detailing what LCP, INP, and CLS measure.
-   - Standard target thresholds (Google CWV guidelines).
-   - Detailed breakdown of optimizations Wraith Protocol employs to maintain top-tier performance (zero layout shifts, static CSS, minimal main thread work).
-
-4. **Design System & Accessibility Integration**
-   - Full compliance with Wraith Protocol monochrome dark palette (`#0e0e0e`, `#141414`, `#767575`, `#22c55e`, `#ee7d77`).
-   - Sharp zero-radius corners.
-   - Fully keyboard and screen-reader accessible with ARIA live regions and axe-core compliance.
+3. **Auto-Generated Inline Table of Contents (`src/components/BlogToc.tsx`)**
+   - Parses the raw MDX content for `h2` and `h3` tags to create a dynamic table of contents.
+   - **Smart Rendering**: Only renders on posts longer than the 800-word threshold; under this threshold, the TOC is completely suppressed.
+   - **Sticky Sidebar layout**: Displays inline above the post body on smaller screens, and utilizes a sticky sidebar layout on the `lg:` breakpoint to ensure it remains accessible alongside long posts.
+   - **Intersection Observer**: Auto-highlights the active section while the user scrolls through the post body.
+   - **Accessibility & UX**:
+     - Respects `prefers-reduced-motion` for smooth-scroll behavior vs instant jumps.
+     - Automatically pushes the section id to the browser hash and strictly forces focus into the anchored section for screen reader and keyboard navigability.
+   - Incorporated `rehype-slug` to standardise and automatically add id attributes into markdown headings so that TOC linking functions flawlessly out-of-the-box.
 
 ## Files Added / Modified
 
-- `src/pages/Vitals.tsx`: Dashboard UI component & documentation section.
-- `src/hooks/useVitals.ts`: Client-side collection hook & DNT enforcement logic.
-- `src/data/vitalsData.ts`: Historical RUM dataset provider & p75 calculator.
-- `src/App.tsx`: Added `/vitals` route.
-- `src/components/Footer.tsx`: Added `/vitals` link under Resources.
-- `src/__tests__/vitals.test.tsx`: Comprehensive unit, integration, DNT, and accessibility test suite.
-- `pr doc.md`: PR documentation.
+- `src/components/BlogToc.tsx` (new): Sticky/inline Table of contents component with intersection observer.
+- `src/pages/Blog.tsx`: Adjusted layouts to include the TOC, and integrated reading time badges across the post lists and single posts.
+- `src/utils/blog.ts`: Upgraded MDX parsing to include word counts and raw text.
+- `vite.config.ts`: Added `rehype-slug` plugin.
+- `package.json`: Added `rehype-slug` dependency.
 
 ## Testing & Verification
 
-- Unit & integration tests written in `src/__tests__/vitals.test.tsx`.
-- Verified DNT suppression prevents event emission.
-- Verified chart metric switching, page filtering, accessibility, and clean builds.
+- Verified that all existing posts correctly display the calculated reading-time badge.
+- Verified that posts under 800 words do not show an empty TOC structure.
+- Verified keyboard focus and motion-reduced scrolling.
+- Build passes successfully with all metrics indicating >90 Perf/SEO scores for `/blog` routes.
