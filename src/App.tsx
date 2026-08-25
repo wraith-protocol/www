@@ -17,6 +17,7 @@ const StellarMetrics = lazy(() => import('./components/StellarMetrics'));
 const Compare = lazy(() => import('./components/Compare'));
 const Showcase = lazy(() => import('./components/Showcase'));
 const CaseStudiesStrip = lazy(() => import('./components/CaseStudiesStrip'));
+const FeaturedGrantShowcase = lazy(() => import('./components/FeaturedGrantShowcase'));
 const EcosystemPartners = lazy(() => import('./components/EcosystemPartners'));
 const CtaStrip = lazy(() => import('./components/CtaStrip'));
 const Footer = lazy(() => import('./components/Footer'));
@@ -29,6 +30,7 @@ const UseCases = lazy(() => import('./pages/UseCases'));
 const Stellar = lazy(() => import('./pages/Stellar'));
 const Roadmap = lazy(() => import('./pages/Roadmap'));
 const Grants = lazy(() => import('./pages/Grants'));
+const GrantShowcase = lazy(() => import('./pages/GrantShowcase'));
 const CaseStudies = lazy(() => import('./pages/CaseStudies'));
 const Careers = lazy(() => import('./pages/Careers'));
 const About = lazy(() => import('./pages/About'));
@@ -57,6 +59,7 @@ function Home() {
           <Compare />
           <Showcase />
           <CaseStudiesStrip />
+          <FeaturedGrantShowcase />
           <EcosystemPartners />
           <CtaStrip />
         </Suspense>
@@ -106,6 +109,14 @@ export default function App() {
               element={
                 <Layout>
                   <Grants />
+                </Layout>
+              }
+            />
+            <Route
+              path="/grants/showcase"
+              element={
+                <Layout>
+                  <GrantShowcase />
                 </Layout>
               }
             />

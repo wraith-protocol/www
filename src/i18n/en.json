@@ -382,5 +382,31 @@
       "successShort": "Check your inbox",
       "errorShort": "Try again"
     }
+  },
+  "grantShowcase": {
+    "eyebrow": "GRANT SHOWCASE",
+    "heading": "Grant-funded projects",
+    "description": "Explore projects built with Wraith Protocol grant funding. From stealth wallets to cross-chain bridges, see what the community is shipping.",
+    "totalProjects": "TOTAL PROJECTS",
+    "project": "project",
+    "projects": "projects",
+    "filterByWave": "FILTER BY WAVE",
+    "allWaves": "All Waves",
+    "filterByStatus": "FILTER BY STATUS",
+    "allStatuses": "All Statuses",
+    "resetFilters": "Reset Filters",
+    "contributors": "CONTRIBUTORS",
+    "viewCode": "Code",
+    "viewDemo": "Demo",
+    "noResults": "NO PROJECTS FOUND",
+    "noResultsDescription": "Try selecting different filters.",
+    "backToGrants": "Back to grants"
+  },
+  "featuredGrants": {
+    "eyebrow": "GRANT SHOWCASE",
+    "heading": "Funded projects",
+    "description": "Projects built with Wraith Protocol grant funding.",
+    "viewAll": "VIEW ALL",
+    "readMore": "View Project"
   }
 }

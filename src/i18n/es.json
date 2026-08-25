@@ -368,5 +368,31 @@
       "successShort": "Revisa tu bandeja",
       "errorShort": "Intenta de nuevo"
     }
+  },
+  "grantShowcase": {
+    "eyebrow": "VITRINA DE BECAS",
+    "heading": "Proyectos financiados por becas",
+    "description": "Explora proyectos construidos con financiación de becas de Wraith Protocol. Desde billeteras ocultas hasta puentes entre cadenas, ve lo que la comunidad está creando.",
+    "totalProjects": "PROYECTOS TOTALES",
+    "project": "proyecto",
+    "projects": "proyectos",
+    "filterByWave": "FILTRAR POR OLA",
+    "allWaves": "Todas las Olas",
+    "filterByStatus": "FILTRAR POR ESTADO",
+    "allStatuses": "Todos los Estados",
+    "resetFilters": "Restablecer Filtros",
+    "contributors": "COLABORADORES",
+    "viewCode": "Código",
+    "viewDemo": "Demo",
+    "noResults": "NO SE ENCONTRARON PROYECTOS",
+    "noResultsDescription": "Prueba seleccionar diferentes filtros.",
+    "backToGrants": "Volver a becas"
+  },
+  "featuredGrants": {
+    "eyebrow": "VITRINA DE BECAS",
+    "heading": "Proyectos financiados",
+    "description": "Proyectos construidos con financiación de becas de Wraith Protocol.",
+    "viewAll": "VER TODOS",
+    "readMore": "Ver Proyecto"
   }
 }
