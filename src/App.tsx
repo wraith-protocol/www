@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useEffect, type ReactNode } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import Hero from './components/Hero';
@@ -7,6 +7,8 @@ import Layout from './components/Layout';
 import TrustStrip from './components/TrustStrip';
 import PartnerStrip from './components/PartnerStrip';
 import { ThemeProvider } from './context/ThemeContext';
+import { Seo } from './utils/seo';
+import { changeLocale, type Locale } from './i18n';
 
 // Lazy load below-the-fold homepage components
 const StealthAnimation = lazy(() => import('./components/StealthAnimation'));
@@ -17,6 +19,7 @@ const StellarMetrics = lazy(() => import('./components/StellarMetrics'));
 const Compare = lazy(() => import('./components/Compare'));
 const Showcase = lazy(() => import('./components/Showcase'));
 const CaseStudiesStrip = lazy(() => import('./components/CaseStudiesStrip'));
+const FeaturedGrantShowcase = lazy(() => import('./components/FeaturedGrantShowcase'));
 const EcosystemPartners = lazy(() => import('./components/EcosystemPartners'));
 const CtaStrip = lazy(() => import('./components/CtaStrip'));
 const Footer = lazy(() => import('./components/Footer'));
@@ -29,6 +32,7 @@ const UseCases = lazy(() => import('./pages/UseCases'));
 const Stellar = lazy(() => import('./pages/Stellar'));
 const Roadmap = lazy(() => import('./pages/Roadmap'));
 const Grants = lazy(() => import('./pages/Grants'));
+const GrantShowcase = lazy(() => import('./pages/GrantShowcase'));
 const CaseStudies = lazy(() => import('./pages/CaseStudies'));
 const Careers = lazy(() => import('./pages/Careers'));
 const About = lazy(() => import('./pages/About'));
@@ -37,9 +41,21 @@ const NotFound = lazy(() => import('./pages/NotFound'));
 const Contributors = lazy(() => import('./pages/Contributors'));
 const Blog = lazy(() => import('./pages/Blog'));
 
+/** Sets the i18n locale on mount for locale-prefixed routes. */
+function LocaleSetter({ locale, children }: { locale: Locale; children: ReactNode }) {
+  useEffect(() => {
+    changeLocale(locale);
+  }, [locale]);
+  return <>{children}</>;
+}
+
 function Home() {
   return (
     <div className="bg-surface text-on-surface">
+      <Seo
+        title="Wraith Protocol — Private payments for every chain"
+        description="Wraith Protocol enables private payments on any blockchain using stealth addresses. One SDK, multiple chains."
+      />
       <a href="#main-content" className="skip-link">
         Skip to content
       </a>
@@ -57,6 +73,7 @@ function Home() {
           <Compare />
           <Showcase />
           <CaseStudiesStrip />
+          <FeaturedGrantShowcase />
           <EcosystemPartners />
           <CtaStrip />
         </Suspense>
@@ -110,6 +127,14 @@ export default function App() {
               }
             />
             <Route
+              path="/grants/showcase"
+              element={
+                <Layout>
+                  <GrantShowcase />
+                </Layout>
+              }
+            />
+            <Route
               path="/about"
               element={
                 <Layout>
@@ -141,6 +166,161 @@ export default function App() {
                 </Layout>
               }
             />
+
+            {/* Spanish locale-prefixed routes */}
+            <Route
+              path="/es"
+              element={
+                <LocaleSetter locale="es">
+                  <Home />
+                </LocaleSetter>
+              }
+            />
+            <Route
+              path="/es/faq"
+              element={
+                <LocaleSetter locale="es">
+                  <Faq />
+                </LocaleSetter>
+              }
+            />
+            <Route
+              path="/es/privacy"
+              element={
+                <LocaleSetter locale="es">
+                  <Privacy />
+                </LocaleSetter>
+              }
+            />
+            <Route
+              path="/es/newsletter"
+              element={
+                <LocaleSetter locale="es">
+                  <Newsletter />
+                </LocaleSetter>
+              }
+            />
+            <Route
+              path="/es/use-cases"
+              element={
+                <LocaleSetter locale="es">
+                  <UseCases />
+                </LocaleSetter>
+              }
+            />
+            <Route
+              path="/es/roadmap"
+              element={
+                <LocaleSetter locale="es">
+                  <Roadmap />
+                </LocaleSetter>
+              }
+            />
+            <Route
+              path="/es/case-studies"
+              element={
+                <LocaleSetter locale="es">
+                  <CaseStudies />
+                </LocaleSetter>
+              }
+            />
+            <Route
+              path="/es/case-studies/:slug"
+              element={
+                <LocaleSetter locale="es">
+                  <CaseStudies />
+                </LocaleSetter>
+              }
+            />
+            <Route
+              path="/es/vitals"
+              element={
+                <LocaleSetter locale="es">
+                  <Vitals />
+                </LocaleSetter>
+              }
+            />
+            <Route
+              path="/es/stellar"
+              element={
+                <Layout>
+                  <LocaleSetter locale="es">
+                    <Stellar />
+                  </LocaleSetter>
+                </Layout>
+              }
+            />
+            <Route
+              path="/es/careers"
+              element={
+                <Layout>
+                  <LocaleSetter locale="es">
+                    <Careers />
+                  </LocaleSetter>
+                </Layout>
+              }
+            />
+            <Route
+              path="/es/grants"
+              element={
+                <Layout>
+                  <LocaleSetter locale="es">
+                    <Grants />
+                  </LocaleSetter>
+                </Layout>
+              }
+            />
+            <Route
+              path="/es/grants/showcase"
+              element={
+                <Layout>
+                  <LocaleSetter locale="es">
+                    <GrantShowcase />
+                  </LocaleSetter>
+                </Layout>
+              }
+            />
+            <Route
+              path="/es/about"
+              element={
+                <Layout>
+                  <LocaleSetter locale="es">
+                    <About />
+                  </LocaleSetter>
+                </Layout>
+              }
+            />
+            <Route
+              path="/es/contributors"
+              element={
+                <Layout>
+                  <LocaleSetter locale="es">
+                    <Contributors />
+                  </LocaleSetter>
+                </Layout>
+              }
+            />
+            <Route
+              path="/es/blog"
+              element={
+                <Layout>
+                  <LocaleSetter locale="es">
+                    <Blog />
+                  </LocaleSetter>
+                </Layout>
+              }
+            />
+            <Route
+              path="/es/blog/:slug"
+              element={
+                <Layout>
+                  <LocaleSetter locale="es">
+                    <Blog />
+                  </LocaleSetter>
+                </Layout>
+              }
+            />
+
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>

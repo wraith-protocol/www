@@ -1,4 +1,4 @@
-import { Helmet } from 'react-helmet-async';
+import { Seo } from '../utils/seo';
 import teamData from '../data/team.json';
 
 const socialIcon = (type: 'github' | 'twitter') => {
@@ -19,20 +19,10 @@ const socialIcon = (type: 'github' | 'twitter') => {
 export default function About() {
   return (
     <>
-      <Helmet>
-        <title>About – Wraith Protocol</title>
-        <meta
-          name="description"
-          content="Meet the team behind Wraith Protocol — building privacy-preserving payment infrastructure for everyone."
-        />
-        <meta property="og:title" content="About – Wraith Protocol" />
-        <meta
-          property="og:description"
-          content="Meet the team behind Wraith Protocol — building privacy-preserving payment infrastructure."
-        />
-        <meta property="og:url" content="https://usewraith.xyz/about" />
-        <meta property="og:type" content="website" />
-      </Helmet>
+      <Seo
+        title="About – Wraith Protocol"
+        description="Meet the team behind Wraith Protocol — building privacy-preserving payment infrastructure for everyone."
+      />
 
       {/* ── Hero ──────────────────────────────────────────────────────────── */}
       <section className="border-b border-outline-variant-30 px-6 py-24 md:px-12">

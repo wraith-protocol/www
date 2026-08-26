@@ -1,0 +1,59 @@
+{
+  "entries": [
+    {
+      "id": "stealth-wallet-extension",
+      "name": "Stealth Wallet Extension",
+      "description": "Browser extension that lets users send and receive stealth payments with one click, no SDK knowledge required.",
+      "wave": "Wave 1",
+      "contributors": ["satoshi-dev", "ghost", "crypto-lara"],
+      "status": "live",
+      "codeUrl": "https://github.com/wraith-protocol/stealth-wallet-extension",
+      "demoUrl": "https://wallet.usewraith.xyz",
+      "featured": true
+    },
+    {
+      "id": "dao-treasury-shield",
+      "name": "DAO Treasury Shield",
+      "description": "Treasury management tool that routes multi-sig payments through stealth addresses, keeping contributor payouts private.",
+      "wave": "Wave 1",
+      "contributors": ["defi-builder", "open-source-org"],
+      "status": "in progress",
+      "codeUrl": "https://github.com/wraith-protocol/dao-treasury-shield",
+      "demoUrl": "https://treasury.usewraith.xyz",
+      "featured": true
+    },
+    {
+      "id": "cross-chain-stealth-bridge",
+      "name": "Cross-Chain Stealth Bridge",
+      "description": "Bridge that moves assets between Horizen and Stellar using stealth addresses so neither side can link the sender to the receiver.",
+      "wave": "Wave 0",
+      "contributors": ["bridge-builder", "satoshi-dev"],
+      "status": "shipped",
+      "codeUrl": "https://github.com/wraith-protocol/cross-chain-stealth-bridge",
+      "demoUrl": "https://bridge.usewraith.xyz",
+      "featured": true
+    },
+    {
+      "id": "private-payroll-protocol",
+      "name": "Private Payroll Protocol",
+      "description": "Payroll system that pays employees via one-time stealth addresses so salary amounts and recipients stay confidential on-chain.",
+      "wave": "Wave 1",
+      "contributors": ["payroll-hacker", "crypto-lara"],
+      "status": "in progress",
+      "codeUrl": "https://github.com/wraith-protocol/private-payroll-protocol",
+      "demoUrl": "https://payroll.usewraith.xyz",
+      "featured": false
+    },
+    {
+      "id": "stealth-address-indexer",
+      "name": "Stealth Address Indexer",
+      "description": "Open-source indexer that scans announcement events across EVM chains and serves them via a fast REST API for stealth-payment clients.",
+      "wave": "Wave 0",
+      "contributors": ["indexer-dev", "open-source-org"],
+      "status": "shipped",
+      "codeUrl": "https://github.com/wraith-protocol/stealth-address-indexer",
+      "demoUrl": "https://indexer.usewraith.xyz",
+      "featured": false
+    }
+  ]
+}

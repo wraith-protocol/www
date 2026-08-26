@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Footer from '../components/Footer';
+import { Seo } from '../utils/seo';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -82,6 +83,10 @@ export default function Newsletter() {
 
   return (
     <div className="min-h-screen bg-surface text-on-surface">
+      <Seo
+        title="Newsletter – Wraith Protocol"
+        description="Mainnet updates, security advisories, and grant news — straight to your inbox. No tracking, no third-party scripts. Unsubscribe any time."
+      />
       {/* minimal nav */}
       <header className="flex items-center justify-between px-6 py-5 md:px-12">
         <Link to="/" className="flex items-center gap-3">
