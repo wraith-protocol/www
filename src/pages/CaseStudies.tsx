@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { entries } from '../data/case-studies.json';
 import Layout from '../components/Layout';
+import { Seo } from '../utils/seo';
 
 type CaseStudy = {
   id: string;
@@ -67,6 +68,11 @@ function CaseStudyDetail({ study }: { study: CaseStudy }) {
 
   return (
     <Layout>
+      <Seo
+        title={`${study.org} – Wraith Protocol Case Studies`}
+        description={study.summary}
+        ogImage="https://usewraith.xyz/og/home.png"
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
@@ -261,6 +267,10 @@ function CaseStudiesList() {
 
   return (
     <Layout>
+      <Seo
+        title="Case Studies – Wraith Protocol"
+        description="Teams and organizations using Wraith to enable private payments in production. From payroll processors to DAOs, see how stealth addresses solve real privacy challenges."
+      />
       <div className="mx-auto max-w-[1344px] px-6 py-16 md:px-12">
         {/* Header */}
         <div className="mb-12 flex flex-col gap-6 border-b border-outline-variant pb-10">
@@ -405,6 +415,10 @@ export default function CaseStudies() {
     if (!study) {
       return (
         <Layout>
+          <Seo
+            title="Case Study Not Found – Wraith Protocol"
+            description="The requested case study could not be found."
+          />
           <div className="flex min-h-[400px] flex-col items-center justify-center gap-3 px-6">
             <h1 className="font-heading text-[24px] font-bold text-on-surface">
               Case Study Not Found
