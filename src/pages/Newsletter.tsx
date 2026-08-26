@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Footer from '../components/Footer';
+import { track } from '../utils/track';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -48,6 +49,7 @@ export default function Newsletter() {
     }
 
     setFormState('submitting');
+    track('newsletter_submit', { source: 'newsletter-page' });
 
     try {
       const res = await fetch('/api/subscribe', {
@@ -58,6 +60,7 @@ export default function Newsletter() {
 
       if (res.status === 201) {
         setFormState('success');
+        track('newsletter_confirm', { source: 'newsletter-page' });
         return;
       }
 

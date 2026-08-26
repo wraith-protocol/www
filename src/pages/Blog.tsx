@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link, useParams } from 'react-router-dom';
 import {
@@ -14,6 +15,8 @@ import {
 } from '../utils/blog';
 import BlogToc from '../components/BlogToc';
 import { article, breadcrumbList, SITE_URL } from '../utils/jsonld';
+import { track } from '../utils/track';
+import i18n from '../i18n';
 
 function AuthorByline({ post }: { post: BlogPost }) {
   if (!post.author) return null;
@@ -34,7 +37,6 @@ function AuthorByline({ post }: { post: BlogPost }) {
     </>
   );
 }
-
 function BlogList() {
   const posts = getAllPosts();
 
@@ -114,6 +116,11 @@ function BlogList() {
 
 function BlogPostDetail({ slug }: { slug: string }) {
   const post = getPostBySlug(slug);
+
+  useEffect(() => {
+    if (!post) return;
+    track('blog_post_read', { slug: post.slug, locale: i18n.language });
+  }, [post, slug]);
 
   if (!post) {
     return (
