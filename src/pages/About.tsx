@@ -1,4 +1,5 @@
 import { Helmet } from 'react-helmet-async';
+import { trackOutbound } from '../utils/track';
 import teamData from '../data/team.json';
 
 const socialIcon = (type: 'github' | 'twitter') => {
@@ -115,6 +116,7 @@ export default function About() {
                     <a
                       href={member.github}
                       target="_blank"
+                      onClick={trackOutbound('github')}
                       rel="noopener noreferrer"
                       aria-label={`${member.name} on GitHub`}
                       className="text-outline transition-colors duration-150 hover:text-on-surface"
@@ -125,6 +127,7 @@ export default function About() {
                       <a
                         href={member.twitter}
                         target="_blank"
+                        onClick={trackOutbound('social')}
                         rel="noopener noreferrer"
                         aria-label={`${member.name} on X (Twitter)`}
                         className="text-outline transition-colors duration-150 hover:text-on-surface"
@@ -208,6 +211,7 @@ export default function About() {
             <a
               href="https://github.com/wraith-protocol"
               target="_blank"
+              onClick={trackOutbound('github')}
               rel="noopener noreferrer"
               className="mt-6 inline-flex items-center gap-2 font-mono text-[11px] font-semibold tracking-[1px] text-primary transition-colors duration-150 hover:brightness-110"
             >

@@ -1,0 +1,34 @@
+
+Running 1 test using 1 worker
+
+[1/1] [e2e-chromium] › e2e/analytics.spec.ts:115:3 › first-party analytics › blog_post_read fires once at/after 80% scroll
+[e2e-chromium] › e2e/analytics.spec.ts:115:3 › first-party analytics › blog_post_read fires once at/after 80% scroll
+DEBUG blog title: Wraith Protocol
+
+DEBUG blog h1 count: 0
+
+DEBUG blog body: 
+
+  1) [e2e-chromium] › e2e/analytics.spec.ts:115:3 › first-party analytics › blog_post_read fires once at/after 80% scroll 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.waitFor: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for getByRole('heading', { level: 1 }).first() to be visible
+
+
+      120 |     console.log('DEBUG blog h1 count:', await page.locator('h1').count());
+      121 |     console.log('DEBUG blog body:', (await page.locator('body').innerText()).slice(0, 300));
+    > 122 |     await page.getByRole('heading', { level: 1 }).first().waitFor();
+          |                                                           ^
+      123 |
+      124 |     // Scroll to 40% first (instant, bypassing smooth-scroll) — must not have fired yet.
+      125 |     await page.evaluate(() =>
+        at /workspace/1d7a344d-323e-48f3-b1d4-b4f643632ca8/sessions/agent_5bd7ee09-9033-48bd-9857-ad5ae4ffe5db/e2e/analytics.spec.ts:122:59
+
+    Error Context: test-results/analytics-first-party-anal-5ede5-res-once-at-after-80-scroll-e2e-chromium/error-context.md
+
+
+  1 failed
+    [e2e-chromium] › e2e/analytics.spec.ts:115:3 › first-party analytics › blog_post_read fires once at/after 80% scroll 

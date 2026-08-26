@@ -152,4 +152,52 @@ describe('Web Vitals Dashboard Page (/vitals)', () => {
     const results = await axe(container);
     expect(results.violations).toEqual([]);
   });
+
+  it('provides a locale filter and combines it with the page filter', async () => {
+    const user = userEvent.setup();
+    render(
+      <HelmetProvider>
+        <App />
+      </HelmetProvider>,
+    );
+
+    await screen.findByRole('heading', { name: /web vitals dashboard/i, level: 1 });
+
+    const localeSelect = screen.getByLabelText(/locale:/i);
+    expect(localeSelect).toBeInTheDocument();
+    await user.selectOptions(localeSelect, 'es');
+    expect((localeSelect as HTMLSelectElement).value).toBe('es');
+
+    const pageSelect = screen.getByLabelText(/page:/i);
+    await user.selectOptions(pageSelect, '/faq');
+    expect((pageSelect as HTMLSelectElement).value).toBe('/faq');
+  });
+
+  it('renders conversion-event tiles (synthetic fixtures)', async () => {
+    render(
+      <HelmetProvider>
+        <App />
+      </HelmetProvider>,
+    );
+
+    await screen.findByRole('heading', { name: /web vitals dashboard/i, level: 1 });
+
+    expect(screen.getByRole('heading', { name: /conversion events/i })).toBeInTheDocument();
+    expect(screen.getByText(/cta clicks/i)).toBeInTheDocument();
+    expect(screen.getByText(/newsletter signups/i)).toBeInTheDocument();
+  });
+
+  it('renders the incident overlay empty state (no incident feed yet)', async () => {
+    render(
+      <HelmetProvider>
+        <App />
+      </HelmetProvider>,
+    );
+
+    await screen.findByRole('heading', { name: /web vitals dashboard/i, level: 1 });
+
+    expect(
+      screen.getByText(/no incidents reported in the last 30 days/i),
+    ).toBeInTheDocument();
+  });
 });

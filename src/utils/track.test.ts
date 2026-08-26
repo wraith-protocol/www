@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { track } from './track';
+import { track, trackOutbound } from './track';
 import * as analytics from '../analytics';
 
 describe('track (typed analytics helper)', () => {
@@ -64,5 +64,23 @@ describe('track (typed analytics helper)', () => {
     track('newsletter_confirm', { source: 'newsletter-page' });
 
     expect(analytics.trackEvent).toHaveBeenCalledOnce();
+  });
+
+  it('trackOutbound emits exactly one outbound_click with the category', () => {
+    setDNT('0');
+    const handler = trackOutbound('github');
+    handler();
+
+    expect(analytics.trackEvent).toHaveBeenCalledWith('outbound_click', {
+      props: { category: 'github' },
+    });
+  });
+
+  it('trackOutbound is suppressed when Do-Not-Track is enabled', () => {
+    setDNT('1');
+    const handler = trackOutbound('docs');
+    handler();
+
+    expect(analytics.trackEvent).not.toHaveBeenCalled();
   });
 });

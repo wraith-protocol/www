@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useInView } from '../hooks/useInView';
+import { trackOutbound } from '../utils/track';
 import trustData from '../data/trust.json';
 
 type AuditStatus = 'verified' | 'scheduled';
@@ -82,6 +83,7 @@ export default function TrustStrip() {
             key={item.label}
             href={item.link}
             target="_blank"
+            onClick={trackOutbound('other')}
             rel="noopener noreferrer"
             className="group flex items-center gap-4 border border-outline-variant-30 bg-surface-container p-5 transition-colors duration-150 hover:border-outline"
             data-reveal={isInView}
@@ -110,6 +112,7 @@ export default function TrustStrip() {
         <a
           href={integrations.link}
           target="_blank"
+          onClick={trackOutbound('other')}
           rel="noopener noreferrer"
           className="group flex flex-col justify-center gap-1 border border-outline-variant-30 bg-surface-container p-5 transition-colors duration-150 hover:border-outline"
           data-reveal={isInView}
@@ -129,6 +132,7 @@ export default function TrustStrip() {
         <a
           href={uptime.statusPageUrl}
           target="_blank"
+          onClick={trackOutbound('other')}
           rel="noopener noreferrer"
           aria-label={`Open the Wraith Protocol status page — ${uptimePercent}% uptime, ${uptime.windowLabel.toLowerCase()}`}
           className="group flex flex-col justify-center gap-1 border border-outline-variant-30 bg-surface-container p-5 transition-colors duration-150 hover:border-outline"

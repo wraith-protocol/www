@@ -1,5 +1,5 @@
 import { trackEvent } from '../analytics';
-import { isDNTEnabled } from '../hooks/useVitals';
+import { isDNTEnabled } from './privacy';
 
 /**
  * Strongly-typed map of first-party analytics events and their payloads.
@@ -41,6 +41,19 @@ export type AnalyticsEventMap = {
 
 export type AnalyticsEventName = keyof AnalyticsEventMap;
 
+/**
+ * Categories for outbound external links actually present on the site.
+ * Used by `outbound_click`.
+ */
+export type OutboundCategory =
+  | 'github'
+  | 'docs'
+  | 'social'
+  | 'explorer'
+  | 'ecosystem'
+  | 'partner'
+  | 'other';
+
 type AnalyticsProps = Record<string, string | number | boolean>;
 
 /** Flattens a payload into Plausible props, dropping explicitly undefined fields. */
@@ -62,10 +75,25 @@ function toProps<K extends AnalyticsEventName>(payload: AnalyticsEventMap[K]): A
  * Respects Do-Not-Track / Global Privacy Control (GPC) before forwarding any
  * named event, so no telemetry leaves the browser when the visitor opts out.
  */
-export function track<K extends AnalyticsEventName>(event: K, payload: AnalyticsEventMap[K]): void {
+export function track<K extends AnalyticsEventName>(
+  event: K,
+  payload: AnalyticsEventMap[K],
+): void {
   if (isDNTEnabled()) {
     return;
   }
 
   trackEvent(event, { props: toProps(payload) });
+}
+
+/**
+ * Returns a click handler that emits exactly one `outbound_click` event for the
+ * given destination category while preserving native link navigation.
+ *
+ * DNT is respected automatically via `track()`.
+ */
+export function trackOutbound(category: OutboundCategory): () => void {
+  return () => {
+    track('outbound_click', { category });
+  };
 }

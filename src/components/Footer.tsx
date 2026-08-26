@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { trackOutbound } from '../utils/track';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -297,6 +298,7 @@ export default function Footer() {
                       href={link.href}
                       target={isInternal ? undefined : '_blank'}
                       rel={isInternal ? undefined : 'noopener noreferrer'}
+                      onClick={isInternal ? undefined : trackOutbound('social')}
                       className="font-body text-[13px] text-on-surface-variant transition-colors duration-150 hover:text-on-surface"
                     >
                       {link.label}
@@ -314,6 +316,7 @@ export default function Footer() {
                 href="https://www.drips.network/wave/stellar"
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={trackOutbound('other')}
                 aria-label={t('footer.acknowledgmentsAria')}
                 className="group flex flex-col gap-2 font-body text-[13px] leading-[1.45] text-on-surface-variant transition-colors duration-150 hover:text-on-surface"
               >
@@ -346,6 +349,7 @@ export default function Footer() {
               href={statusPageUrl}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={trackOutbound('other')}
               aria-label="Open Wraith Protocol status page"
               className={`inline-flex items-center gap-2 rounded-none border px-2.5 py-1.5 font-body text-[11px] uppercase tracking-[1.5px] transition-colors duration-150 ${status.tone}`}
             >
@@ -369,16 +373,18 @@ export default function Footer() {
             >
               {t('footer.legal.privacy')}
             </Link>
-            <a
-              href="https://usewraith.xyz/terms"
-              className="font-body text-xs text-outline transition-colors duration-150 hover:text-on-surface-variant"
-            >
+              <a
+                href="https://usewraith.xyz/terms"
+                onClick={trackOutbound('other')}
+                className="font-body text-xs text-outline transition-colors duration-150 hover:text-on-surface-variant"
+              >
               {t('footer.legal.terms')}
             </a>
-            <a
-              href="https://usewraith.xyz/.well-known/security.txt"
-              className="font-body text-xs text-outline transition-colors duration-150 hover:text-on-surface-variant"
-            >
+              <a
+                href="https://usewraith.xyz/.well-known/security.txt"
+                onClick={trackOutbound('other')}
+                className="font-body text-xs text-outline transition-colors duration-150 hover:text-on-surface-variant"
+              >
               {t('footer.legal.securityTxt')}
             </a>
           </div>

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useInView } from '../hooks/useInView';
+import { trackOutbound } from '../utils/track';
 import ecosystemData from '../data/ecosystem.json';
 
 type Partner = (typeof ecosystemData.partners)[number];
@@ -31,6 +32,7 @@ function PartnerItem({ partner }: { partner: Partner }) {
     <a
       href={partner.link}
       target="_blank"
+      onClick={trackOutbound('partner')}
       rel="noopener noreferrer"
       className="group/hint relative flex shrink-0 items-center gap-3 border border-outline-variant-30 bg-surface-container px-5 py-3 transition-all duration-200 hover:border-outline hover:bg-surface-bright"
       aria-label={`${partner.name} — ${categoryLabel}`}

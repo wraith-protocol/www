@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { trackOutbound } from '../utils/track';
 import contributorsData from '../data/contributors.json';
 
 interface Contributor {
@@ -42,6 +43,7 @@ export default function Contributors() {
             key={contributor.username}
             href={contributor.profile}
             target="_blank"
+            onClick={trackOutbound('github')}
             rel="noopener noreferrer"
             className="flex items-center p-6 bg-surface rounded-xl border border-border hover:border-primary transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/10 group"
           >

@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import { changeLocale, Locale } from '../i18n';
+import { trackOutbound } from '../utils/track';
 
 export default function Header() {
   const { t, i18n } = useTranslation();
@@ -70,6 +71,7 @@ export default function Header() {
             href="https://docs.usewraith.xyz"
             target="_blank"
             rel="noopener noreferrer"
+            onClick={trackOutbound('docs')}
             className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
           >
             {t('header.nav.docs')}
@@ -78,6 +80,7 @@ export default function Header() {
             href="https://docs.usewraith.xyz/sdk/overview"
             target="_blank"
             rel="noopener noreferrer"
+            onClick={trackOutbound('docs')}
             className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
           >
             {t('header.nav.sdk')}
@@ -86,6 +89,7 @@ export default function Header() {
             href="https://demo.usewraith.xyz"
             target="_blank"
             rel="noopener noreferrer"
+            onClick={trackOutbound('other')}
             className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
           >
             {t('header.nav.demo')}
@@ -94,6 +98,7 @@ export default function Header() {
             href="https://console.usewraith.xyz"
             target="_blank"
             rel="noopener noreferrer"
+            onClick={trackOutbound('other')}
             className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
           >
             {t('header.nav.console')}
@@ -160,6 +165,7 @@ export default function Header() {
             href="https://github.com/wraith-protocol"
             target="_blank"
             rel="noopener noreferrer"
+            onClick={trackOutbound('github')}
             className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
           >
             {t('header.github')}

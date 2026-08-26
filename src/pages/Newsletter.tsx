@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Footer from '../components/Footer';
@@ -24,6 +24,9 @@ export default function Newsletter() {
   const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [formState, setFormState] = useState<FormState>('idle');
+  // Exactly-once guard: prevents duplicate submissions (and therefore duplicate
+  // conversion telemetry) from rapid repeat clicks on the submit button.
+  const submittedRef = useRef(false);
 
   const errorMessage = (): string | null => {
     switch (formState) {
@@ -41,6 +44,9 @@ export default function Newsletter() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    // Exactly-once: ignore repeat submits while one is already in flight or done.
+    if (submittedRef.current) return;
+
     const trimmed = email.trim().toLowerCase();
 
     if (!trimmed || !EMAIL_RE.test(trimmed)) {
@@ -49,7 +55,6 @@ export default function Newsletter() {
     }
 
     setFormState('submitting');
-    track('newsletter_submit', { source: 'newsletter-page' });
 
     try {
       const res = await fetch('/api/subscribe', {
@@ -58,9 +63,14 @@ export default function Newsletter() {
         body: JSON.stringify({ email: trimmed }),
       });
 
+      // 201 = subscription accepted by the backend and a double opt-in
+      // confirmation email has been queued by Buttondown. This is the successful
+      // submission conversion. (The actual email-confirmation step is handled by
+      // Buttondown's email flow, which is outside this SPA — see newsletter_confirm.)
       if (res.status === 201) {
+        submittedRef.current = true;
+        track('newsletter_submit', { source: 'newsletter-page' });
         setFormState('success');
-        track('newsletter_confirm', { source: 'newsletter-page' });
         return;
       }
 

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link, useParams } from 'react-router-dom';
 import {
@@ -37,6 +37,13 @@ function AuthorByline({ post }: { post: BlogPost }) {
     </>
   );
 }
+
+/** Normalizes an i18n language tag to a supported analytics locale. */
+function normalizeLocale(lang: string | undefined): string {
+  if (lang === 'es') return 'es';
+  return 'en';
+}
+
 function BlogList() {
   const posts = getAllPosts();
 
@@ -116,10 +123,49 @@ function BlogList() {
 
 function BlogPostDetail({ slug }: { slug: string }) {
   const post = getPostBySlug(slug);
+  // One-shot guard: ensures a single `blog_post_read` per article page view,
+  // independent of re-renders or continued scrolling.
+  const readFiredRef = useRef(false);
 
   useEffect(() => {
     if (!post) return;
-    track('blog_post_read', { slug: post.slug, locale: i18n.language });
+
+    // Reset for a new article view.
+    readFiredRef.current = false;
+
+    const fire = () => {
+      if (readFiredRef.current) return;
+      readFiredRef.current = true;
+      track('blog_post_read', {
+        slug: post.slug,
+        locale: normalizeLocale(i18n.language),
+      });
+      window.removeEventListener('scroll', onScroll);
+    };
+
+    const onScroll = () => {
+      const doc = document.documentElement;
+      const scrollHeight = doc.scrollHeight - doc.clientHeight;
+
+      // Short pages: content already fits the viewport, so the 80% threshold
+      // is considered satisfied immediately.
+      if (scrollHeight <= 0) {
+        fire();
+        return;
+      }
+
+      const scrollTop = window.scrollY || doc.scrollTop || 0;
+      const percent = (scrollTop / scrollHeight) * 100;
+      if (percent >= 80) {
+        fire();
+      }
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    // Evaluate immediately (handles short pages and already-scrolled restores).
+    onScroll();
+
+    return () => window.removeEventListener('scroll', onScroll);
   }, [post, slug]);
 
   if (!post) {
