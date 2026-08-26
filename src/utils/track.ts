@@ -75,10 +75,7 @@ function toProps<K extends AnalyticsEventName>(payload: AnalyticsEventMap[K]): A
  * Respects Do-Not-Track / Global Privacy Control (GPC) before forwarding any
  * named event, so no telemetry leaves the browser when the visitor opts out.
  */
-export function track<K extends AnalyticsEventName>(
-  event: K,
-  payload: AnalyticsEventMap[K],
-): void {
+export function track<K extends AnalyticsEventName>(event: K, payload: AnalyticsEventMap[K]): void {
   if (isDNTEnabled()) {
     return;
   }

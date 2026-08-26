@@ -125,7 +125,11 @@ export function useVitals() {
   }, [recordVital]);
 
   const getSummary = useCallback(
-    (metric: MetricType, page: string = 'All Pages', locale: VitalsLocale = 'all'): MetricSummary => {
+    (
+      metric: MetricType,
+      page: string = 'All Pages',
+      locale: VitalsLocale = 'all',
+    ): MetricSummary => {
       const liveOverrides = recordedVitals.map((v) => ({
         page: v.page,
         metric: v.metric,

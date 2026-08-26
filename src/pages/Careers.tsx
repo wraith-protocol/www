@@ -169,13 +169,13 @@ export default function Careers() {
           </div>
 
           <div className="grid gap-4 md:grid-cols-3">
-              <a
-                href="https://github.com/wraith-protocol/www/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22"
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => track('cta_click', { source: 'careers-open-issues' })}
-                className="group flex flex-col gap-4 border border-outline-variant bg-surface-container p-7 transition-colors duration-150 hover:bg-surface-bright"
-              >
+            <a
+              href="https://github.com/wraith-protocol/www/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => track('cta_click', { source: 'careers-open-issues' })}
+              className="group flex flex-col gap-4 border border-outline-variant bg-surface-container p-7 transition-colors duration-150 hover:bg-surface-bright"
+            >
               <span className="font-mono text-[11px] font-semibold tracking-[1.5px] text-outline">
                 01
               </span>

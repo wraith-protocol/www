@@ -74,7 +74,9 @@ test.describe('first-party analytics', () => {
     expect(ctaEvents[0]?.props?.source).toBe('ctastrip-console');
   });
 
-  test('newsletter success emits exactly one newsletter_submit and no confirm', async ({ page }) => {
+  test('newsletter success emits exactly one newsletter_submit and no confirm', async ({
+    page,
+  }) => {
     const events = await setupAnalyticsProbe(page);
     await page.route('**/api/subscribe', (route: Route) =>
       route.fulfill({
@@ -88,7 +90,9 @@ test.describe('first-party analytics', () => {
     await page.locator('#newsletter-email').fill('reader@example.com');
     const submit = page.getByRole('main').getByRole('button', { name: /subscribe/i });
     await submit.click();
-    await expect.poll(() => events.filter((event) => event.name === 'newsletter_submit').length).toBe(1);
+    await expect
+      .poll(() => events.filter((event) => event.name === 'newsletter_submit').length)
+      .toBe(1);
 
     await submit.click().catch(() => {});
     await page.waitForTimeout(100);
@@ -111,7 +115,9 @@ test.describe('first-party analytics', () => {
     await page.evaluate(() =>
       window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }),
     );
-    await expect.poll(() => events.filter((event) => event.name === 'blog_post_read').length).toBe(1);
+    await expect
+      .poll(() => events.filter((event) => event.name === 'blog_post_read').length)
+      .toBe(1);
 
     await page.evaluate(() =>
       window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }),
@@ -126,7 +132,9 @@ test.describe('first-party analytics', () => {
 
     const github = page.getByRole('link', { name: /github/i }).first();
     await github.click();
-    await expect.poll(() => events.filter((event) => event.name === 'outbound_click').length).toBe(1);
+    await expect
+      .poll(() => events.filter((event) => event.name === 'outbound_click').length)
+      .toBe(1);
 
     const outbound = events.filter((event) => event.name === 'outbound_click');
     expect(outbound[0]?.props?.category).toBe('github');
@@ -144,10 +152,18 @@ test.describe('first-party analytics', () => {
     });
 
     await page.goto('/');
-    await page.getByRole('link', { name: /github/i }).first().click().catch(() => {});
+    await page
+      .getByRole('link', { name: /github/i })
+      .first()
+      .click()
+      .catch(() => {});
     await page.goto('/newsletter');
     await page.locator('#newsletter-email').fill('reader@example.com');
-    await page.getByRole('main').getByRole('button', { name: /subscribe/i }).click().catch(() => {});
+    await page
+      .getByRole('main')
+      .getByRole('button', { name: /subscribe/i })
+      .click()
+      .catch(() => {});
     await page.waitForTimeout(200);
 
     expect(scriptRequests).toHaveLength(0);

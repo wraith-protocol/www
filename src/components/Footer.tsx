@@ -373,18 +373,18 @@ export default function Footer() {
             >
               {t('footer.legal.privacy')}
             </Link>
-              <a
-                href="https://usewraith.xyz/terms"
-                onClick={trackOutbound('other')}
-                className="font-body text-xs text-outline transition-colors duration-150 hover:text-on-surface-variant"
-              >
+            <a
+              href="https://usewraith.xyz/terms"
+              onClick={trackOutbound('other')}
+              className="font-body text-xs text-outline transition-colors duration-150 hover:text-on-surface-variant"
+            >
               {t('footer.legal.terms')}
             </a>
-              <a
-                href="https://usewraith.xyz/.well-known/security.txt"
-                onClick={trackOutbound('other')}
-                className="font-body text-xs text-outline transition-colors duration-150 hover:text-on-surface-variant"
-              >
+            <a
+              href="https://usewraith.xyz/.well-known/security.txt"
+              onClick={trackOutbound('other')}
+              className="font-body text-xs text-outline transition-colors duration-150 hover:text-on-surface-variant"
+            >
               {t('footer.legal.securityTxt')}
             </a>
           </div>

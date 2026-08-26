@@ -111,8 +111,8 @@ export default function Privacy() {
                 Plausible Analytics
               </a>{' '}
               for aggregate page and event analytics. Custom events are delivered to exactly{' '}
-              <code className="break-all font-mono text-xs text-primary">{ANALYTICS_ENDPOINT}</code>.
-              No second analytics provider or tag manager is introduced by this instrumentation.
+              <code className="break-all font-mono text-xs text-primary">{ANALYTICS_ENDPOINT}</code>
+              . No second analytics provider or tag manager is introduced by this instrumentation.
             </p>
           </Section>
 

@@ -196,8 +196,6 @@ describe('Web Vitals Dashboard Page (/vitals)', () => {
 
     await screen.findByRole('heading', { name: /web vitals dashboard/i, level: 1 });
 
-    expect(
-      screen.getByText(/no incidents reported in the last 30 days/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/no incidents reported in the last 30 days/i)).toBeInTheDocument();
   });
 });
