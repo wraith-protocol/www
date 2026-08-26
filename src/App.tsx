@@ -35,6 +35,7 @@ const Careers = lazy(() => import('./pages/Careers'));
 const About = lazy(() => import('./pages/About'));
 const Vitals = lazy(() => import('./pages/Vitals'));
 const Security = lazy(() => import('./pages/Security'));
+const Status = lazy(() => import('./pages/Status'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 const Contributors = lazy(() => import('./pages/Contributors'));
 const Blog = lazy(() => import('./pages/Blog'));
@@ -92,6 +93,15 @@ export default function App() {
               element={
                 <Layout>
                   <Security />
+                </Layout>
+              }
+            />
+            {/* Status page route */}
+            <Route
+              path="/status"
+              element={
+                <Layout>
+                  <Status />
                 </Layout>
               }
             />
