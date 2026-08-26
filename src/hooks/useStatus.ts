@@ -27,11 +27,41 @@ export type StatusData = {
 };
 
 const MOCK_COMPONENTS: ComponentStatus[] = [
-  { id: 'rpc-eth', name: 'Ethereum RPC', status: 'operational', uptime90Days: Array(90).fill(1), latencyMs: 42 },
-  { id: 'rpc-sol', name: 'Solana RPC', status: 'operational', uptime90Days: Array(90).fill(1), latencyMs: 28 },
-  { id: 'scanner', name: 'Wraith Scanner', status: 'operational', uptime90Days: Array(90).fill(1), latencyMs: 65 },
-  { id: 'docs', name: 'Documentation', status: 'operational', uptime90Days: Array(90).fill(1), latencyMs: 15 },
-  { id: 'marketing', name: 'Marketing Web', status: 'operational', uptime90Days: Array(90).fill(1), latencyMs: 20 },
+  {
+    id: 'rpc-eth',
+    name: 'Ethereum RPC',
+    status: 'operational',
+    uptime90Days: Array(90).fill(1),
+    latencyMs: 42,
+  },
+  {
+    id: 'rpc-sol',
+    name: 'Solana RPC',
+    status: 'operational',
+    uptime90Days: Array(90).fill(1),
+    latencyMs: 28,
+  },
+  {
+    id: 'scanner',
+    name: 'Wraith Scanner',
+    status: 'operational',
+    uptime90Days: Array(90).fill(1),
+    latencyMs: 65,
+  },
+  {
+    id: 'docs',
+    name: 'Documentation',
+    status: 'operational',
+    uptime90Days: Array(90).fill(1),
+    latencyMs: 15,
+  },
+  {
+    id: 'marketing',
+    name: 'Marketing Web',
+    status: 'operational',
+    uptime90Days: Array(90).fill(1),
+    latencyMs: 20,
+  },
 ];
 
 export function useStatus() {
@@ -43,9 +73,11 @@ export function useStatus() {
   const fetchStatus = useCallback(async () => {
     try {
       // Respect DNT header if enabled in browser
-      const isDnt = navigator.doNotTrack === '1' || (window as unknown as { doNotTrack?: string }).doNotTrack === '1';
+      const isDnt =
+        navigator.doNotTrack === '1' ||
+        (window as unknown as { doNotTrack?: string }).doNotTrack === '1';
       const headers: HeadersInit = {
-        'Accept': 'application/json',
+        Accept: 'application/json',
       };
       if (isDnt) {
         // DNT honored, ensure no cookies are sent/requested
@@ -67,10 +99,10 @@ export function useStatus() {
         overall: apiComponents.some((c) => c.status === 'outage')
           ? 'outage'
           : apiComponents.some((c) => c.status === 'degraded')
-          ? 'degraded'
-          : 'operational',
+            ? 'degraded'
+            : 'operational',
         components: apiComponents,
-        incidents: (incidentsData.incidents as Incident[]),
+        incidents: incidentsData.incidents as Incident[],
         lastUpdated: new Date().toISOString(),
       });
       setError(null);
