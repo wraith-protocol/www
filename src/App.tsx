@@ -33,6 +33,7 @@ const CaseStudies = lazy(() => import('./pages/CaseStudies'));
 const Careers = lazy(() => import('./pages/Careers'));
 const About = lazy(() => import('./pages/About'));
 const Vitals = lazy(() => import('./pages/Vitals'));
+const Security = lazy(() => import('./pages/Security'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 const Contributors = lazy(() => import('./pages/Contributors'));
 const Blog = lazy(() => import('./pages/Blog'));
@@ -84,6 +85,14 @@ export default function App() {
             <Route path="/case-studies" element={<CaseStudies />} />
             <Route path="/case-studies/:slug" element={<CaseStudies />} />
             <Route path="/vitals" element={<Vitals />} />
+            <Route
+              path="/security"
+              element={
+                <Layout>
+                  <Security />
+                </Layout>
+              }
+            />
             {/* Wrap Stellar with Layout */}
             <Route
               path="/stellar"

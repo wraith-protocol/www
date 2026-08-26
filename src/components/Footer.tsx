@@ -244,6 +244,15 @@ export default function Footer() {
         { label: 'Web Vitals', href: '/vitals' },
       ],
     },
+    {
+      title: t('footer.columns.trust'),
+      links: [
+        { label: t('footer.trust.security'), href: '/security' },
+        { label: t('footer.trust.privacy'), href: '/privacy' },
+        { label: t('footer.trust.vitals'), href: '/vitals' },
+        { label: t('footer.trust.securityTxt'), href: '/.well-known/security.txt' },
+      ],
+    },
   ];
 
   return (

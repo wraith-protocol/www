@@ -136,10 +136,18 @@
       "liveTestnet": "EN VIVO EN TESTNET",
       "liveDevnet": "EN VIVO EN DEVNET"
     },
-    "horizen": { "meta": "EVM · Asegurado por TEE · ERC-5564" },
-    "stellar": { "meta": "Soroban · Basado en memo" },
-    "solana": { "meta": "Tokens SPL · Programa de memo" },
-    "ckb": { "meta": "Modelo de células · Integración CCC" }
+    "horizen": {
+      "meta": "EVM · Asegurado por TEE · ERC-5564"
+    },
+    "stellar": {
+      "meta": "Soroban · Basado en memo"
+    },
+    "solana": {
+      "meta": "Tokens SPL · Programa de memo"
+    },
+    "ckb": {
+      "meta": "Modelo de células · Integración CCC"
+    }
   },
   "compare": {
     "eyebrow": "Análisis Comparativo",
@@ -301,6 +309,12 @@
     "legal": {
       "privacy": "Privacidad",
       "terms": "Términos",
+      "securityTxt": "Security.txt"
+    },
+    "trust": {
+      "security": "Seguridad",
+      "privacy": "Privacidad",
+      "vitals": "Web Vitals",
       "securityTxt": "Security.txt"
     }
   },
