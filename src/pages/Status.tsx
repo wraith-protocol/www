@@ -1,5 +1,4 @@
 import { useStatus } from '../hooks/useStatus';
-import { CheckCircle2, AlertTriangle, XCircle, RefreshCw, Clock } from 'lucide-react';
 
 export default function Status() {
   const { data, loading, error, refetch, lastUpdated } = useStatus();
@@ -8,20 +7,20 @@ export default function Status() {
     switch (status) {
       case 'operational':
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-green-500/10 text-green-500">
-            <CheckCircle2 className="w-3.5 h-3.5" /> Operational
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-500/10 text-green-500">
+            Operational
           </span>
         );
       case 'degraded':
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-amber-500/10 text-amber-500">
-            <AlertTriangle className="w-3.5 h-3.5" /> Degraded Performance
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-amber-500/10 text-amber-500">
+            Degraded Performance
           </span>
         );
       case 'outage':
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-red-500/10 text-red-500">
-            <XCircle className="w-3.5 h-3.5" /> Partial Outage
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-500/10 text-red-500">
+            Partial Outage
           </span>
         );
     }
@@ -38,15 +37,17 @@ export default function Status() {
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <span className="text-xs text-on-surface-muted flex items-center gap-1">
-            <Clock className="w-3.5 h-3.5" /> Updated {new Date(lastUpdated).toLocaleTimeString()}
-          </span>
+          {lastUpdated && (
+            <span className="text-xs text-on-surface-muted">
+              Updated {new Date(lastUpdated).toLocaleTimeString()}
+            </span>
+          )}
           <button
             onClick={() => refetch()}
             className="p-2 rounded-lg border border-surface-border hover:bg-surface-hover transition-colors"
             title="Refresh status"
           >
-            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+            {loading ? 'Refreshing...' : 'Refresh'}
           </button>
         </div>
       </div>
@@ -54,9 +55,9 @@ export default function Status() {
       {/* Overall Banner */}
       {error && !data ? (
         <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 mb-8">
-          <p className="font-medium">Unable to connect to live telemetry endpoints.</p>
+          <p className="font-medium">Status unavailable.</p>
           <p className="text-xs mt-1 opacity-80">
-            Displaying last known cached statuses. Retrying automatically...
+            Live component data could not be loaded. Please try again later.
           </p>
         </div>
       ) : data ? (
@@ -69,9 +70,9 @@ export default function Status() {
         >
           <div className="flex items-center gap-3">
             {data.overall === 'operational' ? (
-              <CheckCircle2 className="w-6 h-6 text-green-500" />
+              <span className="h-2 w-2 rounded-full bg-green-500" aria-hidden="true" />
             ) : (
-              <AlertTriangle className="w-6 h-6 text-amber-500" />
+              <span className="h-2 w-2 rounded-full bg-amber-500" aria-hidden="true" />
             )}
             <span className="font-semibold text-lg">
               {data.overall === 'operational'

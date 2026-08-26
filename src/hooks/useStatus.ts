@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import incidentsData from '../data/incidents.json';
 
+const statusApiUrl = import.meta.env.VITE_STATUS_API_URL || '';
+
 export type ComponentStatus = {
   id: string;
   name: string;
@@ -26,73 +28,33 @@ export type StatusData = {
   lastUpdated: string;
 };
 
-const MOCK_COMPONENTS: ComponentStatus[] = [
-  {
-    id: 'rpc-eth',
-    name: 'Ethereum RPC',
-    status: 'operational',
-    uptime90Days: Array(90).fill(1),
-    latencyMs: 42,
-  },
-  {
-    id: 'rpc-sol',
-    name: 'Solana RPC',
-    status: 'operational',
-    uptime90Days: Array(90).fill(1),
-    latencyMs: 28,
-  },
-  {
-    id: 'scanner',
-    name: 'Wraith Scanner',
-    status: 'operational',
-    uptime90Days: Array(90).fill(1),
-    latencyMs: 65,
-  },
-  {
-    id: 'docs',
-    name: 'Documentation',
-    status: 'operational',
-    uptime90Days: Array(90).fill(1),
-    latencyMs: 15,
-  },
-  {
-    id: 'marketing',
-    name: 'Marketing Web',
-    status: 'operational',
-    uptime90Days: Array(90).fill(1),
-    latencyMs: 20,
-  },
-];
-
 export function useStatus() {
   const [data, setData] = useState<StatusData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [lastUpdated, setLastUpdated] = useState<string>(new Date().toISOString());
+  const [lastUpdated, setLastUpdated] = useState<string | null>(null);
 
   const fetchStatus = useCallback(async () => {
+    if (!statusApiUrl) {
+      setData(null);
+      setError('Status endpoint unavailable');
+      setLoading(false);
+      setLastUpdated(null);
+      return;
+    }
+
     try {
-      // Respect DNT header if enabled in browser
-      const isDnt =
-        navigator.doNotTrack === '1' ||
-        (window as unknown as { doNotTrack?: string }).doNotTrack === '1';
       const headers: HeadersInit = {
         Accept: 'application/json',
       };
-      if (isDnt) {
-        // DNT honored, ensure no cookies are sent/requested
-      }
-
-      // Try fetching from public status endpoint or fallback gracefully to mock data
-      let apiComponents = MOCK_COMPONENTS;
-      try {
-        const res = await fetch('/api/status', { headers, credentials: 'omit' });
-        if (res.ok) {
-          const json = await res.json();
-          if (json.components) apiComponents = json.components;
-        }
-      } catch {
-        // Fallback gracefully if endpoint is unreachable without spinner-forever
+      // Status polling sends no telemetry and never includes cookies.
+      const res = await fetch(statusApiUrl, { headers, credentials: 'omit' });
+      if (!res.ok) throw new Error(`Status endpoint returned ${res.status}`);
+      const json = await res.json();
+      if (!Array.isArray(json.components)) throw new Error('Status response has no components');
+      const apiComponents = json.components as ComponentStatus[];
+      if (!apiComponents.some((component) => /stellar/i.test(component.name))) {
+        throw new Error('Status response is missing Stellar');
       }
 
       setData({
@@ -106,11 +68,13 @@ export function useStatus() {
         lastUpdated: new Date().toISOString(),
       });
       setError(null);
+      setLastUpdated(new Date().toISOString());
     } catch (err) {
+      setData(null);
       setError(err instanceof Error ? err.message : 'Failed to fetch status data');
+      setLastUpdated(null);
     } finally {
       setLoading(false);
-      setLastUpdated(new Date().toISOString());
     }
   }, []);
 
