@@ -1,0 +1,347 @@
+{
+  "stellarMetrics": {
+    "unableToFetch": "Não foi possível carregar"
+  },
+  "header": {
+    "brand": "WRAITH",
+    "nav": {
+      "docs": "Docs",
+      "sdk": "SDK",
+      "demo": "Demo",
+      "console": "Console",
+      "press": "Imprensa",
+      "useCases": "Casos de uso",
+      "roadmap": "Roteiro"
+    },
+    "launchApp": "Abrir app",
+    "github": "GitHub ↗",
+    "locale": {
+      "switchTo": "Mudar para {{lang}}"
+    },
+    "theme": {
+      "switchToLight": "Mudar para tema claro",
+      "switchToDark": "Mudar para tema escuro",
+      "lightMode": "☀️ Modo Claro",
+      "darkMode": "🌙 Modo Escuro"
+    },
+    "menu": {
+      "open": "Abrir menu de navegação",
+      "close": "Fechar menu de navegação"
+    }
+  },
+  "hero": {
+    "badge": {
+      "testnet": "AO VIVO EM 4 TESTNETS",
+      "partner": "Parceiro Stellar"
+    },
+    "heading": "Pagamentos privados para cada rede.",
+    "description": "Um kit de ferramentas de endereço oculto construído em ERC-5564 e ERC-6538. Integre ao seu app e envie pagamentos não vinculáveis ao destinatário em Horizen, Stellar, Solana e CKB.",
+    "stellarNote": "Suporte stealth habilitado por memo no Stellar, além de fluxos de privacidade coordenados para apps multi-rede.",
+    "cta": {
+      "docs": "Ler a Documentação",
+      "demo": "Experimentar a Demo",
+      "faq": "Ver Perguntas Frequentes"
+    },
+    "stats": {
+      "chainsLabel": "REDES SUPORTADAS",
+      "bundleLabel": "PACOTE SDK",
+      "ercLabel": "PADRÃO ERC"
+    },
+    "code": {
+      "ariaLabel": "Exemplos de código",
+      "copy": "COPIAR",
+      "copied": "COPIADO",
+      "failed": "FALHOU",
+      "language": "TYPESCRIPT",
+      "install": "npm i @wraith-protocol/sdk",
+      "copyAria": "Copiar exemplo de código {{tab}}",
+      "copiedLive": "{{tab}} copiado para a área de transferência",
+      "failedLive": "{{tab}} não pôde ser copiado"
+    }
+  },
+  "features": {
+    "eyebrow": "Por que Wraith",
+    "heading": "Tudo que você precisa para pagamentos privados.",
+    "description": "Três primitivas, conectadas corretamente. Sem criptografia personalizada do seu lado.",
+    "compareLink": "Veja como nos comparamos às alternativas →",
+    "stealth": {
+      "title": "Endereços Ocultos",
+      "description": "Cada pagamento recebido chega a um endereço novo e não vinculável derivado do meta-endereço do destinatário. Redes públicas, destinatários privados.",
+      "meta": "ERC-5564 · ERC-6538"
+    },
+    "scanning": {
+      "title": "Varredura Rápida",
+      "description": "Eventos de anúncio indexados via Goldsky para que os clientes examinem os pagamentos stealth recebidos em segundos, não minutos.",
+      "meta": "Subgraphs Goldsky"
+    },
+    "multichain": {
+      "title": "Núcleo Multi-Rede",
+      "description": "Uma API para Horizen, Stellar, Solana e CKB. Adaptadores de carteira específicos por rede incluídos no SDK — você escreve código de aplicação, não código de protocolo.",
+      "meta": "4 redes · mais em breve"
+    }
+  },
+  "architecture": {
+    "eyebrow": "Como Funciona",
+    "heading": "Anuncia. Deriva. Varre.",
+    "sender": {
+      "label": "REMETENTE",
+      "description": "Deriva um endereço oculto a partir do meta-endereço do destinatário usando uma nova chave efêmera."
+    },
+    "announcer": {
+      "label": "ANUNCIADOR",
+      "description": "O evento de anúncio na cadeia registra o pagamento para que o destinatário possa encontrá-lo sem interação."
+    },
+    "receiver": {
+      "label": "DESTINATÁRIO",
+      "description": "Varre os anúncios com sua chave de visualização, deriva a chave de gasto e saca quando quiser."
+    }
+  },
+  "forDevelopers": {
+    "eyebrow": "Para Desenvolvedores",
+    "heading": "Três formas de publicar.",
+    "fullDocs": "Documentação Completa ↗",
+    "sdk": {
+      "label": "SDK",
+      "badge": "ESTÁVEL",
+      "title": "@wraith-protocol/sdk",
+      "description": "SDK TypeScript com adaptadores de carteira para cada rede suportada.",
+      "linkText": "LER O GUIA"
+    },
+    "demo": {
+      "label": "DEMO",
+      "badge": "TESTNET",
+      "title": "demo.usewraith.xyz",
+      "description": "Um playground de pagamento stealth ao vivo. Envie e receba em quatro redes com sua própria carteira.",
+      "linkText": "ABRIR A DEMO"
+    },
+    "console": {
+      "label": "CONSOLE",
+      "badge": "BETA",
+      "title": "console.usewraith.xyz",
+      "description": "Chaves de API, painéis de uso e acesso de equipe. O plano de controle de produção para sua integração.",
+      "linkText": "OBTER CHAVES DE API"
+    }
+  },
+  "chains": {
+    "eyebrow": "Redes Suportadas",
+    "heading": "Construído para um mundo multi-rede.",
+    "partner": "Parceiro",
+    "stellarNote": {
+      "eyebrow": "Suporte stealth priorizado no Stellar",
+      "description": "Integração Soroban com metadados de destinatário baseados em memo, fazendo com que os pagamentos privados no Stellar pareçam nativos."
+    },
+    "statuses": {
+      "liveTestnet": "AO VIVO NA TESTNET",
+      "liveDevnet": "AO VIVO NA DEVNET"
+    },
+    "horizen": { "meta": "EVM · Protegido por TEE · ERC-5564" },
+    "stellar": { "meta": "Soroban · Baseado em memo" },
+    "solana": { "meta": "Tokens SPL · Programa de memo" },
+    "ckb": { "meta": "Modelo de células · Integração CCC" }
+  },
+  "compare": {
+    "eyebrow": "Análise Comparativa",
+    "heading": "Comparação honesta com alternativas.",
+    "description": "Privacidade não é tamanho único. Diferentes mecanismos fazem trocas distintas entre conveniência do usuário, postura regulatória e complexidade matemática.",
+    "scrollHint": "Deslize a tabela horizontalmente para ver todas as colunas",
+    "table": {
+      "ariaLabel": "Filtros de detalhes de comparação",
+      "protocol": "Protocolo",
+      "mechanism": "Mecanismo de Privacidade",
+      "ux": "UX / Fluxo de Envio",
+      "recipient": "Fluxo do Destinatário",
+      "regulation": "Postura Regulatória",
+      "multichain": "Multi-Rede",
+      "complexity": "Complexidade"
+    },
+    "tabs": {
+      "all": "Todos os Detalhes",
+      "wraith": "Wraith (Stealth)",
+      "mixers": "Tornado Cash (Mixers)",
+      "rollups": "Aztec (zk-Rollups)",
+      "railgun": "Railgun (Protegido)",
+      "transparent": "Status Quo"
+    },
+    "rows": {
+      "wraith": {
+        "name": "Wraith Protocol",
+        "mechanism": "Endereços Ocultos (ERC-5564)",
+        "ux": "Baixa fricção (envio direto para meta-endereço)",
+        "recipient": "Recepção passiva (varre anúncios via chave de visualização)",
+        "regulation": "Sem pool, transferências diretas ponto a ponto",
+        "multichain": "API multi-rede nativa (4+ redes)",
+        "complexity": "Baixa (criptografia de curva elíptica padrão)"
+      },
+      "tornado": {
+        "name": "Tornado Cash Style",
+        "mechanism": "Pools de Conhecimento Zero (zk-SNARKs)",
+        "ux": "Alta fricção (depósitos fixos, arquivos de nota)",
+        "recipient": "Saque ativo (deve gerar prova ZK e pagar retransmissores)",
+        "regulation": "Altamente sancionado (sanções OFAC globais)",
+        "multichain": "Pools isolados por rede",
+        "complexity": "Alta (provas do lado do cliente, redes de retransmissores)"
+      },
+      "aztec": {
+        "name": "Aztec / ZK Rollups",
+        "mechanism": "Criptografia de Estado e Rollups",
+        "ux": "Alta fricção (requer ponte para L2 e saída)",
+        "recipient": "Nativo L2 (destinatário deve ter conta L2 e varrer L2)",
+        "regulation": "Restrito (pontes de privacidade sendo descontinuadas devido a conformidade)",
+        "multichain": "Bloqueado à rede hospedeira (pontes L2 complexas)",
+        "complexity": "Extrema (economia de rollup L2, sincronização de estado, nós de prova)"
+      },
+      "railgun": {
+        "name": "Railgun",
+        "mechanism": "Pools Protegidos ZK em Contrato",
+        "ux": "Média-Alta (blindagem/desblindagem, carteira privada)",
+        "recipient": "Nativo protegido (deve possuir endereço privado para receber)",
+        "regulation": "Autorregulado (chaves de visualização, prova de inocência)",
+        "multichain": "Contratos isolados por rede",
+        "complexity": "Alta (árvores de estado privado, adaptadores DeFi, provas do cliente)"
+      },
+      "statusQuo": {
+        "name": "Status Quo",
+        "mechanism": "Nenhum (livro-razão público transparente)",
+        "ux": "Sem fricção (transações nativas de carteira)",
+        "recipient": "Recepção nativa (acesso imediato, carteiras padrão)",
+        "regulation": "Conforme (mas sem privacidade ou sigilo comercial)",
+        "multichain": "Suporte nativo em todas as redes",
+        "complexity": "Zero (mecânica padrão do livro-razão)"
+      }
+    },
+    "cards": {
+      "wraith": {
+        "eyebrow": "ABORDAGEM WRAITH",
+        "badge": "STEALTH SEM POOL",
+        "heading": "Wraith: Privacidade Direta, Ponto a Ponto",
+        "body": "Wraith implementa endereços ocultos criptográficos baseados nos padrões ERC-5564 e ERC-6538. Em vez de agrupar fundos em um mixer compartilhado, cada transação vai para um endereço de destino único e novo derivado criptograficamente usando as chaves públicas do destinatário e as chaves efêmeras do remetente.",
+        "whyLabel": "Por que importa",
+        "why": "Ao remover o \"pool de anonimato\" compartilhado, o Wraith evita os problemas regulatórios e a sobrecarga técnica dos mixers tradicionais. Os usuários transacionam ponto a ponto nativamente, mantendo completa não vinculabilidade da identidade do destinatário no livro-razão público."
+      },
+      "mixers": {
+        "eyebrow": "MIXERS E POOLS",
+        "badge": "SANCIONADO PELA OFAC",
+        "heading": "Mixers estilo Tornado Cash",
+        "body": "Mixers quebram vínculos entre endereços de depósito e saque colocando fundos em um pool de contrato inteligente comunal. Os usuários depositam denominações fixas (por exemplo, 1 ETH) e recebem uma nota criptográfica. Para sacar, eles geram uma prova de conhecimento zero do lado do cliente provando que possuem um dos depósitos não gastos.",
+        "gapsLabel": "Status Regulatório e Lacunas",
+        "gaps": "Tornado Cash foi sancionado pelo Escritório de Controle de Ativos Estrangeiros (OFAC) dos EUA em 2022 porque sua arquitetura de pool ofusca fluxos financeiros ilícitos. Além disso, a UX é complexa: os destinatários devem permanecer online para gerar provas ZK e pagar retransmissores de gás para manter a privacidade do saque."
+      },
+      "rollups": {
+        "eyebrow": "CRIPTOGRAFIA CAMADA 2",
+        "badge": "L2 PROGRAMÁVEL",
+        "heading": "Privacidade Aztec e zk-Rollup",
+        "body": "Aztec traz privacidade para a camada de execução de contratos inteligentes via um rollup de Camada-2 criptografado. Atualizações de estado criptografadas são processadas fora da cadeia, e provas de conhecimento zero são compiladas em lotes e publicadas no livro-razão Ethereum de Camada-1 para validação global.",
+        "gapsLabel": "Pontos Fortes e Lacunas",
+        "gaps": "Excelente para lógica de estado privado rica e DeFi privado. No entanto, os usuários enfrentam fricção significativa, incluindo etapas de ponte L1-para-L2, atrasos na finalidade do rollup e configuração complexa de carteira. Como os rollups estão vinculados a uma única rede hospedeira, a privacidade entre redes permanece um grande desafio."
+      },
+      "railgun": {
+        "eyebrow": "CONTRATOS PROTEGIDOS",
+        "badge": "DEFI EM CONTRATO",
+        "heading": "Ações Protegidas Railgun",
+        "body": "Railgun é um protocolo de privacidade na cadeia implantado diretamente em redes EVM. Permite aos usuários \"blindar\" tokens dentro de um pool de contratos inteligentes. Uma vez blindados, os ativos podem ser transferidos, trocados ou implantados em contratos de rendimento DeFi parceiros privadamente usando zk-SNARKs.",
+        "gapsLabel": "Pontos Fortes e Lacunas",
+        "gaps": "Railgun se destaca em trocas privadas dentro do pool e geração de rendimento diretamente em L1/L2 sem pontes. No entanto, os usuários devem usar carteiras específicas compatíveis com Railgun e pagar custos de gás substanciais para blindar ou desblindar. Seu design de pool também requer geração de provas pesadas do lado do cliente."
+      },
+      "transparent": {
+        "eyebrow": "LIVRO-RAZÃO TRANSPARENTE",
+        "badge": "PÚBLICO POR PADRÃO",
+        "heading": "O Status Quo do Livro-Razão Transparente",
+        "body": "Blockchains públicos operam em transparência absoluta. Qualquer pessoa com conexão à internet pode ver todo o seu histórico de transações, saldos, participações em ativos e rede de contrapartes através de simples exploradores de blocos.",
+        "gapsLabel": "O que você perde",
+        "gaps": "Contas transparentes expõem empresas, comerciantes e indivíduos a front-running, phishing e riscos de segurança física. Embora simples de usar, a divulgação pública completa torna as transações padrão do livro-razão inviáveis para operações empresariais padrão como folha de pagamento ou contratos com fornecedores."
+      }
+    }
+  },
+  "cta": {
+    "eyebrow": "Pronto para Construir",
+    "heading": "Comece a enviar pagamentos privados hoje.",
+    "getKeys": "Obter Chaves de API",
+    "readDocs": "Ler a Documentação"
+  },
+  "showcase": {
+    "eyebrow": "Construído com Wraith",
+    "heading": "Projetos usando Wraith.",
+    "description": "Integrações piloto, implementações de referência e POCs de parceiros.",
+    "visit": "Visitar"
+  },
+  "footer": {
+    "brand": "WRAITH PROTOCOL",
+    "tagline": "Pagamentos privados, claramente.",
+    "columns": {
+      "product": "PRODUTO",
+      "developers": "DESENVOLVEDORES",
+      "resources": "RECURSOS",
+      "acknowledgments": "AGRADECIMENTOS"
+    },
+    "product": {
+      "docs": "Docs",
+      "demo": "Demo",
+      "console": "Console",
+      "compare": "Comparar",
+      "faq": "Perguntas Frequentes",
+      "changelog": "Registro de Mudanças"
+    },
+    "developers": {
+      "sdk": "SDK",
+      "apiReference": "Referência da API",
+      "github": "GitHub",
+      "npm": "npm"
+    },
+    "resources": {
+      "erc5564": "Especificação ERC-5564",
+      "erc6538": "Especificação ERC-6538",
+      "security": "Segurança",
+      "press": "Imprensa"
+    },
+    "acknowledgmentsAria": "Com apoio da Stellar Development Foundation através do programa Stellar Wave via Drips",
+    "acknowledgmentsText": "Com apoio da Stellar Development Foundation através do programa Stellar Wave via Drips",
+    "built": "CONSTRUÍDO EM HORIZEN · ERC-5564 · CÓDIGO ABERTO",
+    "legal": {
+      "privacy": "Privacidade",
+      "terms": "Termos",
+      "securityTxt": "Security.txt"
+    }
+  },
+  "og": {
+    "siteTitle": "Wraith Protocol — Pagamentos privados para cada rede",
+    "metaDescription": "Wraith Protocol permite pagamentos privados em qualquer blockchain usando endereços ocultos. Um SDK, múltiplas redes.",
+    "ogTitle": "Wraith Protocol",
+    "ogDescription": "Pagamentos privados para cada rede. Endereços ocultos, SDK multi-rede e agentes de privacidade com IA."
+  },
+  "caseStudies": {
+    "eyebrow": "ESTUDOS DE CASO",
+    "heading": "Soluções de privacidade do mundo real.",
+    "description": "Equipes e organizações usando Wraith para habilitar pagamentos privados em produção. De processadores de folha de pagamento a DAOs, veja como os endereços ocultos resolvem desafios reais de privacidade.",
+    "totalStudies": "ESTUDOS TOTAIS",
+    "study": "estudo",
+    "studies": "estudos",
+    "filterByChain": "FILTRAR POR REDE",
+    "allChains": "Todas as Redes",
+    "readStudy": "Ler Estudo de Caso",
+    "noStudies": "NENHUM ESTUDO ENCONTRADO",
+    "noStudiesDescription": "Tente selecionar um filtro de rede diferente.",
+    "backToAll": "Voltar para todos os estudos de caso",
+    "useCase": "CASO DE USO",
+    "integration": "INTEGRADO",
+    "summary": "Resumo",
+    "challenge": "Desafio",
+    "solution": "Solução",
+    "results": "Resultados",
+    "privacyImprovement": "MELHORIA DE PRIVACIDADE",
+    "integrationTime": "TEMPO DE INTEGRAÇÃO",
+    "txProcessed": "TRANSAÇÕES PROCESSADAS",
+    "chainsUsed": "REDES USADAS",
+    "testimonial": "Depoimento",
+    "technicalDetails": "Detalhes Técnicos",
+    "sdkVersion": "VERSÃO DO SDK",
+    "implementation": "IMPLEMENTAÇÃO",
+    "challenges": "DESAFIOS"
+  },
+  "caseStudiesStrip": {
+    "eyebrow": "USO REAL",
+    "heading": "Estudos de caso",
+    "description": "Histórias de produção de equipes usando Wraith.",
+    "viewAll": "VER TODOS",
+    "readMore": "Ler Mais"
+  }
+}

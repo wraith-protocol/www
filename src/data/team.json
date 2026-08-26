@@ -1,0 +1,10 @@
+{
+  "contributors": [
+    {
+      "name": "code3ks",
+      "role": "Translator (Portuguese)",
+      "github": "code3ks",
+      "contribution": "Added Portuguese (pt) locale and established translation contribution workflow"
+    }
+  ]
+}

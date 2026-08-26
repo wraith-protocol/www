@@ -2,8 +2,9 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import en from './en.json';
 import es from './es.json';
+import pt from './pt.json';
 
-export const SUPPORTED_LOCALES = ['en', 'es'] as const;
+export const SUPPORTED_LOCALES = ['en', 'es', 'pt'] as const;
 export type Locale = (typeof SUPPORTED_LOCALES)[number];
 
 function detectLocale(): Locale {
@@ -18,6 +19,7 @@ i18n.use(initReactI18next).init({
   resources: {
     en: { translation: en },
     es: { translation: es },
+    pt: { translation: pt },
   },
   lng: detectLocale(),
   fallbackLng: 'en',
