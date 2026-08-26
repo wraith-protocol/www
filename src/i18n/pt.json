@@ -11,7 +11,9 @@
       "console": "Console",
       "press": "Imprensa",
       "useCases": "Casos de uso",
-      "roadmap": "Roteiro"
+      "roadmap": "Roteiro",
+      "grants": "Bolsas",
+      "blog": "Blog"
     },
     "launchApp": "Abrir app",
     "github": "GitHub ↗",
@@ -343,5 +345,42 @@
     "description": "Histórias de produção de equipes usando Wraith.",
     "viewAll": "VER TODOS",
     "readMore": "Ler Mais"
+  },
+  "privacyComparison": {
+    "legend": {
+      "publicData": "Dados Públicos",
+      "privateData": "Dados Privados"
+    }
+  },
+  "stealthAnimation": {
+    "benefits": {
+      "unlinkable": "Os endereços do remetente e destinatário nunca são vinculados na cadeia",
+      "oneTime": "Cada pagamento usa um endereço único de uso único",
+      "passive": "Apenas o destinatário pode detectar e acessar seus pagamentos",
+      "noCoordination": "Nenhuma coordenação necessária—meta-endereço publicado uma vez"
+    }
+  },
+  "newsletter": {
+    "eyebrow": "MANTENHA-SE ATUALIZADO",
+    "heading": "Boletim informativo",
+    "description": "Atualizações da mainnet, avisos de segurança e notícias de bolsas — diretamente na sua caixa de entrada. Sem rastreamento, sem scripts de terceiros. Cancele a qualquer momento.",
+    "privacyNote": "Dupla confirmação. Usamos Buttondown. Sem cookies, sem pixels de rastreamento.",
+    "labelEmail": "Endereço de e-mail",
+    "placeholder": "voce@exemplo.com",
+    "submit": "INSCREVER-SE",
+    "submitting": "INSCREVENDO…",
+    "successHeading": "Verifique sua caixa de entrada",
+    "successBody": "Enviamos um e-mail de confirmação. Clique no link dentro para concluir sua inscrição.",
+    "errorGeneric": "Algo deu errado. Por favor, tente novamente.",
+    "errorInvalidEmail": "Por favor, insira um endereço de e-mail válido.",
+    "errorAlreadySubscribed": "Este e-mail já está inscrito.",
+    "footerWidget": {
+      "label": "BOLETIM",
+      "placeholder": "seu@email.com",
+      "subscribe": "INSCREVER-SE",
+      "subscribing": "…",
+      "successShort": "Verifique sua caixa de entrada",
+      "errorShort": "Tente novamente"
+    }
   }
 }

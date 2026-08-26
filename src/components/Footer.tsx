@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
@@ -30,6 +30,120 @@ function normalizeStatus(payload: unknown): StatusState {
     return { label, tone };
   }
   return { label: 'Status unavailable', tone: 'neutral' };
+}
+
+// ─── Newsletter widget ────────────────────────────────────────────────────────
+
+const EMAIL_RE = /^[^\s@]+@[^\s@][^@]*\.[^\s@]+$/;
+type WidgetState = 'idle' | 'submitting' | 'success' | 'error';
+
+function NewsletterWidget() {
+  const { t } = useTranslation();
+  const [email, setEmail] = useState('');
+  const [state, setState] = useState<WidgetState>('idle');
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const trimmed = email.trim().toLowerCase();
+
+    if (!trimmed || !EMAIL_RE.test(trimmed)) {
+      setState('error');
+      inputRef.current?.focus();
+      return;
+    }
+
+    setState('submitting');
+
+    try {
+      const res = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: trimmed }),
+      });
+
+      // 201 = queued; 409 = already subscribed (treat as success to avoid user-enumeration)
+      if (res.status === 201 || res.status === 409) {
+        setState('success');
+        return;
+      }
+
+      setState('error');
+    } catch {
+      setState('error');
+    }
+  };
+
+  const isSubmitting = state === 'submitting';
+
+  return (
+    <div className="flex max-w-72 flex-col gap-3">
+      <span className="font-mono text-[10px] font-semibold tracking-[1.5px] text-outline">
+        {t('newsletter.footerWidget.label')}
+      </span>
+
+      {state === 'success' ? (
+        <p
+          role="status"
+          aria-live="polite"
+          className="font-body text-[13px] leading-[1.5] text-[#22c55e]"
+        >
+          {t('newsletter.footerWidget.successShort')}
+        </p>
+      ) : (
+        <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-2">
+          <div className="flex">
+            <label htmlFor="footer-newsletter-email" className="sr-only">
+              {t('newsletter.labelEmail')}
+            </label>
+            <input
+              id="footer-newsletter-email"
+              ref={inputRef}
+              type="email"
+              autoComplete="email"
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                if (state === 'error') setState('idle');
+              }}
+              placeholder={t('newsletter.footerWidget.placeholder')}
+              disabled={isSubmitting}
+              aria-label={t('newsletter.labelEmail')}
+              aria-describedby={state === 'error' ? 'footer-newsletter-error' : undefined}
+              aria-invalid={state === 'error' ? 'true' : undefined}
+              className="min-w-0 flex-1 border border-r-0 border-outline-variant bg-surface-container px-3 py-2 font-body text-[12px] text-on-surface placeholder:text-outline focus:border-outline focus:outline-none disabled:opacity-60"
+            />
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="border border-outline-variant bg-surface-bright px-3 py-2 font-mono text-[10px] font-semibold uppercase tracking-[1.2px] text-on-surface transition-colors hover:border-outline disabled:cursor-wait disabled:opacity-60"
+            >
+              {isSubmitting
+                ? t('newsletter.footerWidget.subscribing')
+                : t('newsletter.footerWidget.subscribe')}
+            </button>
+          </div>
+
+          {state === 'error' && (
+            <p
+              id="footer-newsletter-error"
+              role="alert"
+              className="font-body text-[11px] text-[#ee7d77]"
+            >
+              {t('newsletter.footerWidget.errorShort')}
+            </p>
+          )}
+        </form>
+      )}
+
+      <Link
+        to="/newsletter"
+        className="font-body text-[11px] text-outline transition-colors hover:text-on-surface-variant"
+      >
+        {t('newsletter.footerWidget.label').toLowerCase()} →
+      </Link>
+    </div>
+  );
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -123,7 +237,11 @@ export default function Footer() {
         { label: t('footer.resources.erc6538'), href: 'https://eips.ethereum.org/EIPS/eip-6538' },
         { label: t('footer.resources.security'), href: 'https://docs.usewraith.xyz/security' },
         { label: t('footer.resources.press'), href: '/press' },
+        { label: 'Blog', href: '/blog' },
         { label: 'Stellar Integration', href: '/stellar' },
+        { label: 'Careers', href: '/careers' },
+        { label: 'About', href: '/about' },
+        { label: 'Web Vitals', href: '/vitals' },
       ],
     },
   ];
@@ -204,6 +322,8 @@ export default function Footer() {
                 <span>{t('footer.acknowledgmentsText')}</span>
               </a>
             </div>
+
+            <NewsletterWidget />
           </div>
         </div>
 

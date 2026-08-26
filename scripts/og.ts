@@ -74,6 +74,12 @@ const routes: RouteConfig[] = [
     title: 'Blog',
     subtitle: 'Updates, guides, and deep dives from the Wraith team',
   },
+  {
+    slug: 'newsletter',
+    routePath: '/newsletter',
+    title: 'Newsletter',
+    subtitle: 'Mainnet updates, security advisories, and grant news — no tracking',
+  },
 ];
 
 function ogCard({ title, subtitle, chainBadge }: RouteConfig) {

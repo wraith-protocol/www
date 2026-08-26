@@ -11,7 +11,9 @@
       "console": "Consola",
       "press": "Prensa",
       "useCases": "Casos de uso",
-      "roadmap": "Hoja de ruta"
+      "roadmap": "Hoja de ruta",
+      "grants": "Subvenciones",
+      "blog": "Blog"
     },
     "launchApp": "Abrir app",
     "github": "GitHub ↗",
@@ -343,5 +345,42 @@
     "description": "Historias de producción de equipos usando Wraith.",
     "viewAll": "VER TODOS",
     "readMore": "Leer Más"
+  },
+  "privacyComparison": {
+    "legend": {
+      "publicData": "Datos Públicos",
+      "privateData": "Datos Privados"
+    }
+  },
+  "stealthAnimation": {
+    "benefits": {
+      "unlinkable": "Las direcciones del remitente y receptor nunca se vinculan en cadena",
+      "oneTime": "Cada pago usa una dirección única de un solo uso",
+      "passive": "Solo el destinatario puede detectar y acceder a sus pagos",
+      "noCoordination": "No se requiere coordinación—meta-dirección publicada una vez"
+    }
+  },
+  "newsletter": {
+    "eyebrow": "MANTENTE AL DÍA",
+    "heading": "Boletín",
+    "description": "Actualizaciones de mainnet, avisos de seguridad y noticias de becas — directo a tu bandeja de entrada. Sin rastreo, sin scripts de terceros. Cancela cuando quieras.",
+    "privacyNote": "Doble confirmación. Usamos Buttondown. Sin cookies ni píxeles de seguimiento.",
+    "labelEmail": "Correo electrónico",
+    "placeholder": "tu@ejemplo.com",
+    "submit": "SUSCRIBIRSE",
+    "submitting": "SUSCRIBIENDO…",
+    "successHeading": "Revisa tu bandeja",
+    "successBody": "Enviamos un correo de confirmación. Haz clic en el enlace para completar tu suscripción.",
+    "errorGeneric": "Algo salió mal. Intenta de nuevo.",
+    "errorInvalidEmail": "Ingresa un correo electrónico válido.",
+    "errorAlreadySubscribed": "Este correo ya está suscrito.",
+    "footerWidget": {
+      "label": "BOLETÍN",
+      "placeholder": "tu@email.com",
+      "subscribe": "SUSCRIBIRSE",
+      "subscribing": "…",
+      "successShort": "Revisa tu bandeja",
+      "errorShort": "Intenta de nuevo"
+    }
   }
 }

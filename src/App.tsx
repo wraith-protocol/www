@@ -4,8 +4,12 @@ import Header from './components/Header';
 import Hero from './components/Hero';
 import Features from './components/Features';
 import Layout from './components/Layout';
+import TrustStrip from './components/TrustStrip';
+import PartnerStrip from './components/PartnerStrip';
+import { ThemeProvider } from './context/ThemeContext';
 
 // Lazy load below-the-fold homepage components
+const StealthAnimation = lazy(() => import('./components/StealthAnimation'));
 const Architecture = lazy(() => import('./components/Architecture'));
 const ForDevelopers = lazy(() => import('./components/ForDevelopers'));
 const Chains = lazy(() => import('./components/Chains'));
@@ -20,11 +24,18 @@ const Footer = lazy(() => import('./components/Footer'));
 // Lazy load pages
 const Faq = lazy(() => import('./pages/Faq'));
 const Privacy = lazy(() => import('./pages/Privacy'));
+const Newsletter = lazy(() => import('./pages/Newsletter'));
 const UseCases = lazy(() => import('./pages/UseCases'));
 const Stellar = lazy(() => import('./pages/Stellar'));
 const Roadmap = lazy(() => import('./pages/Roadmap'));
+const Grants = lazy(() => import('./pages/Grants'));
 const CaseStudies = lazy(() => import('./pages/CaseStudies'));
+const Careers = lazy(() => import('./pages/Careers'));
+const About = lazy(() => import('./pages/About'));
+const Vitals = lazy(() => import('./pages/Vitals'));
 const NotFound = lazy(() => import('./pages/NotFound'));
+const Contributors = lazy(() => import('./pages/Contributors'));
+const Blog = lazy(() => import('./pages/Blog'));
 
 function Home() {
   return (
@@ -35,8 +46,10 @@ function Home() {
       <Header />
       <main id="main-content" tabIndex={-1}>
         <Hero />
+        <TrustStrip />
         <Features />
         <Suspense fallback={null}>
+          <StealthAnimation />
           <Architecture />
           <ForDevelopers />
           <Chains />
@@ -47,6 +60,7 @@ function Home() {
           <EcosystemPartners />
           <CtaStrip />
         </Suspense>
+        <PartnerStrip />
       </main>
       <Suspense fallback={null}>
         <Footer />
@@ -57,28 +71,80 @@ function Home() {
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <Suspense fallback={null}>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/faq" element={<Faq />} />
-          <Route path="/privacy" element={<Privacy />} />
-          <Route path="/use-cases" element={<UseCases />} />
-          <Route path="/roadmap" element={<Roadmap />} />
-          <Route path="/case-studies" element={<CaseStudies />} />
-          <Route path="/case-studies/:slug" element={<CaseStudies />} />
-          {/* Wrap Stellar with Layout */}
-          <Route
-            path="/stellar"
-            element={
-              <Layout>
-                <Stellar />
-              </Layout>
-            }
-          />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Suspense>
-    </BrowserRouter>
+    <ThemeProvider>
+      <BrowserRouter>
+        <Suspense fallback={null}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/faq" element={<Faq />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/newsletter" element={<Newsletter />} />
+            <Route path="/use-cases" element={<UseCases />} />
+            <Route path="/roadmap" element={<Roadmap />} />
+            <Route path="/case-studies" element={<CaseStudies />} />
+            <Route path="/case-studies/:slug" element={<CaseStudies />} />
+            <Route path="/vitals" element={<Vitals />} />
+            {/* Wrap Stellar with Layout */}
+            <Route
+              path="/stellar"
+              element={
+                <Layout>
+                  <Stellar />
+                </Layout>
+              }
+            />
+            <Route
+              path="/careers"
+              element={
+                <Layout>
+                  <Careers />
+                </Layout>
+              }
+            />
+            <Route
+              path="/grants"
+              element={
+                <Layout>
+                  <Grants />
+                </Layout>
+              }
+            />
+            <Route
+              path="/about"
+              element={
+                <Layout>
+                  <About />
+                </Layout>
+              }
+            />
+            <Route
+              path="/contributors"
+              element={
+                <Layout>
+                  <Contributors />
+                </Layout>
+              }
+            />
+            <Route
+              path="/blog"
+              element={
+                <Layout>
+                  <Blog />
+                </Layout>
+              }
+            />
+            <Route
+              path="/blog/:slug"
+              element={
+                <Layout>
+                  <Blog />
+                </Layout>
+              }
+            />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }

@@ -278,13 +278,14 @@ export default function Hero() {
           id={`code-panel-${activeTab}`}
           role="tabpanel"
           aria-labelledby={`code-tab-${activeTab}`}
-          className="overflow-x-auto border border-outline-variant bg-surface-container p-6"
+          tabIndex={0}
+          className="overflow-x-auto border border-outline-variant bg-surface-container p-6 outline-none focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-primary"
         >
           <div className="w-max min-w-full">
             {lines.map((line, i) => (
               <div key={`${activeTab}-${i}`} className="flex gap-4 py-1">
                 <span
-                  className="w-4 shrink-0 font-mono text-xs text-outline-variant select-none"
+                  className="w-4 shrink-0 font-mono text-xs text-outline select-none"
                   aria-hidden="true"
                 >
                   {i + 1}

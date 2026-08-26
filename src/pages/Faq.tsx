@@ -1,244 +1,73 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Footer from '../components/Footer';
+import faqData from '../data/faq.json';
 
 type FaqEntry = {
   id: string;
+  category: string;
   question: string;
   answer: string;
+  tags: string[];
 };
 
-type FaqSection = {
+type FaqCategory = {
   id: string;
   title: string;
-  entries: FaqEntry[];
 };
 
-const faqSections: FaqSection[] = [
-  {
-    id: 'about-wraith',
-    title: 'About Wraith',
-    entries: [
-      {
-        id: 'what-is-wraith',
-        question: 'What is Wraith?',
-        answer:
-          'Wraith is a privacy toolkit for payments. It gives apps a way to send payments that are unlinkable by default, so recipients receive funds without exposing a permanent public address that can be traced back to the sender.',
-      },
-      {
-        id: 'why-wraith',
-        question: 'Why does Wraith exist?',
-        answer:
-          'Most payment systems make privacy an afterthought. Wraith was built for teams that want to ship payments with strong receiver privacy without forcing users to run custom infrastructure or understand cryptography.',
-      },
-      {
-        id: 'who-is-wraith-for',
-        question: 'Who is Wraith for?',
-        answer:
-          'Wraith is aimed at wallet teams, exchanges, payments apps, and on-chain products that want private transfers without sacrificing developer ergonomics. It is especially useful in apps that handle recurring payments or sensitive user flows.',
-      },
-      {
-        id: 'does-wraith-replace-my-wallet',
-        question: 'Does Wraith replace my wallet or app?',
-        answer:
-          'No. Wraith plugs into existing apps and wallets as a privacy layer. You can keep your current UX and add private payment flows where they matter most.',
-      },
-    ],
-  },
-  {
-    id: 'privacy-mechanics',
-    title: 'Privacy mechanics',
-    entries: [
-      {
-        id: 'how-is-this-private',
-        question: 'How is this private?',
-        answer:
-          'Wraith uses stealth-address style payment flows. Each transfer is routed to a fresh one-time address, so observers can see a payment happened without linking it to the recipient’s long-term identity or wallet.',
-      },
-      {
-        id: 'what-do-observers-see',
-        question: 'What do observers see?',
-        answer:
-          'Observers can see that a transaction occurred and which chain it was sent on, but they do not get a simple link between the sender and the recipient’s canonical address in the same way as a standard transfer.',
-      },
-      {
-        id: 'what-is-stored',
-        question: 'What is stored on-chain or in the service?',
-        answer:
-          'The system stores only the data required for the privacy flow to work. In practice, that means the privacy metadata needed to discover and claim payments, while the recipient’s long-term address remains unlinkable from the sender’s view.',
-      },
-      {
-        id: 'is-it-anonymous',
-        question: 'Is Wraith anonymous?',
-        answer:
-          'It is privacy-preserving rather than fully anonymous in every context. The level of privacy depends on the chain, the app’s implementation, and the amount of metadata available outside the protocol layer.',
-      },
-    ],
-  },
-  {
-    id: 'stellar-specifics',
-    title: 'Stellar specifics',
-    entries: [
-      {
-        id: 'why-stellar',
-        question: 'Why Stellar?',
-        answer:
-          'Stellar is a strong fit for this because it is lightweight, fast, and already optimized for payments. Its simple transaction model and memo support make it practical for stealth-style flows without adding unnecessary complexity.',
-      },
-      {
-        id: 'what-is-different-on-stellar',
-        question: 'What is different on Stellar?',
-        answer:
-          'On Stellar, Wraith supports memo-enabled stealth flows so payloads and recipient metadata can be carried in a way that is compatible with the network’s payment model while still keeping the recipient unlinkable at the protocol level.',
-      },
-      {
-        id: 'why-not-use-only-ethereum',
-        question: 'Why not just use Ethereum?',
-        answer:
-          'Ethereum is one important venue, but it is not the only one. Stellar gives teams a more payment-native environment with simpler developer workflows for certain use cases, especially where transaction speed and cost matter.',
-      },
-      {
-        id: 'does-stellar-change-the-privacy-model',
-        question: 'Does Stellar change the privacy model?',
-        answer:
-          'The privacy mechanics are the same, but the implementation details differ. Stellar’s transaction format and memo support influence how the metadata is encoded and discovered, not the core principle of recipient unlinkability.',
-      },
-    ],
-  },
-  {
-    id: 'trust-and-custody',
-    title: 'Trust and custody',
-    entries: [
-      {
-        id: 'where-do-keys-live',
-        question: 'Where do keys live?',
-        answer:
-          'Keys are generated and managed by the wallet or app using the Wraith SDK. In the standard flow, the user controls the keys needed to derive and claim funds, and the service does not become the custodian of the funds.',
-      },
-      {
-        id: 'who-can-see-what',
-        question: 'Who can see what?',
-        answer:
-          'The sender sees the transaction they created. The receiver sees the payments they can claim. The network and public observers can see the on-chain activity, but the privacy layer is designed to reduce the amount of linkable information exposed.',
-      },
-      {
-        id: 'do-i-need-to-run-a-node',
-        question: 'Do I need to run a node?',
-        answer:
-          'No. You do not need to run a node to use the SDK or test the privacy flows. The SDK and service layer let developers integrate without operating their own relay or scanning infrastructure.',
-      },
-      {
-        id: 'is-this-a-custodial-service',
-        question: 'Is this a custodial service?',
-        answer:
-          'No. Wraith is not a custody product. The privacy layer does not take control of user funds, and users retain control over the keys needed to claim payments.',
-      },
-    ],
-  },
-  {
-    id: 'cost-and-fees',
-    title: 'Cost and fees',
-    entries: [
-      {
-        id: 'what-does-it-cost',
-        question: 'What does it cost?',
-        answer:
-          'The cost is mostly the underlying chain fees plus any application-layer overhead. The privacy flow is designed to be practical, but the final cost depends on the chain and the way the app chooses to broadcast the transaction.',
-      },
-      {
-        id: 'are-there-extra-fees',
-        question: 'Are there extra fees for privacy?',
-        answer:
-          'There can be extra metadata or transaction size costs depending on the implementation, but Wraith aims to keep them minimal and predictable so teams can budget around normal payment costs.',
-      },
-      {
-        id: 'is-it-cheaper-than-a-regular-transfer',
-        question: 'Is it cheaper than a regular transfer?',
-        answer:
-          'Not always. Privacy-preserving flows can be slightly more expensive than a plain transfer because they require additional metadata or transaction complexity. The trade-off is that the privacy properties are preserved without a separate custody layer.',
-      },
-    ],
-  },
-  {
-    id: 'regulatory-posture',
-    title: 'Regulatory posture',
-    entries: [
-      {
-        id: 'is-this-regulated',
-        question: 'Is this regulated?',
-        answer:
-          'The product is designed as a privacy-preserving payment primitive rather than a mixer or laundering tool. Its regulatory posture depends on the jurisdiction, the app’s implementation, and the compliance controls added by the team deploying it.',
-      },
-      {
-        id: 'is-this-a-mixer',
-        question: 'Is this a mixer?',
-        answer:
-          'No. The goal is not to pool funds or obscure them through a centralized mixing service. Wraith is a protocol-style privacy mechanism for directed payments, with clear sender and receiver intent and no pooled custody.',
-      },
-      {
-        id: 'does-this-mean-transaction-privacy-is-illegal',
-        question: 'Does transaction privacy mean the product is illegal?',
-        answer:
-          'Not by itself. Privacy features are not inherently unlawful, but teams should evaluate compliance requirements carefully and make sure any deployment follows local law and the product’s intended use case.',
-      },
-    ],
-  },
-  {
-    id: 'getting-started',
-    title: 'Getting started',
-    entries: [
-      {
-        id: 'how-do-i-start',
-        question: 'How do I get started?',
-        answer:
-          'Start with the SDK docs and a testnet demo. The quickest path is to add the SDK to your app, generate a stealth-aware payment flow, and test the recipient discovery path on a supported chain.',
-      },
-      {
-        id: 'do-i-need-a-backend',
-        question: 'Do I need a backend?',
-        answer:
-          'Not always. Simple integrations can work without a custom backend, but more production-grade flows may need a small infrastructure layer for announcement discovery, indexing, or monitoring.',
-      },
-      {
-        id: 'where-can-i-see-a-demo',
-        question: 'Where can I see a demo?',
-        answer:
-          'The public demo is the fastest place to experience the flow. It shows how a sender creates a stealth payment and how a recipient discovers and claims it on supported networks.',
-      },
-      {
-        id: 'where-do-i-go-for-support',
-        question: 'Where do I go for support?',
-        answer:
-          'The docs, demo, and developer console are the best starting points. If you are integrating Wraith into a product, the SDK and support channels in the docs will help you move from prototype to production.',
-      },
-    ],
-  },
-];
+const faqCategories = faqData.categories as FaqCategory[];
+const faqEntries = faqData.entries as FaqEntry[];
 
 const sectionLabelStyles =
   'font-mono text-[10px] font-semibold uppercase tracking-[1.8px] text-outline';
 
+const ALL_CATEGORIES = 'all';
+
 export default function Faq() {
-  const [openEntryId, setOpenEntryId] = useState<string | null>(
-    faqSections[0]?.entries[0]?.id ?? null,
-  );
+  const firstEntry = faqEntries[0];
+  const [openEntryId, setOpenEntryId] = useState<string | null>(firstEntry?.id ?? null);
+  const [query, setQuery] = useState('');
+  const [activeCategory, setActiveCategory] = useState<string>(ALL_CATEGORIES);
 
   useEffect(() => {
     const hash = window.location.hash.replace('#', '');
     if (!hash) return;
 
-    const entryExists = faqSections.some((section) =>
-      section.entries.some((entry) => entry.id === hash),
-    );
-    if (entryExists) {
+    const entry = faqEntries.find((candidate) => candidate.id === hash);
+    if (entry) {
       setOpenEntryId(hash);
+      setActiveCategory(ALL_CATEGORIES);
     }
   }, []);
 
-  const entryCount = useMemo(
-    () => faqSections.reduce((count, section) => count + section.entries.length, 0),
-    [],
-  );
+  const entryCount = faqEntries.length;
+
+  const normalizedQuery = query.trim().toLowerCase();
+
+  const filteredEntries = useMemo(() => {
+    return faqEntries.filter((entry) => {
+      const matchesCategory =
+        activeCategory === ALL_CATEGORIES || entry.category === activeCategory;
+      if (!matchesCategory) return false;
+
+      if (!normalizedQuery) return true;
+
+      const haystack = [entry.question, entry.answer, ...entry.tags].join(' ').toLowerCase();
+      return haystack.includes(normalizedQuery);
+    });
+  }, [activeCategory, normalizedQuery]);
+
+  const sections = useMemo(() => {
+    return faqCategories
+      .map((category) => ({
+        ...category,
+        entries: filteredEntries.filter((entry) => entry.category === category.id),
+      }))
+      .filter((section) => section.entries.length > 0);
+  }, [filteredEntries]);
+
+  const hasResults = filteredEntries.length > 0;
 
   return (
     <div className="min-h-screen bg-surface text-on-surface">
@@ -279,6 +108,58 @@ export default function Faq() {
               </span>
             </div>
           </div>
+
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+            <label htmlFor="faq-search" className="sr-only">
+              Search FAQ
+            </label>
+            <div className="relative flex-1">
+              <input
+                id="faq-search"
+                type="search"
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder="Search questions, answers, or tags…"
+                className="w-full rounded-sm border border-outline-variant bg-surface-container px-4 py-3 font-body text-[14px] text-on-surface placeholder:text-outline focus:border-on-surface focus:outline-none"
+              />
+            </div>
+          </div>
+
+          <div className="flex flex-wrap gap-2" role="group" aria-label="Filter FAQ by category">
+            <button
+              type="button"
+              onClick={() => setActiveCategory(ALL_CATEGORIES)}
+              aria-pressed={activeCategory === ALL_CATEGORIES}
+              className={`rounded-full border px-3 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-[1px] transition-colors ${
+                activeCategory === ALL_CATEGORIES
+                  ? 'border-on-surface bg-on-surface text-surface'
+                  : 'border-outline-variant text-on-surface-variant hover:text-on-surface'
+              }`}
+            >
+              All
+            </button>
+            {faqCategories.map((category) => (
+              <button
+                key={category.id}
+                type="button"
+                onClick={() => setActiveCategory(category.id)}
+                aria-pressed={activeCategory === category.id}
+                className={`rounded-full border px-3 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-[1px] transition-colors ${
+                  activeCategory === category.id
+                    ? 'border-on-surface bg-on-surface text-surface'
+                    : 'border-outline-variant text-on-surface-variant hover:text-on-surface'
+                }`}
+              >
+                {category.title}
+              </button>
+            ))}
+          </div>
+
+          <p className="font-body text-[13px] text-on-surface-variant" role="status">
+            {hasResults
+              ? `Showing ${filteredEntries.length} of ${entryCount} entries`
+              : 'No matching questions'}
+          </p>
         </div>
 
         <div className="grid gap-8 lg:grid-cols-[220px_minmax(0,1fr)]">
@@ -288,7 +169,7 @@ export default function Faq() {
           >
             <span className={sectionLabelStyles}>Jump to</span>
             <div className="flex flex-col gap-2">
-              {faqSections.map((section) => (
+              {sections.map((section) => (
                 <a
                   key={section.id}
                   href={`#${section.id}`}
@@ -301,7 +182,15 @@ export default function Faq() {
           </nav>
 
           <div className="flex flex-col gap-10">
-            {faqSections.map((section) => (
+            {!hasResults && (
+              <div className="rounded-sm border border-outline-variant bg-surface-container px-5 py-8 text-center">
+                <p className="font-body text-[14px] text-on-surface-variant">
+                  No questions match "{query}". Try a different search term or clear the category
+                  filter.
+                </p>
+              </div>
+            )}
+            {sections.map((section) => (
               <section key={section.id} id={section.id} className="flex flex-col gap-4">
                 <h2 className="font-heading text-[20px] font-semibold tracking-[-0.4px] text-on-surface">
                   {section.title}
@@ -354,6 +243,18 @@ export default function Faq() {
                             <p className="font-body text-[14px] leading-[1.7] text-on-surface-variant">
                               {entry.answer}
                             </p>
+                            {entry.tags.length > 0 && (
+                              <ul className="mt-3 flex flex-wrap gap-2" aria-label="Related tags">
+                                {entry.tags.map((tag) => (
+                                  <li
+                                    key={tag}
+                                    className="rounded-full border border-outline-variant px-2 py-0.5 font-mono text-[10px] uppercase tracking-[1px] text-outline"
+                                  >
+                                    {tag}
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
                           </div>
                         )}
                       </div>
