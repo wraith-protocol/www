@@ -21,6 +21,17 @@ const knownRoutes = [
   '/grants',
   '/grants/showcase',
   '/contributors',
+  '/es',
+  '/es/faq',
+  '/es/privacy',
+  '/es/use-cases',
+  '/es/roadmap',
+  '/es/case-studies',
+  '/es/stellar',
+  '/es/careers',
+  '/es/grants',
+  '/es/grants/showcase',
+  '/es/contributors',
 ];
 
 function getCaseStudyRoutes(): string[] {

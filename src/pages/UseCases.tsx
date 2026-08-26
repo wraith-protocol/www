@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import Footer from '../components/Footer';
+import { Seo } from '../utils/seo';
 
 type Persona = {
   id: string;
@@ -114,6 +115,10 @@ const personas: Persona[] = [
 export default function UseCases() {
   return (
     <div className="bg-surface text-on-surface">
+      <Seo
+        title="Use Cases – Wraith Protocol"
+        description="Who uses Wraith Protocol and why — payroll processors, DAOs, exchanges, and privacy-focused wallets integrating stealth address payments."
+      />
       <a href="#main-content" className="skip-link">
         Skip to content
       </a>

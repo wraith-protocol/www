@@ -1,5 +1,6 @@
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import { Seo } from '../utils/seo';
 import roadmap from '../data/roadmap.json';
 
 type Status = 'shipped' | 'in-progress' | 'planned';
@@ -36,6 +37,10 @@ const milestones = roadmap.milestones as Milestone[];
 export default function Roadmap() {
   return (
     <div className="bg-surface text-on-surface">
+      <Seo
+        title="Roadmap – Wraith Protocol"
+        description="The Wraith Protocol roadmap — shipped milestones, in-progress work, and planned features for stealth address infrastructure across chains."
+      />
       <a href="#main-content" className="skip-link">
         Skip to content
       </a>

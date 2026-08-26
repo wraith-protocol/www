@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Seo } from '../utils/seo';
 import contributorsData from '../data/contributors.json';
 
 interface Contributor {
@@ -20,6 +21,10 @@ export default function Contributors() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <Seo
+        title="Contributors – Wraith Protocol"
+        description="Celebrating the amazing people who build and improve Wraith Protocol. Contributor leaderboard with merged PR counts and wave participation."
+      />
       <div className="text-center mb-16">
         <h1 className="text-4xl md:text-5xl font-bold mb-6 text-on-surface">
           Contributor Leaderboard

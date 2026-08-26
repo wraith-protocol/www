@@ -1,4 +1,4 @@
-import { Helmet } from 'react-helmet-async';
+import { Seo } from '../utils/seo';
 import { Link } from 'react-router-dom';
 import { useInView } from '../hooks/useInView';
 import ecosystemData from '../data/ecosystem.json';
@@ -72,21 +72,10 @@ export default function Ecosystem() {
 
   return (
     <>
-      <Helmet>
-        <title>Ecosystem & Partners – Wraith Protocol</title>
-        <meta
-          name="description"
-          content="Explore the Wraith Protocol ecosystem — wallets, DEXes, lending protocols, indexers, and oracles integrated with stealth address technology."
-        />
-        <meta property="og:title" content="Ecosystem & Partners – Wraith Protocol" />
-        <meta
-          property="og:description"
-          content="Explore wallets, DEXes, lending protocols, and indexers powering the Wraith Protocol ecosystem."
-        />
-        <meta property="og:url" content="https://usewraith.xyz/ecosystem" />
-        <meta property="og:type" content="website" />
-        <meta name="twitter:card" content="summary_large_image" />
-      </Helmet>
+      <Seo
+        title="Ecosystem & Partners – Wraith Protocol"
+        description="Explore the Wraith Protocol ecosystem — wallets, DEXes, lending protocols, indexers, and oracles integrated with stealth address technology."
+      />
 
       <div className="bg-surface text-on-surface">
         {/* Header */}

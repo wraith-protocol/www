@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
+import { Seo } from '../utils/seo';
 import { useTranslation } from 'react-i18next';
 import Layout from '../components/Layout';
 import { entries } from '../data/grant-showcase.json';
@@ -146,21 +146,10 @@ export default function GrantShowcase() {
 
   return (
     <Layout>
-      <Helmet>
-        <title>Grant Showcase – Wraith Protocol</title>
-        <meta
-          name="description"
-          content="Explore grant-funded projects built on Wraith Protocol. Stealth address wallets, DAO treasury tools, cross-chain bridges, and more."
-        />
-        <meta property="og:title" content="Grant Showcase – Wraith Protocol" />
-        <meta
-          property="og:description"
-          content="Explore grant-funded projects built on Wraith Protocol. Stealth address wallets, DAO treasury tools, cross-chain bridges, and more."
-        />
-        <meta property="og:url" content="https://usewraith.xyz/grants/showcase" />
-        <meta property="og:type" content="website" />
-        <meta name="twitter:card" content="summary_large_image" />
-      </Helmet>
+      <Seo
+        title="Grant Showcase – Wraith Protocol"
+        description="Explore grant-funded projects built on Wraith Protocol. Stealth address wallets, DAO treasury tools, cross-chain bridges, and more."
+      />
 
       <div className="mx-auto max-w-[1120px] px-6 py-10 md:px-12 md:py-16">
         {/* Hero */}

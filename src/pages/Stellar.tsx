@@ -1,5 +1,5 @@
 import { useState, type KeyboardEvent } from 'react';
-import { Helmet } from 'react-helmet-async';
+import { Seo } from '../utils/seo';
 import { Link } from 'react-router-dom';
 import { useInView } from '../hooks/useInView';
 import { trackEvent } from '../analytics';
@@ -217,23 +217,11 @@ export default function Stellar() {
 
   return (
     <>
-      <Helmet>
-        <title>Stealth payments on Stellar – Wraith Protocol</title>
-        <meta
-          name="description"
-          content="Low-cost, sub-second, ed25519 stealth payments on Stellar with Soroban smart contracts. Build private payment rails with the Wraith SDK."
-        />
-        <meta property="og:title" content="Stealth payments on Stellar – Wraith Protocol" />
-        <meta
-          property="og:description"
-          content="Low-cost, sub-second, ed25519 stealth payments on Stellar with Soroban smart contracts."
-        />
-        {/* TODO: replace with real OG image */}
-        <meta property="og:image" content="https://usewraith.xyz/og/stellar.png" />
-        <meta property="og:url" content="https://usewraith.xyz/stellar" />
-        <meta property="og:type" content="website" />
-        <meta name="twitter:card" content="summary_large_image" />
-      </Helmet>
+      <Seo
+        title="Stealth payments on Stellar – Wraith Protocol"
+        description="Low-cost, sub-second, ed25519 stealth payments on Stellar with Soroban smart contracts. Build private payment rails with the Wraith SDK."
+        ogImage="https://usewraith.xyz/og/stellar.png"
+      />
 
       {/* Layout already provides <main> — we render sections directly */}
 

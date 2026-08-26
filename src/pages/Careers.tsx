@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { Helmet } from 'react-helmet-async';
+import { Seo } from '../utils/seo';
 import { trackEvent } from '../analytics';
 
 type SubmitStatus = 'idle' | 'loading' | 'success' | 'error';
@@ -119,20 +119,10 @@ function CareersSignupForm() {
 export default function Careers() {
   return (
     <>
-      <Helmet>
-        <title>Careers – Wraith Protocol</title>
-        <meta
-          name="description"
-          content="Wraith Protocol isn't hiring full-time roles right now, but we run paid open-source bounties and want to hear from prospective contributors."
-        />
-        <meta property="og:title" content="Careers – Wraith Protocol" />
-        <meta
-          property="og:description"
-          content="Not hiring full-time right now — but we run paid open-source bounties and want to hear from you."
-        />
-        <meta property="og:url" content="https://usewraith.xyz/careers" />
-        <meta property="og:type" content="website" />
-      </Helmet>
+      <Seo
+        title="Careers – Wraith Protocol"
+        description="Wraith Protocol isn't hiring full-time roles right now, but we run paid open-source bounties and want to hear from prospective contributors."
+      />
 
       <section className="border-b border-outline-variant-30 px-6 py-24 md:px-12">
         <div className="mx-auto flex max-w-336 flex-col gap-6">

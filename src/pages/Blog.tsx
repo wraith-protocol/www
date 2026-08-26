@@ -1,4 +1,4 @@
-import { Helmet } from 'react-helmet-async';
+import { Seo } from '../utils/seo';
 import { Link, useParams } from 'react-router-dom';
 import { getAllPosts, getPostBySlug } from '../utils/blog';
 import BlogToc from '../components/BlogToc';
@@ -8,19 +8,17 @@ function BlogList() {
 
   return (
     <div className="mx-auto flex max-w-4xl flex-col gap-8 px-6 py-12 md:px-12">
-      <Helmet>
-        <title>Blog – Wraith Protocol</title>
-        <meta
-          name="description"
-          content="Updates from Wraith Protocol on privacy-preserving payments and stealth infrastructure."
-        />
+      <Seo
+        title="Blog – Wraith Protocol"
+        description="Updates from Wraith Protocol on privacy-preserving payments and stealth infrastructure."
+      >
         <link
           rel="alternate"
           type="application/rss+xml"
           href="/feed.xml"
           title="Wraith Protocol Blog"
         />
-      </Helmet>
+      </Seo>
 
       <div className="flex flex-col gap-3">
         <p className="font-mono text-[11px] uppercase tracking-[2px] text-outline">Blog</p>
@@ -82,9 +80,10 @@ function BlogPostDetail({ slug }: { slug: string }) {
   if (!post) {
     return (
       <div className="mx-auto flex max-w-4xl flex-col gap-4 px-6 py-12 md:px-12">
-        <Helmet>
-          <title>Post Not Found – Wraith Protocol</title>
-        </Helmet>
+        <Seo
+          title="Post Not Found – Wraith Protocol"
+          description="The requested blog post could not be found."
+        />
         <h1 className="font-heading text-[28px] font-bold text-on-surface">Post Not Found</h1>
         <p className="text-on-surface-variant">The requested blog post could not be found.</p>
         <Link to="/blog" className="font-mono text-[13px] text-primary hover:underline">
@@ -98,10 +97,10 @@ function BlogPostDetail({ slug }: { slug: string }) {
 
   return (
     <article className="mx-auto max-w-5xl px-6 py-12 md:px-12">
-      <Helmet>
-        <title>{post.title} – Wraith Protocol</title>
-        {post.excerpt && <meta name="description" content={post.excerpt} />}
-      </Helmet>
+      <Seo
+        title={`${post.title} – Wraith Protocol`}
+        description={post.excerpt ?? `${post.title} — Wraith Protocol blog post.`}
+      />
 
       <div className="mb-8 flex flex-col gap-3">
         <Link
