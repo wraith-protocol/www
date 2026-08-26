@@ -32,23 +32,30 @@
 
     <!--
       Plausible Analytics — cookieless, GDPR-compliant, no consent banner required.
-      • No cookies are set; only aggregate page/event counts are stored.
-      • script.scroll.js extension tracks scroll depth at every percent automatically.
-      • script.tagged-events.js lets us fire goals from JS via window.plausible().
-      • Integrity hash pins the exact script bytes served by plausible.io CDN.
-      • Replace the integrity value if you upgrade to a newer Plausible release.
+      The loader is gated by DNT/GPC so privacy signals suppress both the analytics
+      script request and all subsequent page/event requests.
     -->
-    <script
-      defer
-      data-domain="usewraith.xyz"
-      src="https://plausible.io/js/script.scroll.tagged-events.js"
-    ></script>
     <script>
-      window.plausible =
-        window.plausible ||
-        function () {
-          (window.plausible.q = window.plausible.q || []).push(arguments);
-        };
+      (function () {
+        const nav = window.navigator || {};
+        const dnt = nav.doNotTrack || window.doNotTrack;
+        const gpc = nav.globalPrivacyControl === true;
+        const privacyOptOut = dnt === '1' || dnt === 'yes' || gpc;
+
+        if (privacyOptOut) return;
+
+        window.plausible =
+          window.plausible ||
+          function () {
+            (window.plausible.q = window.plausible.q || []).push(arguments);
+          };
+
+        const script = document.createElement('script');
+        script.defer = true;
+        script.dataset.domain = 'usewraith.xyz';
+        script.src = 'https://plausible.io/js/script.scroll.tagged-events.js';
+        document.head.appendChild(script);
+      })();
     </script>
 
     <link
