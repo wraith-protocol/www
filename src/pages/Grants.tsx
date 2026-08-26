@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Seo } from '../utils/seo';
 import waveData from '../data/wave.json';
 
 type Wave = (typeof waveData)['currentWave'];
@@ -16,6 +17,10 @@ export default function Grants() {
 
   return (
     <div className="mx-auto flex max-w-[1120px] flex-col px-6 py-10 md:px-12 md:py-16">
+      <Seo
+        title="Grants – Wraith Protocol"
+        description="Wraith runs a grant program funded by Drips recurring revenue and external ecosystem funding. Each wave funds teams building stealth address infrastructure and privacy-preserving payment tooling."
+      />
       {/* Hero */}
       <section className="flex flex-col gap-6 border-b border-outline-variant pb-12">
         <span className={labelStyles}>Grants</span>

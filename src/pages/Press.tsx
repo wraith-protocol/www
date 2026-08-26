@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Seo } from '../utils/seo';
 import { copyToClipboard } from '../utils/clipboard';
 
 const BRAND_COLORS = [
@@ -58,6 +59,10 @@ function CopyBlock({ children }: { children: string }) {
 export default function Press() {
   return (
     <div className="min-h-screen bg-surface text-on-surface">
+      <Seo
+        title="Press Kit – Wraith Protocol"
+        description="Wraith Protocol press kit — brand assets, logos, color palette, and boilerplate for media coverage and partner announcements."
+      />
       {/* Header */}
       <header className="fixed top-0 z-50 w-full border-b border-outline-variant-30 bg-surface/80 backdrop-blur-sm">
         <div className="mx-auto flex w-full items-center justify-between px-12 py-5">

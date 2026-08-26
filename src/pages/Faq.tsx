@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Footer from '../components/Footer';
+import { Seo } from '../utils/seo';
 import faqData from '../data/faq.json';
 
 type FaqEntry = {
@@ -71,6 +72,10 @@ export default function Faq() {
 
   return (
     <div className="min-h-screen bg-surface text-on-surface">
+      <Seo
+        title="FAQ – Wraith Protocol"
+        description="Frequently asked questions about Wraith Protocol — stealth addresses, scanning, multi-chain support, SDK usage, and privacy guarantees."
+      />
       <header className="flex items-center justify-between px-6 py-5 md:px-12">
         <Link to="/" className="flex items-center gap-3">
           <img src="/logo.png" alt="Wraith" width={30} height={24} className="h-6 opacity-90" />

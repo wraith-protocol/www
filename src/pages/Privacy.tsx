@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import PrivacyComparison from '../components/PrivacyComparison';
+import { Seo } from '../utils/seo';
 
 const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
   <div className="flex flex-col gap-3">
@@ -15,6 +16,10 @@ const Section = ({ title, children }: { title: string; children: React.ReactNode
 export default function Privacy() {
   return (
     <div className="min-h-screen bg-surface text-on-surface">
+      <Seo
+        title="Privacy Policy – Wraith Protocol"
+        description="How Wraith Protocol handles data — spoiler: we don't collect any. No cookies, no trackers, no third-party scripts."
+      />
       {/* minimal nav */}
       <header className="flex items-center justify-between px-6 py-5 md:px-12">
         <Link to="/" className="flex items-center gap-3">

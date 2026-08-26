@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Layout from '../components/Layout';
+import { Seo } from '../utils/seo';
 import { useVitals } from '../hooks/useVitals';
 import {
   MetricType,
@@ -84,6 +85,10 @@ export default function Vitals() {
 
   return (
     <Layout>
+      <Seo
+        title="Core Web Vitals – Wraith Protocol"
+        description="Real-user Core Web Vitals metrics for usewraith.xyz — LCP, INP, and CLS performance data powered by the web-vitals library."
+      />
       <div className="mx-auto max-w-[960px] px-6 py-12 md:px-12">
         <div className="flex flex-col gap-10">
           {/* Header Section */}
