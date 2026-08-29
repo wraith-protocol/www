@@ -31,6 +31,7 @@ const chains: CostChain[] = [
 ];
 
 beforeEach(async () => {
+  delete window.plausible;
   await i18n.changeLanguage('en');
 });
 
@@ -155,6 +156,8 @@ describe('CostCalculator', () => {
   });
 
   it('copies a canonical standalone scenario URL and surfaces fallback failure', async () => {
+    const plausible = vi.fn();
+    window.plausible = plausible;
     const writeText = vi.fn().mockResolvedValueOnce(undefined).mockRejectedValueOnce(new Error());
     Object.defineProperty(navigator, 'clipboard', {
       configurable: true,
@@ -173,6 +176,9 @@ describe('CostCalculator', () => {
       expect.stringContaining('/use-cases/calculator?chain=beta&payments=250&avg=80'),
     );
     expect(await screen.findByText('Scenario link copied.')).toBeInTheDocument();
+    expect(plausible).toHaveBeenCalledWith('calculator_share', {
+      props: { source: 'cost-calculator' },
+    });
 
     fireEvent.click(copy);
     expect(

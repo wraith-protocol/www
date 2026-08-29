@@ -94,7 +94,7 @@ test.describe('first-party analytics', () => {
       .poll(() => events.filter((event) => event.name === 'newsletter_submit').length)
       .toBe(1);
 
-    await submit.click().catch(() => {});
+    await expect(submit).toBeHidden();
     await page.waitForTimeout(100);
 
     expect(events.filter((event) => event.name === 'newsletter_submit')).toHaveLength(1);
@@ -124,6 +124,22 @@ test.describe('first-party analytics', () => {
     );
     await page.waitForTimeout(100);
     expect(events.filter((event) => event.name === 'blog_post_read')).toHaveLength(1);
+  });
+
+  test('calculator share emits exactly one calculator_share after a successful copy', async ({
+    page,
+  }) => {
+    const events = await setupAnalyticsProbe(page);
+    await page.goto('/use-cases/calculator');
+
+    await page.getByRole('button', { name: /copy scenario link/i }).click();
+    await expect(page.getByText(/scenario link copied/i)).toBeVisible();
+    await expect
+      .poll(() => events.filter((event) => event.name === 'calculator_share').length)
+      .toBe(1);
+
+    const shares = events.filter((event) => event.name === 'calculator_share');
+    expect(shares[0]?.props?.source).toBe('cost-calculator');
   });
 
   test('outbound click emits exactly one outbound_click with category', async ({ page }) => {
@@ -162,6 +178,11 @@ test.describe('first-party analytics', () => {
     await page
       .getByRole('main')
       .getByRole('button', { name: /subscribe/i })
+      .click()
+      .catch(() => {});
+    await page.goto('/use-cases/calculator');
+    await page
+      .getByRole('button', { name: /copy scenario link/i })
       .click()
       .catch(() => {});
     await page.waitForTimeout(200);

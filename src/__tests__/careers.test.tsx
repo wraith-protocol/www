@@ -45,7 +45,9 @@ describe('Careers page', () => {
 
     render(<App />);
 
-    const emailInput = await screen.findByLabelText(/email address/i);
+    await screen.findByRole('heading', { level: 1, name: /not hiring right now/i });
+    const emailInput = document.getElementById('careers-email') as HTMLInputElement;
+    expect(emailInput).toBeInstanceOf(HTMLInputElement);
     await user.type(emailInput, 'careers-test@example.com');
     await user.click(screen.getByRole('button', { name: /stay in touch/i }));
 
@@ -81,7 +83,9 @@ describe('Careers page', () => {
 
     render(<App />);
 
-    const emailInput = await screen.findByLabelText(/email address/i);
+    await screen.findByRole('heading', { level: 1, name: /not hiring right now/i });
+    const emailInput = document.getElementById('careers-email') as HTMLInputElement;
+    expect(emailInput).toBeInstanceOf(HTMLInputElement);
     await user.type(emailInput, 'bad@example.com');
     await user.click(screen.getByRole('button', { name: /stay in touch/i }));
 

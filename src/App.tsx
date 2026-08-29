@@ -41,7 +41,7 @@ const Status = lazy(() => import('./pages/Status'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 const Contributors = lazy(() => import('./pages/Contributors'));
 const Blog = lazy(() => import('./pages/Blog'));
-const Security = lazy(() => import('./pages/Security'));
+const Ecosystem = lazy(() => import('./pages/Ecosystem'));
 
 function Home() {
   return (
@@ -90,6 +90,14 @@ export default function App() {
             <Route path="/roadmap" element={<Roadmap />} />
             <Route path="/case-studies" element={<CaseStudies />} />
             <Route path="/case-studies/:slug" element={<CaseStudies />} />
+            <Route
+              path="/ecosystem"
+              element={
+                <Layout>
+                  <Ecosystem />
+                </Layout>
+              }
+            />
             <Route path="/vitals" element={<Vitals />} />
             <Route
               path="/security"
@@ -194,14 +202,6 @@ export default function App() {
               element={
                 <Layout>
                   <Blog />
-                </Layout>
-              }
-            />
-            <Route
-              path="/security"
-              element={
-                <Layout>
-                  <Security />
                 </Layout>
               }
             />

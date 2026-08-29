@@ -25,7 +25,7 @@ export function trackEvent(
   event: string,
   options?: { props?: Record<string, string | number | boolean> },
 ): void {
-  if (typeof window.plausible === 'function') {
+  if (typeof window !== 'undefined' && typeof window.plausible === 'function') {
     window.plausible(event, options);
   }
 }

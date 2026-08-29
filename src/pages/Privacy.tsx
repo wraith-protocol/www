@@ -166,8 +166,7 @@ export default function Privacy() {
               <EventRow
                 name="calculator_share"
                 payload="source?: string"
-                trigger="A calculator result is shared."
-                status="Reserved; no calculator share UI exists in the current repository"
+                trigger="A calculator scenario link is successfully copied."
               />
               <EventRow
                 name="chain_matrix_sort"

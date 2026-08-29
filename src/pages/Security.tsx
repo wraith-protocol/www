@@ -414,25 +414,77 @@ export default function Security() {
               </code>{' '}
               through the typed event boundary in{' '}
               <code className="font-mono text-xs text-on-surface">src/utils/track.ts</code>. No new
-              analytics provider, tag manager, or tracking pixel is introduced.
+              analytics provider, tag manager, or tracking pixel is introduced. Payloads are
+              flattened to string, number, and boolean properties, and undefined fields are
+              discarded.
             </p>
             <p className="font-body text-sm leading-relaxed text-on-surface-variant">
-              Do-Not-Track and Global Privacy Control are enforced before the analytics script
-              loads and before any named event or Web Vital is sent. With either preference active,
-              the browser makes no request to the analytics endpoint.
+              Do-Not-Track and Global Privacy Control are enforced before the analytics script loads
+              and before any named event or Web Vital is sent. With either preference active, the
+              browser makes no request to the analytics endpoint. Named events and Web Vitals share
+              the privacy gate in{' '}
+              <code className="font-mono text-xs text-on-surface">src/utils/privacy.ts</code>.
             </p>
             <div>
               <h3 className="mb-2 font-heading text-base font-semibold text-on-surface">
                 Event inventory and payloads
               </h3>
               <dl className="space-y-2 font-body text-sm text-on-surface-variant">
-                <div><dt className="inline font-mono text-xs text-on-surface">cta_click</dt><dd className="inline"> — <code className="font-mono text-xs">source: string</code></dd></div>
-                <div><dt className="inline font-mono text-xs text-on-surface">newsletter_submit</dt><dd className="inline"> — <code className="font-mono text-xs">source: string</code></dd></div>
-                <div><dt className="inline font-mono text-xs text-on-surface">newsletter_confirm</dt><dd className="inline"> — <code className="font-mono text-xs">source: string</code></dd></div>
-                <div><dt className="inline font-mono text-xs text-on-surface">blog_post_read</dt><dd className="inline"> — <code className="font-mono text-xs">slug: string; locale?: string</code></dd></div>
-                <div><dt className="inline font-mono text-xs text-on-surface">calculator_share</dt><dd className="inline"> — <code className="font-mono text-xs">source?: string</code></dd></div>
-                <div><dt className="inline font-mono text-xs text-on-surface">chain_matrix_sort</dt><dd className="inline"> — <code className="font-mono text-xs">column: string; direction: &apos;asc&apos; | &apos;desc&apos;</code></dd></div>
-                <div><dt className="inline font-mono text-xs text-on-surface">outbound_click</dt><dd className="inline"> — <code className="font-mono text-xs">category: github | docs | social | explorer | ecosystem | partner | other</code></dd></div>
+                <div>
+                  <dt className="inline font-mono text-xs text-on-surface">cta_click</dt>
+                  <dd className="inline">
+                    {' '}
+                    — <code className="font-mono text-xs">source: string</code>
+                  </dd>
+                </div>
+                <div>
+                  <dt className="inline font-mono text-xs text-on-surface">newsletter_submit</dt>
+                  <dd className="inline">
+                    {' '}
+                    — <code className="font-mono text-xs">source: string</code>
+                  </dd>
+                </div>
+                <div>
+                  <dt className="inline font-mono text-xs text-on-surface">newsletter_confirm</dt>
+                  <dd className="inline">
+                    {' '}
+                    — <code className="font-mono text-xs">source: string</code>
+                  </dd>
+                </div>
+                <div>
+                  <dt className="inline font-mono text-xs text-on-surface">blog_post_read</dt>
+                  <dd className="inline">
+                    {' '}
+                    — <code className="font-mono text-xs">slug: string; locale?: string</code>
+                  </dd>
+                </div>
+                <div>
+                  <dt className="inline font-mono text-xs text-on-surface">calculator_share</dt>
+                  <dd className="inline">
+                    {' '}
+                    — <code className="font-mono text-xs">source?: string</code>
+                  </dd>
+                </div>
+                <div>
+                  <dt className="inline font-mono text-xs text-on-surface">chain_matrix_sort</dt>
+                  <dd className="inline">
+                    {' '}
+                    —{' '}
+                    <code className="font-mono text-xs">
+                      column: string; direction: &apos;asc&apos; | &apos;desc&apos;
+                    </code>
+                  </dd>
+                </div>
+                <div>
+                  <dt className="inline font-mono text-xs text-on-surface">outbound_click</dt>
+                  <dd className="inline">
+                    {' '}
+                    —{' '}
+                    <code className="font-mono text-xs">
+                      category: github | docs | social | explorer | ecosystem | partner | other
+                    </code>
+                  </dd>
+                </div>
               </dl>
             </div>
             <p className="font-body text-sm leading-relaxed text-on-surface-variant">

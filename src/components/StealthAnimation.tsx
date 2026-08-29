@@ -236,11 +236,11 @@ export default function StealthAnimation() {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-tertiary mt-1">✓</span>
-                  <span>{t('stealthAnimation.benefits.unique')}</span>
+                  <span>{t('stealthAnimation.benefits.oneTime')}</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-tertiary mt-1">✓</span>
-                  <span>{t('stealthAnimation.benefits.detectOnly')}</span>
+                  <span>{t('stealthAnimation.benefits.passive')}</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-tertiary mt-1">✓</span>

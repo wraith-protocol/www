@@ -20,8 +20,8 @@ export interface ConversionTile {
 
 /**
  * Conversion tiles. Only events that have an actual emitter in the app carry a
- * non-zero fixture count. `calculator_share` and `chain_matrix_sort` are typed
- * but have no UI, so they are explicitly marked blocked.
+ * non-zero fixture count. `chain_matrix_sort` is typed but has no UI, so it is
+ * explicitly marked blocked.
  */
 export const CONVERSION_FIXTURES: ConversionTile[] = [
   { event: 'cta_click', label: 'CTA Clicks', conversions30d: 4821, isFixture: true },
@@ -41,10 +41,8 @@ export const CONVERSION_FIXTURES: ConversionTile[] = [
   {
     event: 'calculator_share',
     label: 'Calculator Shares',
-    conversions30d: 0,
+    conversions30d: 184,
     isFixture: true,
-    blocked: true,
-    note: 'No calculator share UI exists in the app.',
   },
   {
     event: 'chain_matrix_sort',
