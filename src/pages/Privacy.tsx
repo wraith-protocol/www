@@ -50,6 +50,15 @@ export default function Privacy() {
           {/* interactive comparison */}
           <PrivacyComparison />
 
+          <div className="rounded border border-outline-variant bg-surface-container p-4">
+            <Link
+              to="/threat-model"
+              className="inline-flex items-center gap-2 font-heading text-[12px] font-semibold tracking-[1.5px] text-on-surface transition-colors hover:text-primary"
+            >
+              THREAT MODEL MATRIX →
+            </Link>
+          </div>
+
           <Section title="What we collect">
             <p>
               We use{' '}

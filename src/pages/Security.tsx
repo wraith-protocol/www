@@ -84,6 +84,15 @@ export default function Security() {
             {threatModel.summary}
           </p>
 
+          <div className="mb-6">
+            <Link
+              to="/threat-model"
+              className="inline-flex items-center gap-2 rounded border border-outline-variant bg-surface-container px-4 py-2 font-body text-sm text-on-surface transition-colors hover:border-outline hover:bg-surface-bright"
+            >
+              Open the threat model matrix →
+            </Link>
+          </div>
+
           <div className="grid gap-6 md:grid-cols-2">
             <div className="rounded border border-outline-variant bg-surface-container p-5">
               <h3 className="mb-3 font-heading text-lg font-semibold text-on-surface">
