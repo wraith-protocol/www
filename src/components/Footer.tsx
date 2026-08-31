@@ -241,6 +241,7 @@ export default function Footer() {
         { label: 'Stellar Integration', href: '/stellar' },
         { label: 'Careers', href: '/careers' },
         { label: 'About', href: '/about' },
+        { label: 'Governance', href: '/governance' },
         { label: 'Web Vitals', href: '/vitals' },
       ],
     },
