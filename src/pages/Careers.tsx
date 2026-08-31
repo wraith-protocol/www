@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { trackEvent } from '../analytics';
+import { track } from '../utils/track';
 
 type SubmitStatus = 'idle' | 'loading' | 'success' | 'error';
 
@@ -172,7 +173,7 @@ export default function Careers() {
               href="https://github.com/wraith-protocol/www/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22"
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() => trackEvent('Careers Open Issues CTA')}
+              onClick={() => track('cta_click', { source: 'careers-open-issues' })}
               className="group flex flex-col gap-4 border border-outline-variant bg-surface-container p-7 transition-colors duration-150 hover:bg-surface-bright"
             >
               <span className="font-mono text-[11px] font-semibold tracking-[1.5px] text-outline">

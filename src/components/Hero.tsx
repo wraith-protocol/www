@@ -2,6 +2,7 @@ import { useState, type KeyboardEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { trackEvent } from '../analytics';
+import { track } from '../utils/track';
 
 type CodeLine = {
   content: string;
@@ -180,7 +181,7 @@ export default function Hero() {
             href="https://docs.usewraith.xyz"
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => trackEvent('Read the Docs')}
+            onClick={() => track('cta_click', { source: 'hero-docs' })}
             className="flex h-12 items-center justify-center bg-primary px-7 font-heading text-[13px] font-semibold uppercase tracking-[1.5px] text-surface transition-[filter] duration-150 hover:brightness-110"
           >
             {t('hero.cta.docs')}
@@ -189,7 +190,7 @@ export default function Hero() {
             href="https://demo.usewraith.xyz"
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => trackEvent('Try the Demo')}
+            onClick={() => track('cta_click', { source: 'hero-demo' })}
             className="flex h-12 items-center justify-center border border-outline-variant px-7 font-heading text-[13px] font-semibold uppercase tracking-[1.5px] text-primary transition-colors duration-150 hover:bg-surface-bright"
           >
             {t('hero.cta.demo')}

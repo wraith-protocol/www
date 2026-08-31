@@ -1,11 +1,13 @@
 import { useEffect, useState, useCallback } from 'react';
 import { trackEvent } from '../analytics';
+import { isDNTEnabled } from '../utils/privacy';
 import {
   MetricType,
   MetricRating,
   getRating,
   getVitalsSummary,
   MetricSummary,
+  VitalsLocale,
 } from '../data/vitalsData';
 
 export interface RecordedVital {
@@ -16,24 +18,9 @@ export interface RecordedVital {
   timestamp: number;
 }
 
-/**
- * Checks whether the user has enabled Do Not Track (DNT) or Global Privacy Control (GPC)
- * in their browser settings.
- */
-export function isDNTEnabled(): boolean {
-  if (typeof window === 'undefined') return false;
-
-  const nav = window.navigator as {
-    doNotTrack?: string | null;
-    globalPrivacyControl?: boolean;
-  };
-  const win = window as { doNotTrack?: string | null };
-
-  const dnt = nav.doNotTrack ?? win.doNotTrack;
-  const gpc = nav.globalPrivacyControl;
-
-  return dnt === '1' || dnt === 'yes' || gpc === true;
-}
+// Re-exported from the shared privacy gate so existing imports keep working.
+// The canonical implementation now lives in `src/utils/privacy.ts`.
+export { isDNTEnabled } from '../utils/privacy';
 
 export function useVitals() {
   const [dntEnabled, setDntEnabled] = useState<boolean>(false);
@@ -138,13 +125,17 @@ export function useVitals() {
   }, [recordVital]);
 
   const getSummary = useCallback(
-    (metric: MetricType, page: string = 'All Pages'): MetricSummary => {
+    (
+      metric: MetricType,
+      page: string = 'All Pages',
+      locale: VitalsLocale = 'all',
+    ): MetricSummary => {
       const liveOverrides = recordedVitals.map((v) => ({
         page: v.page,
         metric: v.metric,
         value: v.value,
       }));
-      return getVitalsSummary(metric, page, liveOverrides);
+      return getVitalsSummary(metric, page, liveOverrides, locale);
     },
     [recordedVitals],
   );

@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { useInView } from '../hooks/useInView';
 import { trackEvent } from '../analytics';
+import { track, trackOutbound } from '../utils/track';
 import EcosystemPartners from '../components/EcosystemPartners';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -273,7 +274,7 @@ export default function Stellar() {
                   href="https://demo.usewraith.xyz/stellar"
                   target="_blank"
                   rel="noopener noreferrer"
-                  onClick={() => trackEvent('Stellar Demo CTA')}
+                  onClick={() => track('cta_click', { source: 'stellar-demo' })}
                   className="flex h-12 items-center justify-center bg-primary px-7 font-heading text-[13px] font-semibold uppercase tracking-[1.5px] text-surface transition-[filter] duration-150 hover:brightness-110"
                 >
                   Try Stellar Demo
@@ -282,7 +283,7 @@ export default function Stellar() {
                   href="https://docs.usewraith.xyz/chains/stellar"
                   target="_blank"
                   rel="noopener noreferrer"
-                  onClick={() => trackEvent('Stellar Docs CTA')}
+                  onClick={() => track('cta_click', { source: 'stellar-docs' })}
                   className="flex h-12 items-center justify-center border border-outline-variant px-7 font-heading text-[13px] font-semibold uppercase tracking-[1.5px] text-primary transition-colors duration-150 hover:bg-surface-bright"
                 >
                   Read Stellar docs
@@ -291,7 +292,7 @@ export default function Stellar() {
                   href="https://spectre.usewraith.xyz"
                   target="_blank"
                   rel="noopener noreferrer"
-                  onClick={() => trackEvent('Spectre on Stellar CTA')}
+                  onClick={() => track('cta_click', { source: 'stellar-spectre' })}
                   className="flex h-12 items-center justify-center border border-outline-variant px-7 font-heading text-[13px] font-semibold uppercase tracking-[1.5px] text-primary transition-colors duration-150 hover:bg-surface-bright"
                 >
                   Spectre on Stellar
@@ -454,9 +455,7 @@ export default function Stellar() {
                         href={c.explorer}
                         target="_blank"
                         rel="noopener noreferrer"
-                        onClick={() =>
-                          trackEvent('Stellar Explorer Link', { props: { contract: c.name } })
-                        }
+                        onClick={trackOutbound('explorer')}
                         className="font-mono text-[11px] font-semibold tracking-[1px] text-tertiary hover:brightness-110 transition-[filter]"
                       >
                         View ↗
@@ -603,7 +602,7 @@ export default function Stellar() {
               href="https://demo.usewraith.xyz/stellar"
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() => trackEvent('Stellar Demo CTA bottom')}
+              onClick={() => track('cta_click', { source: 'stellar-demo' })}
               className="flex h-12 items-center justify-center bg-primary px-7 font-heading text-[13px] font-semibold uppercase tracking-[1.5px] text-surface transition-[filter] duration-150 hover:brightness-110"
             >
               Try Stellar Demo
@@ -612,7 +611,7 @@ export default function Stellar() {
               href="https://docs.usewraith.xyz/chains/stellar"
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() => trackEvent('Stellar Docs CTA bottom')}
+              onClick={() => track('cta_click', { source: 'stellar-docs' })}
               className="flex h-12 items-center justify-center border border-outline-variant px-7 font-heading text-[13px] font-semibold uppercase tracking-[1.5px] text-primary transition-colors duration-150 hover:bg-surface-bright"
             >
               Read Stellar docs
@@ -621,7 +620,7 @@ export default function Stellar() {
               href="https://spectre.usewraith.xyz"
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() => trackEvent('Spectre CTA bottom')}
+              onClick={() => track('cta_click', { source: 'stellar-spectre' })}
               className="flex h-12 items-center justify-center border border-outline-variant px-7 font-heading text-[13px] font-semibold uppercase tracking-[1.5px] text-primary transition-colors duration-150 hover:bg-surface-bright"
             >
               Spectre on Stellar
@@ -649,6 +648,7 @@ export default function Stellar() {
                   key={credit.name}
                   href={credit.url}
                   target="_blank"
+                  onClick={trackOutbound('other')}
                   rel="noopener noreferrer"
                   className="font-mono text-[11px] text-on-surface-variant hover:text-primary transition-colors duration-150"
                 >

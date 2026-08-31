@@ -1,6 +1,7 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import StealthAnimation from '../components/StealthAnimation';
+import '../i18n';
 
 describe('StealthAnimation', () => {
   it('renders the section with heading and description', () => {

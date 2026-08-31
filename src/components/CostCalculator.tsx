@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { CALCULATOR_CHAINS, type CalculatorChain } from '../data/calculatorChains';
 import { copyToClipboard } from '../utils/clipboard';
+import { track } from '../utils/track';
 
 export type CostChain = CalculatorChain;
 
@@ -181,6 +182,7 @@ export default function CostCalculator({ chains = CALCULATOR_CHAINS }: Props) {
 
     try {
       await copyToClipboard(url);
+      track('calculator_share', { source: 'cost-calculator' });
       setShareStatus('copied');
     } catch {
       setShareStatus('failed');

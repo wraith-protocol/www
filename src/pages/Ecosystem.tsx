@@ -1,6 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { useInView } from '../hooks/useInView';
+import { trackOutbound } from '../utils/track';
 import ecosystemData from '../data/ecosystem.json';
 
 const categories = ecosystemData.categories;
@@ -22,6 +23,7 @@ function PartnerCard({
     <a
       href={partner.link}
       target="_blank"
+      onClick={trackOutbound('ecosystem')}
       rel="noopener noreferrer"
       className="group flex flex-col gap-5 border border-outline-variant-30 bg-surface-container p-6 transition-all duration-200 hover:border-outline hover:bg-surface-bright"
       data-reveal={isInView}
@@ -186,6 +188,7 @@ export default function Ecosystem() {
               <a
                 href="https://docs.usewraith.xyz/sdk/overview"
                 target="_blank"
+                onClick={trackOutbound('docs')}
                 rel="noopener noreferrer"
                 className="flex h-12 items-center justify-center bg-primary px-7 font-heading text-[13px] font-semibold uppercase tracking-[1.5px] text-surface transition-[filter] duration-150 hover:brightness-110"
               >

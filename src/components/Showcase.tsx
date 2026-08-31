@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { entries } from '../data/showcase.json';
+import { trackOutbound } from '../utils/track';
 
 type ShowcaseEntry = {
   name: string;
@@ -35,6 +36,7 @@ export default function Showcase() {
               key={entry.name}
               href={entry.url}
               target="_blank"
+              onClick={trackOutbound('ecosystem')}
               rel="noopener noreferrer"
               className="group flex flex-col gap-5 border border-outline-variant bg-surface-container p-7 transition-colors duration-150 hover:bg-surface-bright"
             >

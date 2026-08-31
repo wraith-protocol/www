@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { useInView } from '../hooks/useInView';
+import { trackOutbound } from '../utils/track';
 
 export default function ForDevelopers() {
   const { t } = useTranslation();
@@ -54,6 +55,7 @@ export default function ForDevelopers() {
           <a
             href="https://docs.usewraith.xyz"
             target="_blank"
+            onClick={trackOutbound('docs')}
             rel="noopener noreferrer"
             className="flex h-10 items-center justify-center border border-outline-variant px-5 font-heading text-xs font-semibold uppercase tracking-[1.5px] text-primary transition-colors duration-150 hover:bg-surface-bright"
           >
@@ -95,6 +97,7 @@ export default function ForDevelopers() {
               <a
                 href={resource.link}
                 target="_blank"
+                onClick={trackOutbound('other')}
                 rel="noopener noreferrer"
                 className="font-heading text-[11px] font-semibold tracking-[1.5px] text-on-surface transition-colors duration-150 hover:text-primary"
               >

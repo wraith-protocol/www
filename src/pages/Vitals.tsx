@@ -8,7 +8,10 @@ import {
   SITE_PAGES,
   SitePage,
   MetricRating,
+  VITALS_LOCALES,
+  VitalsLocale,
 } from '../data/vitalsData';
+import { CONVERSION_FIXTURES, INCIDENT_FIXTURES } from '../data/vitalsFixtures';
 
 function getRatingBadge(rating: MetricRating) {
   switch (rating) {
@@ -38,12 +41,13 @@ export default function Vitals() {
   const [selectedMetric, setSelectedMetric] = useState<MetricType>('LCP');
   const [selectedPage, setSelectedPage] = useState<SitePage>('All Pages');
   const [hoveredPointIndex, setHoveredPointIndex] = useState<number | null>(null);
+  const [selectedLocale, setSelectedLocale] = useState<VitalsLocale>('all');
 
-  const lcpSummary = getSummary('LCP', selectedPage);
-  const inpSummary = getSummary('INP', selectedPage);
-  const clsSummary = getSummary('CLS', selectedPage);
+  const lcpSummary = getSummary('LCP', selectedPage, selectedLocale);
+  const inpSummary = getSummary('INP', selectedPage, selectedLocale);
+  const clsSummary = getSummary('CLS', selectedPage, selectedLocale);
 
-  const activeSummary = getSummary(selectedMetric, selectedPage);
+  const activeSummary = getSummary(selectedMetric, selectedPage, selectedLocale);
   const activeDef = METRIC_DEFINITIONS[selectedMetric];
 
   // SVG chart layout math
@@ -207,26 +211,49 @@ export default function Vitals() {
               ))}
             </div>
 
-            {/* Page Filter Selector */}
-            <div className="flex items-center gap-2 w-full sm:w-auto">
-              <label
-                htmlFor="page-filter"
-                className="font-mono text-xs text-outline whitespace-nowrap"
-              >
-                Page:
-              </label>
-              <select
-                id="page-filter"
-                value={selectedPage}
-                onChange={(e) => setSelectedPage(e.target.value as SitePage)}
-                className="w-full sm:w-auto border border-outline-variant bg-surface px-3 py-1.5 font-mono text-xs text-on-surface focus:border-primary focus:outline-none"
-              >
-                {SITE_PAGES.map((page) => (
-                  <option key={page} value={page}>
-                    {page}
-                  </option>
-                ))}
-              </select>
+            {/* Page + Locale Filter Selectors */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full sm:w-auto">
+              <div className="flex items-center gap-2 w-full sm:w-auto">
+                <label
+                  htmlFor="page-filter"
+                  className="font-mono text-xs text-outline whitespace-nowrap"
+                >
+                  Page:
+                </label>
+                <select
+                  id="page-filter"
+                  value={selectedPage}
+                  onChange={(e) => setSelectedPage(e.target.value as SitePage)}
+                  className="w-full sm:w-auto border border-outline-variant bg-surface px-3 py-1.5 font-mono text-xs text-on-surface focus:border-primary focus:outline-none"
+                >
+                  {SITE_PAGES.map((page) => (
+                    <option key={page} value={page}>
+                      {page}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="flex items-center gap-2 w-full sm:w-auto">
+                <label
+                  htmlFor="locale-filter"
+                  className="font-mono text-xs text-outline whitespace-nowrap"
+                >
+                  Locale:
+                </label>
+                <select
+                  id="locale-filter"
+                  value={selectedLocale}
+                  onChange={(e) => setSelectedLocale(e.target.value as VitalsLocale)}
+                  className="w-full sm:w-auto border border-outline-variant bg-surface px-3 py-1.5 font-mono text-xs text-on-surface focus:border-primary focus:outline-none"
+                >
+                  {VITALS_LOCALES.map((locale) => (
+                    <option key={locale} value={locale}>
+                      {locale === 'all' ? 'All Locales' : locale.toUpperCase()}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
           </div>
 
@@ -358,6 +385,101 @@ export default function Vitals() {
               <span>{points[14]?.formattedDate}</span>
               <span>{points[29]?.formattedDate}</span>
             </div>
+          </div>
+
+          {/* Conversion Tiles (synthetic fixtures) */}
+          <div
+            className="flex flex-col gap-4 border border-outline-variant bg-surface p-6"
+            aria-label="Conversion events (trailing 30 days)"
+          >
+            <div className="flex items-center justify-between border-b border-outline-variant/60 pb-4">
+              <div>
+                <h2 className="font-heading text-lg font-bold text-on-surface">
+                  Conversion Events
+                </h2>
+                <p className="font-body text-xs text-outline">
+                  Trailing 30-day event volume ·{' '}
+                  <span className="text-on-surface-variant">synthetic fixture data</span>
+                </p>
+              </div>
+              <span className="font-mono text-[10px] uppercase tracking-[1.5px] text-outline border border-outline-variant px-2 py-1">
+                Fixture
+              </span>
+            </div>
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
+              {CONVERSION_FIXTURES.map((tile) => (
+                <div
+                  key={tile.event}
+                  className={`flex flex-col gap-1 border p-4 ${
+                    tile.blocked
+                      ? 'border-outline-variant/50 bg-surface-container/40'
+                      : 'border-outline-variant bg-surface-container'
+                  }`}
+                >
+                  <span className="font-mono text-[10px] uppercase tracking-[1.5px] text-outline">
+                    {tile.event}
+                  </span>
+                  <span className="font-heading text-[22px] font-bold text-on-surface">
+                    {tile.blocked ? '—' : tile.conversions30d.toLocaleString()}
+                  </span>
+                  <span className="font-body text-xs text-on-surface-variant">{tile.label}</span>
+                  {tile.blocked && (
+                    <span className="font-mono text-[10px] uppercase tracking-[1px] text-[#ee7d77]">
+                      Blocked
+                    </span>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Incident Overlay (last 30 days) */}
+          <div
+            className="flex flex-col gap-4 border border-outline-variant bg-surface p-6"
+            aria-label="Incidents in the last 30 days"
+          >
+            <div className="flex items-center justify-between border-b border-outline-variant/60 pb-4">
+              <div>
+                <h2 className="font-heading text-lg font-bold text-on-surface">Incidents</h2>
+                <p className="font-body text-xs text-outline">
+                  Last 30 days · overlaid on performance
+                </p>
+              </div>
+              <span className="font-mono text-[10px] uppercase tracking-[1.5px] text-outline border border-outline-variant px-2 py-1">
+                {INCIDENT_FIXTURES.length} active
+              </span>
+            </div>
+
+            {INCIDENT_FIXTURES.length === 0 ? (
+              <div
+                role="status"
+                className="flex items-center gap-3 border border-outline-variant/60 bg-surface-container/50 px-4 py-6"
+              >
+                <span className="h-2 w-2 rounded-full bg-[#22c55e]" aria-hidden="true" />
+                <p className="font-body text-sm text-on-surface-variant">
+                  No incidents reported in the last 30 days.
+                </p>
+              </div>
+            ) : (
+              <ul className="flex flex-col gap-3">
+                {INCIDENT_FIXTURES.map((inc) => (
+                  <li
+                    key={inc.date}
+                    className="flex items-center justify-between border border-outline-variant bg-surface-container px-4 py-3"
+                  >
+                    <div className="flex flex-col">
+                      <span className="font-body text-sm text-on-surface">{inc.title}</span>
+                      <span className="font-mono text-[11px] text-outline">
+                        {inc.date} → {inc.resolvedDate}
+                      </span>
+                    </div>
+                    <span className="font-mono text-[10px] uppercase tracking-[1px] text-on-surface-variant border border-outline-variant px-2 py-1">
+                      {inc.severity}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
 
           {/* Metric Documentation Section */}

@@ -1,4 +1,5 @@
 import { useInView } from '../hooks/useInView';
+import { trackOutbound } from '../utils/track';
 
 const partners = [
   {
@@ -80,6 +81,7 @@ export default function EcosystemPartners() {
               key={partner.shortName}
               href={partner.link}
               target="_blank"
+              onClick={trackOutbound('ecosystem')}
               rel="noopener noreferrer"
               className="group flex flex-col gap-5 border border-outline-variant-30 bg-surface-container p-6 transition-all duration-200 hover:border-outline hover:bg-surface-bright rounded-none"
               data-reveal={isInView}

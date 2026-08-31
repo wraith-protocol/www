@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { trackOutbound } from '../utils/track';
 import Footer from '../components/Footer';
 
 type Suggestion = {
@@ -97,6 +98,7 @@ export default function NotFound() {
                   key={item.label}
                   href={item.href}
                   target="_blank"
+                  onClick={trackOutbound('other')}
                   rel="noopener noreferrer"
                   className="flex flex-col gap-1 border border-outline-variant bg-surface-container px-4 py-4 transition-colors hover:border-outline"
                 >
@@ -135,6 +137,7 @@ export default function NotFound() {
             <a
               href="https://github.com/wraith-protocol/www/issues/new"
               target="_blank"
+              onClick={trackOutbound('github')}
               rel="noopener noreferrer"
               className="text-on-surface-variant underline transition-colors hover:text-on-surface"
             >

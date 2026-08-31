@@ -5,7 +5,7 @@
     <link>https://usewraith.xyz/blog/tag/announcements</link>
     <description>Notes on stealth payments, private infrastructure, and the Wraith ecosystem.</description>
     <language>en-us</language>
-    <lastBuildDate>Tue, 25 Aug 2026 05:06:07 GMT</lastBuildDate>
+    <lastBuildDate>Sat, 29 Aug 2026 13:32:10 GMT</lastBuildDate>
     <atom:link href="https://usewraith.xyz/feed/tag/announcements.xml" rel="self" type="application/rss+xml" />
 
   <item>
@@ -14,7 +14,7 @@
     <guid>https://usewraith.xyz/blog/wave-7-kickoff</guid>
     <pubDate>Mon, 27 Jul 2026 00:00:00 GMT</pubDate>
     <description>Announcing the start of Wave 7 alongside a recap of Wave 6 milestones: EVM stealth transactions, SDK v1.4 release, Stellar ecosystem integrations, and TEE privacy enhancements.</description>
-    <author>Wraith Protocol Team</author>
+    <author>Wraith Team</author>
   </item>
   </channel>
 </rss>

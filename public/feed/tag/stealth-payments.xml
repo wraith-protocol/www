@@ -5,24 +5,24 @@
     <link>https://usewraith.xyz/blog/tag/stealth-payments</link>
     <description>Notes on stealth payments, private infrastructure, and the Wraith ecosystem.</description>
     <language>en-us</language>
-    <lastBuildDate>Tue, 25 Aug 2026 05:06:07 GMT</lastBuildDate>
+    <lastBuildDate>Sat, 29 Aug 2026 13:32:10 GMT</lastBuildDate>
     <atom:link href="https://usewraith.xyz/feed/tag/stealth-payments.xml" rel="self" type="application/rss+xml" />
 
+  <item>
+    <title>How Stealth Addresses Keep Payments Private</title>
+    <link>https://usewraith.xyz/blog/stealth-addresses-explained</link>
+    <guid>https://usewraith.xyz/blog/stealth-addresses-explained</guid>
+    <pubDate>Wed, 12 Aug 2026 00:00:00 GMT</pubDate>
+    <description>A look at the cryptography behind stealth addresses and why every Wraith payment lands on a fresh one-time address that cannot be linked to the recipient.</description>
+    <author>Lena Vogt</author>
+  </item>
   <item>
     <title>Wave 7 Kick-off + What We Shipped in Wave 6</title>
     <link>https://usewraith.xyz/blog/wave-7-kickoff</link>
     <guid>https://usewraith.xyz/blog/wave-7-kickoff</guid>
     <pubDate>Mon, 27 Jul 2026 00:00:00 GMT</pubDate>
     <description>Announcing the start of Wave 7 alongside a recap of Wave 6 milestones: EVM stealth transactions, SDK v1.4 release, Stellar ecosystem integrations, and TEE privacy enhancements.</description>
-    <author>Wraith Protocol Team</author>
-  </item>
-  <item>
-    <title>Stealth addresses explained</title>
-    <link>https://usewraith.xyz/blog/stealth-addresses-explained</link>
-    <guid>https://usewraith.xyz/blog/stealth-addresses-explained</guid>
-    <pubDate>Wed, 22 Jul 2026 00:00:00 GMT</pubDate>
-    <description>A straightforward introduction to stealth addresses and why they matter for private payments.</description>
-    <author>Wraith Protocol Team</author>
+    <author>Wraith Team</author>
   </item>
   <item>
     <title>Privacy by default</title>
