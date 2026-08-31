@@ -42,6 +42,7 @@ const NotFound = lazy(() => import('./pages/NotFound'));
 const Contributors = lazy(() => import('./pages/Contributors'));
 const Blog = lazy(() => import('./pages/Blog'));
 const Ecosystem = lazy(() => import('./pages/Ecosystem'));
+const ChainsPage = lazy(() => import('./pages/Chains'));
 
 function Home() {
   return (
@@ -202,6 +203,14 @@ export default function App() {
               element={
                 <Layout>
                   <Blog />
+                </Layout>
+              }
+            />
+            <Route
+              path="/chains"
+              element={
+                <Layout>
+                  <ChainsPage />
                 </Layout>
               }
             />

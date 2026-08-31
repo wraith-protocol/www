@@ -1,0 +1,100 @@
+{
+  "title": "Chain Comparison Matrix",
+  "description": "A side-by-side comparison of blockchain networks supported or planned for Wraith Protocol, covering finality, fees, wallet support, and integration status.",
+  "columns": [
+    { "key": "name", "label": "Chain", "sortable": false },
+    { "key": "blockTime", "label": "Block Time", "sortable": true, "unit": "s" },
+    { "key": "medianFee", "label": "Median TX Fee", "sortable": true, "unit": "USD" },
+    { "key": "finality", "label": "Finality", "sortable": false },
+    { "key": "wallets", "label": "Wallet Ecosystem", "sortable": false },
+    { "key": "status", "label": "Wraith Status", "sortable": false },
+    { "key": "audit", "label": "Audit Posture", "sortable": false },
+    { "key": "docs", "label": "Docs", "sortable": false }
+  ],
+  "chains": [
+    {
+      "id": "horizen",
+      "name": "Horizen",
+      "blockTime": 2.5,
+      "medianFee": 0.001,
+      "finality": "PoW + zk-SNARK sidechains",
+      "wallets": "Horizen Wallet, MetaMask (EON)",
+      "status": "live",
+      "audit": "In-house + third-party",
+      "docs": "https://docs.usewraith.xyz/chains/horizen",
+      "description": "Horizen EON is an EVM-compatible sidechain with low fees and fast block times. Wraith stealth addresses are fully operational on EON mainnet with SDK support for send and scan flows."
+    },
+    {
+      "id": "stellar",
+      "name": "Stellar",
+      "blockTime": 5.5,
+      "medianFee": 0.0001,
+      "finality": "SCP (federated Byzantine agreement)",
+      "wallets": "Freighter,LOBSTR,Rabet",
+      "status": "live",
+      "audit": "Stellar Development Foundation audits",
+      "docs": "https://docs.usewraith.xyz/chains/stellar",
+      "description": "Stellar offers sub-cent transaction fees and deterministic finality. Wraith stealth addresses on Stellar use the Soroban smart contract layer for on-chain scanning and withdrawal."
+    },
+    {
+      "id": "solana",
+      "name": "Solana",
+      "blockTime": 0.4,
+      "medianFee": 0.00025,
+      "finality": "Tower BFT + PoH",
+      "wallets": "Phantom, Solflare, Backpack",
+      "status": "devnet",
+      "audit": "In progress",
+      "docs": "https://docs.usewraith.xyz/chains/solana",
+      "description": "Solana provides high throughput with sub-second block times. Wraith stealth addresses on Solana are in active development on devnet, targeting low-latency privacy transfers."
+    },
+    {
+      "id": "nervos-ckb",
+      "name": "Nervos CKB",
+      "blockTime": 8,
+      "medianFee": 0.001,
+      "finality": "Nakamoto (probabilistic, ~3 blocks)",
+      "wallets": "Neuron, JoyID",
+      "status": "testnet",
+      "audit": "Nervos Foundation audits",
+      "docs": "https://docs.usewraith.xyz/chains/nervos",
+      "description": "Nervos CKB uses a UTXO model with RISC-V smart contracts. Wraith stealth addresses leverage CKB's cell model for on-chain lock ownership verification."
+    },
+    {
+      "id": "ethereum",
+      "name": "Ethereum",
+      "blockTime": 12,
+      "medianFee": 2.5,
+      "finality": "Gasper (PoS, ~15 min)",
+      "wallets": "MetaMask, Ledger, Rainbow, Coinbase Wallet",
+      "status": "planned",
+      "audit": "Pending",
+      "docs": "https://docs.usewraith.xyz/chains/ethereum",
+      "description": "Ethereum mainnet support is planned for a future release. Higher fees are offset by the deepest wallet ecosystem and largest DeFi surface."
+    },
+    {
+      "id": "polygon",
+      "name": "Polygon PoS",
+      "blockTime": 2,
+      "medianFee": 0.01,
+      "finality": "Bor (PoS, checkpointing to L1)",
+      "wallets": "MetaMask, Ledger, Rainbow",
+      "status": "planned",
+      "audit": "Pending",
+      "docs": "https://docs.usewraith.xyz/chains/polygon",
+      "description": "Polygon PoS offers EVM compatibility with low fees. Wraith support is planned to extend stealth payments to Polygon's growing DeFi ecosystem."
+    },
+    {
+      "id": "base",
+      "name": "Base",
+      "blockTime": 2,
+      "medianFee": 0.05,
+      "finality": "Optimistic rollup (L1 finality ~7 days)",
+      "wallets": "MetaMask, Coinbase Wallet, Rainbow",
+      "status": "planned",
+      "audit": "Pending",
+      "docs": "https://docs.usewraith.xyz/chains/base",
+      "description": "Base is an Optimism-powered L2 with Coinbase distribution. Planned Wraith integration targets the L2's growing developer and consumer app ecosystem."
+    }
+  ]
+}

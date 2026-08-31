@@ -117,3 +117,54 @@ Opted-out authors (those in `authors-optout.json` or with `optIn: false`) collap
 ## `authors-optout.json`
 
 A flat array of author ids that should never get a public author page and collapse to "Wraith Team" in bylines.
+
+## `chains.json`
+
+Powers the /chains comparison matrix page.
+
+### Schema
+
+```typescript
+interface ChainsData {
+  /** Page heading */
+  title: string;
+  /** Introductory paragraph */
+  description: string;
+  /** Column definitions for the matrix table */
+  columns: Array<{
+    /** Internal key matching chain object properties */
+    key: string;
+    /** Display header label */
+    label: string;
+    /** Whether the column is sortable (numeric values) */
+    sortable: boolean;
+    /** Optional unit suffix displayed after the value */
+    unit?: string;
+  }>;
+  /** Chain entries displayed as matrix rows */
+  chains: Array<{
+    /** URL-safe identifier */
+    id: string;
+    /** Display name */
+    name: string;
+    /** Average block time in seconds */
+    blockTime: number;
+    /** Median transaction fee in USD */
+    medianFee: number;
+    /** Finality description (e.g. consensus mechanism) */
+    finality: string;
+    /** Supported wallet names */
+    wallets: string;
+    /** Integration status: live | testnet | devnet | planned */
+    status: string;
+    /** Audit information */
+    audit: string;
+    /** Link to chain-specific Wraith docs */
+    docs: string;
+    /** Expanded description shown in row detail */
+    description: string;
+  }>;
+}
+```
+
+Each chain entry must include a documented `description` explaining the chain's role in the Wraith ecosystem and a `docs` link pointing to the relevant integration guide.
