@@ -11,6 +11,13 @@ const GOOGLE_FONTS_URL =
 const USER_AGENT =
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
 
+// Google only serves woff2 to modern browsers. The OG image renderer (satori)
+// cannot parse woff2, so Inter 700 is also fetched as woff for `src/api/og.tsx`.
+const LEGACY_USER_AGENT =
+  'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.71 Safari/537.36';
+const OG_FONT_URL = 'https://fonts.googleapis.com/css2?family=Inter:wght@700&display=swap';
+const OG_FONT_FILE = 'inter-700-normal.woff';
+
 async function main() {
   const publicFontsDir = path.resolve(__dirname, '../public/fonts');
   if (!fs.existsSync(publicFontsDir)) {
@@ -91,6 +98,33 @@ async function main() {
   const cssPath = path.resolve(__dirname, '../public/fonts/fonts.css');
   fs.writeFileSync(cssPath, localCss);
   console.log(`Generated local font CSS at public/fonts/fonts.css`);
+
+  console.log(`Fetching legacy woff copy of Inter 700 for the OG renderer...`);
+  const ogCss = await fetch(OG_FONT_URL, {
+    headers: {
+      'User-Agent': LEGACY_USER_AGENT,
+    },
+  });
+
+  if (!ogCss.ok) {
+    throw new Error(`Failed to fetch OG font CSS: ${ogCss.statusText}`);
+  }
+
+  const ogUrl = (await ogCss.text()).match(/url\((https:\/\/[^)]+)\)/)?.[1];
+  if (!ogUrl) {
+    throw new Error('Could not find a font URL in the OG font CSS');
+  }
+
+  const ogFontRes = await fetch(ogUrl);
+  if (!ogFontRes.ok) {
+    throw new Error(`Failed to download ${OG_FONT_FILE}: ${ogUrl}`);
+  }
+
+  fs.writeFileSync(
+    path.join(publicFontsDir, OG_FONT_FILE),
+    Buffer.from(await ogFontRes.arrayBuffer()),
+  );
+  console.log(`Saved to public/fonts/${OG_FONT_FILE}`);
 }
 
 main().catch((err) => {

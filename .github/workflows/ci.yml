@@ -23,6 +23,23 @@ jobs:
       - run: pnpm build
       - run: pnpm validate:jsonld
 
+  serverless-smoke:
+    name: Serverless Smoke
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+
+      - name: Smoke test the serverless routes
+        run: pnpm test:smoke
+
   playwright-a11y:
     name: Playwright A11y Gate
     needs: build
