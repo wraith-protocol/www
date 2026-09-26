@@ -1,23 +1,223 @@
+import { lazy, Suspense } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import Features from './components/Features';
-import Architecture from './components/Architecture';
-import ForDevelopers from './components/ForDevelopers';
-import Chains from './components/Chains';
-import CtaStrip from './components/CtaStrip';
-import Footer from './components/Footer';
+import Layout from './components/Layout';
+import TrustStrip from './components/TrustStrip';
+import PartnerStrip from './components/PartnerStrip';
+import { ThemeProvider } from './context/ThemeContext';
+
+// Lazy load below-the-fold homepage components
+const StealthAnimation = lazy(() => import('./components/StealthAnimation'));
+const Architecture = lazy(() => import('./components/Architecture'));
+const ForDevelopers = lazy(() => import('./components/ForDevelopers'));
+const Chains = lazy(() => import('./components/Chains'));
+const StellarMetrics = lazy(() => import('./components/StellarMetrics'));
+const Compare = lazy(() => import('./components/Compare'));
+const Showcase = lazy(() => import('./components/Showcase'));
+const CaseStudiesStrip = lazy(() => import('./components/CaseStudiesStrip'));
+const EcosystemPartners = lazy(() => import('./components/EcosystemPartners'));
+const CtaStrip = lazy(() => import('./components/CtaStrip'));
+const Footer = lazy(() => import('./components/Footer'));
+
+// Lazy load pages
+const Faq = lazy(() => import('./pages/Faq'));
+const Privacy = lazy(() => import('./pages/Privacy'));
+const Newsletter = lazy(() => import('./pages/Newsletter'));
+const UseCases = lazy(() => import('./pages/UseCases'));
+const CostCalculatorPage = lazy(() => import('./pages/CostCalculatorPage'));
+const Stellar = lazy(() => import('./pages/Stellar'));
+const Roadmap = lazy(() => import('./pages/Roadmap'));
+const Grants = lazy(() => import('./pages/Grants'));
+const CaseStudies = lazy(() => import('./pages/CaseStudies'));
+const Careers = lazy(() => import('./pages/Careers'));
+const About = lazy(() => import('./pages/About'));
+const Governance = lazy(() => import('./pages/Governance'));
+const Vitals = lazy(() => import('./pages/Vitals'));
+const Security = lazy(() => import('./pages/Security'));
+const ThreatModel = lazy(() => import('./pages/ThreatModel'));
+const Status = lazy(() => import('./pages/Status'));
+const NotFound = lazy(() => import('./pages/NotFound'));
+const Contributors = lazy(() => import('./pages/Contributors'));
+const Blog = lazy(() => import('./pages/Blog'));
+const Ecosystem = lazy(() => import('./pages/Ecosystem'));
+const ChainsPage = lazy(() => import('./pages/Chains'));
+
+function Home() {
+  return (
+    <div className="bg-surface text-on-surface">
+      <a href="#main-content" className="skip-link">
+        Skip to content
+      </a>
+      <Header />
+      <main id="main-content" tabIndex={-1}>
+        <Hero />
+        <TrustStrip />
+        <Features />
+        <Suspense fallback={null}>
+          <StealthAnimation />
+          <Architecture />
+          <ForDevelopers />
+          <Chains />
+          <StellarMetrics />
+          <Compare />
+          <Showcase />
+          <CaseStudiesStrip />
+          <EcosystemPartners />
+          <CtaStrip />
+        </Suspense>
+        <PartnerStrip />
+      </main>
+      <Suspense fallback={null}>
+        <Footer />
+      </Suspense>
+    </div>
+  );
+}
 
 export default function App() {
   return (
-    <div className="bg-surface text-on-surface">
-      <Header />
-      <Hero />
-      <Features />
-      <Architecture />
-      <ForDevelopers />
-      <Chains />
-      <CtaStrip />
-      <Footer />
-    </div>
+    <ThemeProvider>
+      <BrowserRouter>
+        <Suspense fallback={null}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/faq" element={<Faq />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/newsletter" element={<Newsletter />} />
+            <Route path="/use-cases" element={<UseCases />} />
+            <Route path="/use-cases/calculator" element={<CostCalculatorPage />} />
+            <Route path="/roadmap" element={<Roadmap />} />
+            <Route path="/case-studies" element={<CaseStudies />} />
+            <Route path="/case-studies/:slug" element={<CaseStudies />} />
+            <Route
+              path="/ecosystem"
+              element={
+                <Layout>
+                  <Ecosystem />
+                </Layout>
+              }
+            />
+            <Route path="/vitals" element={<Vitals />} />
+            <Route
+              path="/security"
+              element={
+                <Layout>
+                  <Security />
+                </Layout>
+              }
+            />
+            <Route
+              path="/threat-model"
+              element={
+                <Layout>
+                  <ThreatModel />
+                </Layout>
+              }
+            />
+            {/* Status page route */}
+            <Route
+              path="/status"
+              element={
+                <Layout>
+                  <Status />
+                </Layout>
+              }
+            />
+            {/* Wrap Stellar with Layout */}
+            <Route
+              path="/stellar"
+              element={
+                <Layout>
+                  <Stellar />
+                </Layout>
+              }
+            />
+            <Route
+              path="/careers"
+              element={
+                <Layout>
+                  <Careers />
+                </Layout>
+              }
+            />
+            <Route
+              path="/grants"
+              element={
+                <Layout>
+                  <Grants />
+                </Layout>
+              }
+            />
+            <Route
+              path="/about"
+              element={
+                <Layout>
+                  <About />
+                </Layout>
+              }
+            />
+            <Route
+              path="/governance"
+              element={
+                <Layout>
+                  <Governance />
+                </Layout>
+              }
+            />
+            <Route
+              path="/contributors"
+              element={
+                <Layout>
+                  <Contributors />
+                </Layout>
+              }
+            />
+            <Route
+              path="/blog"
+              element={
+                <Layout>
+                  <Blog />
+                </Layout>
+              }
+            />
+            <Route
+              path="/blog/tag/:tagSlug"
+              element={
+                <Layout>
+                  <Blog />
+                </Layout>
+              }
+            />
+            <Route
+              path="/blog/:slug"
+              element={
+                <Layout>
+                  <Blog />
+                </Layout>
+              }
+            />
+            <Route
+              path="/blog/author/:authorId"
+              element={
+                <Layout>
+                  <Blog />
+                </Layout>
+              }
+            />
+            <Route
+              path="/chains"
+              element={
+                <Layout>
+                  <ChainsPage />
+                </Layout>
+              }
+            />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }

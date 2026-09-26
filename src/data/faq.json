@@ -1,0 +1,280 @@
+{
+  "categories": [
+    { "id": "about-wraith", "title": "About Wraith" },
+    { "id": "privacy-mechanics", "title": "Privacy mechanics" },
+    { "id": "stellar-specifics", "title": "Stellar specifics" },
+    { "id": "trust-and-custody", "title": "Trust and custody" },
+    { "id": "cost-and-fees", "title": "Cost and fees" },
+    { "id": "regulatory-posture", "title": "Regulatory posture" },
+    { "id": "security-and-audits", "title": "Security and audits" },
+    { "id": "getting-started", "title": "Getting started" }
+  ],
+  "entries": [
+    {
+      "id": "what-is-wraith",
+      "category": "about-wraith",
+      "question": "What is Wraith?",
+      "answer": "Wraith is a privacy toolkit for payments. It gives apps a way to send payments that are unlinkable by default, so recipients receive funds without exposing a permanent public address that can be traced back to the sender.",
+      "tags": ["overview", "basics", "introduction"]
+    },
+    {
+      "id": "why-wraith",
+      "category": "about-wraith",
+      "question": "Why does Wraith exist?",
+      "answer": "Most payment systems make privacy an afterthought. Wraith was built for teams that want to ship payments with strong receiver privacy without forcing users to run custom infrastructure or understand cryptography.",
+      "tags": ["motivation", "background"]
+    },
+    {
+      "id": "who-is-wraith-for",
+      "category": "about-wraith",
+      "question": "Who is Wraith for?",
+      "answer": "Wraith is aimed at wallet teams, exchanges, payments apps, and on-chain products that want private transfers without sacrificing developer ergonomics. It is especially useful in apps that handle recurring payments or sensitive user flows.",
+      "tags": ["use cases", "audience", "wallets", "exchanges"]
+    },
+    {
+      "id": "does-wraith-replace-my-wallet",
+      "category": "about-wraith",
+      "question": "Does Wraith replace my wallet or app?",
+      "answer": "No. Wraith plugs into existing apps and wallets as a privacy layer. You can keep your current UX and add private payment flows where they matter most.",
+      "tags": ["wallet", "integration", "ux"]
+    },
+    {
+      "id": "which-chains-does-wraith-support",
+      "category": "about-wraith",
+      "question": "Which chains does Wraith support?",
+      "answer": "Wraith supports EVM chains, Stellar, Solana, and CKB, with cryptographic primitives adapted to each network's transaction model. Chain support continues to expand as new integrations ship.",
+      "tags": ["chains", "evm", "stellar", "solana", "ckb", "support", "networks"]
+    },
+    {
+      "id": "is-wraith-open-source",
+      "category": "about-wraith",
+      "question": "Is Wraith open source?",
+      "answer": "The core protocol and SDK are developed in the open, and the code is available on GitHub for teams that want to review or contribute to the implementation.",
+      "tags": ["open source", "license", "github", "code"]
+    },
+    {
+      "id": "how-is-this-private",
+      "category": "privacy-mechanics",
+      "question": "How is this private?",
+      "answer": "Wraith uses stealth-address style payment flows. Each transfer is routed to a fresh one-time address, so observers can see a payment happened without linking it to the recipient's long-term identity or wallet.",
+      "tags": ["stealth address", "unlinkability", "how it works"]
+    },
+    {
+      "id": "what-do-observers-see",
+      "category": "privacy-mechanics",
+      "question": "What do observers see?",
+      "answer": "Observers can see that a transaction occurred and which chain it was sent on, but they do not get a simple link between the sender and the recipient's canonical address in the same way as a standard transfer.",
+      "tags": ["observers", "on-chain visibility"]
+    },
+    {
+      "id": "what-is-stored",
+      "category": "privacy-mechanics",
+      "question": "What is stored on-chain or in the service?",
+      "answer": "The system stores only the data required for the privacy flow to work. In practice, that means the privacy metadata needed to discover and claim payments, while the recipient's long-term address remains unlinkable from the sender's view.",
+      "tags": ["data storage", "metadata", "on-chain"]
+    },
+    {
+      "id": "is-it-anonymous",
+      "category": "privacy-mechanics",
+      "question": "Is Wraith anonymous?",
+      "answer": "It is privacy-preserving rather than fully anonymous in every context. The level of privacy depends on the chain, the app's implementation, and the amount of metadata available outside the protocol layer.",
+      "tags": ["anonymity", "privacy level"]
+    },
+    {
+      "id": "can-senders-be-private-too",
+      "category": "privacy-mechanics",
+      "question": "Can senders be private too, or only receivers?",
+      "answer": "Wraith is designed primarily around receiver privacy, so recipients can claim funds without exposing a linkable address. Sender-side privacy depends on the broadcasting infrastructure and network the app chooses to use.",
+      "tags": ["sender privacy", "receiver privacy", "unlinkability"]
+    },
+    {
+      "id": "what-happens-if-a-payment-isnt-claimed",
+      "category": "privacy-mechanics",
+      "question": "What happens if a payment isn't claimed?",
+      "answer": "Unclaimed funds remain at the stealth address and can still be discovered and claimed later by anyone holding the recipient's scanning keys. There is no automatic expiration built into the base protocol.",
+      "tags": ["unclaimed", "expiration", "funds", "recovery"]
+    },
+    {
+      "id": "why-stellar",
+      "category": "stellar-specifics",
+      "question": "Why Stellar?",
+      "answer": "Stellar is a strong fit for this because it is lightweight, fast, and already optimized for payments. Its simple transaction model and memo support make it practical for stealth-style flows without adding unnecessary complexity.",
+      "tags": ["stellar", "why", "network choice"]
+    },
+    {
+      "id": "what-is-different-on-stellar",
+      "category": "stellar-specifics",
+      "question": "What is different on Stellar?",
+      "answer": "On Stellar, Wraith supports memo-enabled stealth flows so payloads and recipient metadata can be carried in a way that is compatible with the network's payment model while still keeping the recipient unlinkable at the protocol level.",
+      "tags": ["stellar", "memo", "implementation"]
+    },
+    {
+      "id": "why-not-use-only-ethereum",
+      "category": "stellar-specifics",
+      "question": "Why not just use Ethereum?",
+      "answer": "Ethereum is one important venue, but it is not the only one. Stellar gives teams a more payment-native environment with simpler developer workflows for certain use cases, especially where transaction speed and cost matter.",
+      "tags": ["ethereum", "evm", "comparison", "stellar"]
+    },
+    {
+      "id": "does-stellar-change-the-privacy-model",
+      "category": "stellar-specifics",
+      "question": "Does Stellar change the privacy model?",
+      "answer": "The privacy mechanics are the same, but the implementation details differ. Stellar's transaction format and memo support influence how the metadata is encoded and discovered, not the core principle of recipient unlinkability.",
+      "tags": ["stellar", "privacy model", "unlinkability"]
+    },
+    {
+      "id": "where-do-keys-live",
+      "category": "trust-and-custody",
+      "question": "Where do keys live?",
+      "answer": "Keys are generated and managed by the wallet or app using the Wraith SDK. In the standard flow, the user controls the keys needed to derive and claim funds, and the service does not become the custodian of the funds.",
+      "tags": ["keys", "custody", "sdk"]
+    },
+    {
+      "id": "who-can-see-what",
+      "category": "trust-and-custody",
+      "question": "Who can see what?",
+      "answer": "The sender sees the transaction they created. The receiver sees the payments they can claim. The network and public observers can see the on-chain activity, but the privacy layer is designed to reduce the amount of linkable information exposed.",
+      "tags": ["visibility", "roles", "observers"]
+    },
+    {
+      "id": "do-i-need-to-run-a-node",
+      "category": "trust-and-custody",
+      "question": "Do I need to run a node?",
+      "answer": "No. You do not need to run a node to use the SDK or test the privacy flows. The SDK and service layer let developers integrate without operating their own relay or scanning infrastructure.",
+      "tags": ["node", "infrastructure", "sdk"]
+    },
+    {
+      "id": "is-this-a-custodial-service",
+      "category": "trust-and-custody",
+      "question": "Is this a custodial service?",
+      "answer": "No. Wraith is not a custody product. The privacy layer does not take control of user funds, and users retain control over the keys needed to claim payments.",
+      "tags": ["custody", "non-custodial"]
+    },
+    {
+      "id": "what-happens-if-i-lose-my-keys",
+      "category": "trust-and-custody",
+      "question": "What happens if I lose my keys?",
+      "answer": "Wraith does not hold a recovery copy of user keys, so lost scanning or spending keys mean lost access to funds at those stealth addresses. Wallet teams integrating the SDK are responsible for their own key backup and recovery UX.",
+      "tags": ["keys", "recovery", "lost keys", "backup", "custody"]
+    },
+    {
+      "id": "does-wraith-support-human-readable-names",
+      "category": "trust-and-custody",
+      "question": "Does Wraith support human-readable names?",
+      "answer": "Yes. Wraith supports .wraith names so recipients can share a readable identifier instead of a raw address, while the underlying stealth address mechanics stay the same.",
+      "tags": ["names", "ens", "naming", "wraith names"]
+    },
+    {
+      "id": "what-does-it-cost",
+      "category": "cost-and-fees",
+      "question": "What does it cost?",
+      "answer": "The cost is mostly the underlying chain fees plus any application-layer overhead. The privacy flow is designed to be practical, but the final cost depends on the chain and the way the app chooses to broadcast the transaction.",
+      "tags": ["cost", "fees", "pricing"]
+    },
+    {
+      "id": "are-there-extra-fees",
+      "category": "cost-and-fees",
+      "question": "Are there extra fees for privacy?",
+      "answer": "There can be extra metadata or transaction size costs depending on the implementation, but Wraith aims to keep them minimal and predictable so teams can budget around normal payment costs.",
+      "tags": ["fees", "metadata cost"]
+    },
+    {
+      "id": "is-it-cheaper-than-a-regular-transfer",
+      "category": "cost-and-fees",
+      "question": "Is it cheaper than a regular transfer?",
+      "answer": "Not always. Privacy-preserving flows can be slightly more expensive than a plain transfer because they require additional metadata or transaction complexity. The trade-off is that the privacy properties are preserved without a separate custody layer.",
+      "tags": ["cost comparison", "fees"]
+    },
+    {
+      "id": "are-gas-fees-sponsored",
+      "category": "cost-and-fees",
+      "question": "Are gas fees sponsored?",
+      "answer": "On supported EVM chains, Wraith enables gas-sponsored withdrawals via EIP-7702, so recipients can claim funds without needing to already hold the native gas token in the stealth address.",
+      "tags": ["gas", "sponsored", "eip-7702", "fees", "withdrawals"]
+    },
+    {
+      "id": "is-this-regulated",
+      "category": "regulatory-posture",
+      "question": "Is this regulated?",
+      "answer": "The product is designed as a privacy-preserving payment primitive rather than a mixer or laundering tool. Its regulatory posture depends on the jurisdiction, the app's implementation, and the compliance controls added by the team deploying it.",
+      "tags": ["regulation", "compliance"]
+    },
+    {
+      "id": "is-this-a-mixer",
+      "category": "regulatory-posture",
+      "question": "Is this a mixer?",
+      "answer": "No. The goal is not to pool funds or obscure them through a centralized mixing service. Wraith is a protocol-style privacy mechanism for directed payments, with clear sender and receiver intent and no pooled custody.",
+      "tags": ["mixer", "compliance", "pooled funds"]
+    },
+    {
+      "id": "does-this-mean-transaction-privacy-is-illegal",
+      "category": "regulatory-posture",
+      "question": "Does transaction privacy mean the product is illegal?",
+      "answer": "Not by itself. Privacy features are not inherently unlawful, but teams should evaluate compliance requirements carefully and make sure any deployment follows local law and the product's intended use case.",
+      "tags": ["legal", "compliance", "regulation"]
+    },
+    {
+      "id": "has-wraith-been-audited",
+      "category": "security-and-audits",
+      "question": "Has Wraith been audited?",
+      "answer": "The core cryptographic primitives and smart contracts go through third-party security review before major releases. Audit reports and scope details are published alongside the docs for teams that want to verify coverage.",
+      "tags": ["audit", "security", "smart contracts", "review"]
+    },
+    {
+      "id": "is-there-a-bug-bounty",
+      "category": "security-and-audits",
+      "question": "Is there a bug bounty program?",
+      "answer": "Yes. Wraith runs a bug bounty for the protocol and SDK so researchers can be rewarded for responsibly disclosing vulnerabilities before they affect users.",
+      "tags": ["bug bounty", "security", "vulnerability disclosure", "rewards"]
+    },
+    {
+      "id": "how-do-i-report-a-security-vulnerability",
+      "category": "security-and-audits",
+      "question": "How do I report a security vulnerability?",
+      "answer": "Security issues should be reported through the disclosure channel listed in the docs and repository rather than in public Discord or GitHub issues, so the team can triage and patch before details become public.",
+      "tags": ["security", "disclosure", "report", "vulnerability"]
+    },
+    {
+      "id": "how-do-i-start",
+      "category": "getting-started",
+      "question": "How do I get started?",
+      "answer": "Start with the SDK docs and a testnet demo. The quickest path is to add the SDK to your app, generate a stealth-aware payment flow, and test the recipient discovery path on a supported chain.",
+      "tags": ["getting started", "sdk", "docs", "testnet"]
+    },
+    {
+      "id": "do-i-need-a-backend",
+      "category": "getting-started",
+      "question": "Do I need a backend?",
+      "answer": "Not always. Simple integrations can work without a custom backend, but more production-grade flows may need a small infrastructure layer for announcement discovery, indexing, or monitoring.",
+      "tags": ["backend", "infrastructure", "indexing"]
+    },
+    {
+      "id": "where-can-i-see-a-demo",
+      "category": "getting-started",
+      "question": "Where can I see a demo?",
+      "answer": "The public demo is the fastest place to experience the flow. It shows how a sender creates a stealth payment and how a recipient discovers and claims it on supported networks.",
+      "tags": ["demo", "try it"]
+    },
+    {
+      "id": "where-do-i-go-for-support",
+      "category": "getting-started",
+      "question": "Where do I go for support?",
+      "answer": "The docs, demo, and developer console are the best starting points. If you are integrating Wraith into a product, the SDK and support channels in the docs will help you move from prototype to production.",
+      "tags": ["support", "help", "docs", "console"]
+    },
+    {
+      "id": "which-wallets-support-wraith",
+      "category": "getting-started",
+      "question": "Which wallets support Wraith today?",
+      "answer": "Wallet support is expanding through direct integrations and the public SDK. Check the docs for the current list of live integrations, or reach out if you're a wallet team evaluating an integration.",
+      "tags": ["wallets", "integrations", "support"]
+    },
+    {
+      "id": "is-there-a-rate-limit-on-the-api",
+      "category": "getting-started",
+      "question": "Is there a rate limit on the API?",
+      "answer": "Yes, the hosted announcement and discovery endpoints are rate limited to keep the service stable for everyone. Production integrations that need higher throughput can request increased limits through the developer console.",
+      "tags": ["api", "rate limit", "sdk", "throughput"]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "entries": [
+    {
+      "name": "Wraith Demo",
+      "logo": "WD",
+      "description": "Official reference implementation — send and scan stealth payments on Horizen and Stellar testnets.",
+      "url": "https://demo.usewraith.xyz",
+      "stellar": true
+    },
+    {
+      "name": "Horizen EON",
+      "logo": "HE",
+      "description": "Pilot integration bringing Wraith stealth addresses to the Horizen EON mainnet ecosystem.",
+      "url": "https://horizen.io",
+      "stellar": false
+    },
+    {
+      "name": "Stellar Soroban",
+      "logo": "SS",
+      "description": "Proof-of-concept using Soroban smart contracts for memo-based stealth payments on Stellar.",
+      "url": "https://stellar.org",
+      "stellar": true
+    }
+  ]
+}

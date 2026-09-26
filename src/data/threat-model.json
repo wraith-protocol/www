@@ -1,0 +1,264 @@
+{
+  "schema": {
+    "version": 1,
+    "name": "threatModelMatrix",
+    "description": "Public-observer threat comparison for plaintext, ring signatures, mixers, and Wraith stealth payments."
+  },
+  "title": "Threat model matrix",
+  "overview": "This comparison focuses on what different observers can learn from on-chain data, network metadata, RPC access, and indexer records. It is designed to explain the residual privacy guarantees rather than the full legal or operational risk surface.",
+  "reviewer": {
+    "name": "Dr. Amina L. Kader",
+    "role": "Cryptographer",
+    "optIn": true
+  },
+  "threatActors": [
+    {
+      "key": "onchainObserver",
+      "label": "On-chain observer"
+    },
+    {
+      "key": "networkObserver",
+      "label": "Network observer"
+    },
+    {
+      "key": "compromisedRpc",
+      "label": "Compromised RPC"
+    },
+    {
+      "key": "maliciousCounterparty",
+      "label": "Malicious counterparty"
+    },
+    {
+      "key": "subpoenaedIndexer",
+      "label": "Subpoenaed indexer"
+    }
+  ],
+  "approaches": [
+    {
+      "key": "plaintext",
+      "label": "Plaintext",
+      "cells": {
+        "onchainObserver": {
+          "learns": "Sender, recipient, amount, asset, timestamp, and any attached metadata visible on the public ledger.",
+          "inferred": "Direct linkability between users and every payment as well as flow of funds through the network.",
+          "private": "Nothing beyond the protocol's own address labels or off-chain identifiers not published on-chain.",
+          "footnote": 1
+        },
+        "networkObserver": {
+          "learns": "IP address, wallet connection metadata, and packet-level timing of the transaction broadcast and confirmation path.",
+          "inferred": "Which user likely originated a transaction and whether it matched a known wallet or app session.",
+          "private": "The full amount, recipient identity, and all chain-level attribution not visible in the packet stream.",
+          "footnote": 2
+        },
+        "compromisedRpc": {
+          "learns": "Exact wallet balance, transaction history, gas parameters, and requested call inputs received by the client.",
+          "inferred": "The user's intent, wallet ownership, and likely behavior across requests tied to the same account.",
+          "private": "Peer-to-peer privacy on the chain itself, as the RPC can see both the wallet's intent and the resulting on-chain state.",
+          "footnote": 3
+        },
+        "maliciousCounterparty": {
+          "learns": "The recipient address, destination amount, and the sender's public wallet address if it is disclosed during payment setup.",
+          "inferred": "A complete payment graph between parties and the likely economic relationship behind each transfer.",
+          "private": "Any payment metadata that is not intentionally shared by the counterparties in the interaction itself.",
+          "footnote": 4
+        },
+        "subpoenaedIndexer": {
+          "learns": "Indexed wallet addresses, transaction histories, labels, asset balances, and timeline data derived from all indexed queries.",
+          "inferred": "Longitudinal wallet behavior, spending clusters, and address ownership associations inside the service's dataset.",
+          "private": "Any amount or counterparty information that the service never indexed or was never exposed via the monitored public data.",
+          "footnote": 5
+        }
+      }
+    },
+    {
+      "key": "ringSignatures",
+      "label": "Ring signatures",
+      "cells": {
+        "onchainObserver": {
+          "learns": "The ring membership, the amount if it is visible on-chain, and the transaction's placement in the block.",
+          "inferred": "A broad anonymity set but not necessarily which member spent; the observer still sees that one member of the ring is the signer.",
+          "private": "The specific signer identity within the ring and the exact sender-recipient relationship when the scheme provides sender anonymity only.",
+          "footnote": 6
+        },
+        "networkObserver": {
+          "learns": "Transaction timing, wallet API requests, and the fact that a client generated a ring-signature transaction.",
+          "inferred": "The user probably used a privacy-preserving wallet or app, even if the network observer cannot link the spend to a specific identity.",
+          "private": "The exact signer chosen from the ring and the payment's linkage to a real-world identity.",
+          "footnote": 7
+        },
+        "compromisedRpc": {
+          "learns": "The wallet's request, the transaction blob, and any metadata the client exposes before signing.",
+          "inferred": "That the client is using a ring-signature scheme and what anonymity set it chose for the spend.",
+          "private": "Which ring member is the true signer if the ring remains cryptographically unlinkable under the protocol assumptions.",
+          "footnote": 8
+        },
+        "maliciousCounterparty": {
+          "learns": "The transaction's public data, the amount, and the fact that it came from a spend within a known anonymity set.",
+          "inferred": "They can estimate the sender was a member of the set, but not identify the exact sender without extra information.",
+          "private": "The precise sender identity and any non-public metadata excluded from the ring transaction.",
+          "footnote": 9
+        },
+        "subpoenaedIndexer": {
+          "learns": "The transaction hashes, ring membership labels, and any publicly indexed metadata attached by the wallet or service.",
+          "inferred": "A user's preference for privacy-preserving transactions and which apps or services use ring-signature flows.",
+          "private": "The exact link between a user and the spend inside the ring under assumptions that the ring is large and the signer is computationally hidden.",
+          "footnote": 10
+        }
+      }
+    },
+    {
+      "key": "mixer",
+      "label": "Mixer",
+      "cells": {
+        "onchainObserver": {
+          "learns": "The pool entry and exit transactions, pool size, fees, and the timing of large deposits and withdrawals.",
+          "inferred": "That a user likely used a mixer and which wallet addresses are tied to the same pool or epoch by timing correlation.",
+          "private": "A precise one-to-one mapping between a specific deposit and a specific withdrawal in the absence of chain-level wallet compromise.",
+          "footnote": 11
+        },
+        "networkObserver": {
+          "learns": "The IP and timing pattern of deposit and withdrawal requests, plus any metadata from the mixer service itself.",
+          "inferred": "An approximate relationship between a user and a particular withdrawal or pool cycle.",
+          "private": "A cryptographic link between an input and output beyond the statistical timing correlation that the mixer exposes.",
+          "footnote": 12
+        },
+        "compromisedRpc": {
+          "learns": "The wallet call flow, the set of submitted deposit or withdrawal transactions, and the client's metadata around the mix.",
+          "inferred": "Whether the user likely interacted with a mixer and the transaction type being submitted.",
+          "private": "The exact match between a given input and output pair when the mixer provides untraceability under the protocol assumptions.",
+          "footnote": 13
+        },
+        "maliciousCounterparty": {
+          "learns": "The transaction values visible to the mixer, the pool conditions, and the fact that the other side is engaging in a deposit or withdrawal flow.",
+          "inferred": "A likely relationship between a sender and recipient when both rely on the same pool and timing window.",
+          "private": "A direct wallet-to-wallet trace unless one party voluntarily reveals the link.",
+          "footnote": 14
+        },
+        "subpoenaedIndexer": {
+          "learns": "Wallet labels, pool addresses, timestamps, and any user-specific records captured by the service before or after withdrawal.",
+          "inferred": "A user's interaction patterns with the mixer and the common pools or apps they use.",
+          "private": "The exact deposit-withdrawal correspondence when the service is not also storing the minimal correlation data or the user never reveals it.",
+          "footnote": 15
+        }
+      }
+    },
+    {
+      "key": "wraithStealth",
+      "label": "Wraith stealth",
+      "cells": {
+        "onchainObserver": {
+          "learns": "A payment event, the stealth address used, and the chain-specific metadata needed to claim funds or validate the transfer.",
+          "inferred": "That a payment occurred, but not which recipient address was previously linked to the payment metadata; the recipient address is fresh per transfer.",
+          "private": "The long-term recipient identity, the sender-recipient link, and the recipient's wallet activity history unless the recipient explicitly reveals it.",
+          "footnote": 16
+        },
+        "networkObserver": {
+          "learns": "Timing, connection metadata, and the fact that a party is querying or broadcasting a stealth-payment payload.",
+          "inferred": "That privacy tooling was used, but not the actual recipient or the wallet-to-wallet payment relation.",
+          "private": "The recipient's deterministic identity and any persistent link between the sender and the recipient across payments.",
+          "footnote": 17
+        },
+        "compromisedRpc": {
+          "learns": "Client-side transaction intent, the protocol request, and any metadata emitted before payment construction.",
+          "inferred": "The user is preparing a stealth payment or scanning for funds, but not necessarily the eventual recipient without the matching spend data.",
+          "private": "The recipient's long-term address and the exact link between a sender and a specific one-time address in the absence of a compromise of the recipient wallet or secret material.",
+          "footnote": 18
+        },
+        "maliciousCounterparty": {
+          "learns": "Only what the counterparty is explicitly told or what is visible on-chain from the payment itself.",
+          "inferred": "Occasional coarse timing or value correlation, but not a stable wallet graph or persistent recipient identity.",
+          "private": "The recipient's long-term wallet or the relation to past or future flows unless the recipient voluntarily reveals it.",
+          "footnote": 19
+        },
+        "subpoenaedIndexer": {
+          "learns": "Metadata the indexer itself recorded, such as app usage or query events, but not a stable link from the stealth address back to a long-term wallet when the indexer is not also controlling the recipient's wallet or secret scanning process.",
+          "inferred": "Potential service-level usage patterns, not the recipient's spending network.",
+          "private": "The underlying relationship between a sender, recipient, and one-time address if the indexer is not allowed to correlate the metadata with the recipient's scan keys or wallet state.",
+          "footnote": 20
+        }
+      }
+    }
+  ],
+  "footnotes": [
+    {
+      "id": 1,
+      "text": "Assumes the chain exposes full transaction data and address values without privacy-preserving transaction formats or access controls."
+    },
+    {
+      "id": 2,
+      "text": "Assumes the network path between client and relay can be monitored and that IP or packet metadata reveals a likely origin or device association."
+    },
+    {
+      "id": 3,
+      "text": "Assumes the RPC provider can observe the signed request, wallet state, and transaction payload, and that the client does not hide intent from that RPC."
+    },
+    {
+      "id": 4,
+      "text": "Assumes the counterparty can see the destination address and payment details without cryptographic or protocol-level privacy controls."
+    },
+    {
+      "id": 5,
+      "text": "Assumes the indexer stores full wallet and transaction history and is not restricted by data minimization or access controls."
+    },
+    {
+      "id": 6,
+      "text": "Assumes ring membership is public and the protocol does not reveal the signer beyond the ring's anonymity set, subject to the cryptographic assumptions of the scheme."
+    },
+    {
+      "id": 7,
+      "text": "Assumes the network still sees the wallet's request and transaction timing even when the on-chain signature is privacy-preserving."
+    },
+    {
+      "id": 8,
+      "text": "Assumes the RPC can inspect the transaction blob and wallet request but cannot break the ring-signature anonymity assumptions."
+    },
+    {
+      "id": 9,
+      "text": "Assumes the counterparty sees the public transaction data and can reason about the ring's anonymity set but does not have secret signing material."
+    },
+    {
+      "id": 10,
+      "text": "Assumes the indexer has access to public metadata but not the signer secret or a hidden correlation channel between the ring members and the wallet owner."
+    },
+    {
+      "id": 11,
+      "text": "Assumes the mixer exposes deposits, withdrawals, and timing data publicly while the pool's internal matching is not fully hidden from a chain observer."
+    },
+    {
+      "id": 12,
+      "text": "Assumes the network observer can correlate timing patterns and request metadata across the mixer service's public endpoints."
+    },
+    {
+      "id": 13,
+      "text": "Assumes the compromised RPC sees the client's mixer request and transaction flow but cannot break the mixer protocol's cryptographic separation."
+    },
+    {
+      "id": 14,
+      "text": "Assumes the counterparty can observe pool and timing metadata without being able to compromise the mixer or recover hidden correspondence data."
+    },
+    {
+      "id": 15,
+      "text": "Assumes the indexer is only subpoenaed for the service's collected records, not for the recipient's secret keys or private wallet state."
+    },
+    {
+      "id": 16,
+      "text": "Assumes stealth addresses are derived for each payment and that the recipient's long-term recovery key remains hidden unless the recipient reveals it."
+    },
+    {
+      "id": 17,
+      "text": "Assumes the network observer can see when a payment request or scan occurs but cannot correlate it with the recipient's long-term wallet without extra secret knowledge."
+    },
+    {
+      "id": 18,
+      "text": "Assumes the compromised RPC sees client request metadata but cannot recover the recipient's private keys or scan secrets needed to identify the one-time address."
+    },
+    {
+      "id": 19,
+      "text": "Assumes the counterparty does not control the recipient wallet or the recipient's stealth-address secret material and sees only public payment metadata."
+    },
+    {
+      "id": 20,
+      "text": "Assumes the indexer lacks access to the recipient's scan keys, wallet state, or hidden metadata needed to map one-time addresses back to a stable identity."
+    }
+  ]
+}

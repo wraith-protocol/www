@@ -1,0 +1,19 @@
+---
+title: 'How Stealth Addresses Keep Payments Private'
+date: '2026-08-12'
+author: 'lena-vogt'
+excerpt: 'A look at the cryptography behind stealth addresses and why every Wraith payment lands on a fresh one-time address that cannot be linked to the recipient.'
+tags: ['cryptography', 'stealth-payments', 'privacy']
+---
+
+Stealth addresses are the foundation of Wraith Protocol's privacy guarantees.
+
+When a sender makes a payment, the SDK derives a fresh, single-use address from the recipient's meta-address. Funds arrive at an address that has never appeared on-chain before, so outside observers cannot link the payment to the recipient's public identity.
+
+This post walks through:
+
+- How meta-addresses are constructed from spend and view public keys
+- Why the recipient — and only the recipient — can scan and recover the funds
+- How the same scheme maps cleanly onto both EVM and Stellar
+
+The result is private payments that require no interaction from the recipient and no changes to the underlying chain's consensus.

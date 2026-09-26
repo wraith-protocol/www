@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 60" fill="none">
+  <!-- Icon mark: stylized W -->
+  <path d="M10 15 L20 45 L30 25 L40 45 L50 15" stroke="#c6c6c7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Wordmark -->
+  <text x="64" y="40" font-family="Space Grotesk, sans-serif" font-weight="700" font-size="22" letter-spacing="3" fill="#e6e1e5">WRAITH</text>
+</svg>

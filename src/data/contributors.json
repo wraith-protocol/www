@@ -1,0 +1,9 @@
+[
+  {
+    "username": "ghost",
+    "avatar": "https://github.com/ghost.png",
+    "profile": "https://github.com/ghost",
+    "prCount": 10,
+    "waves": ["Wave 1"]
+  }
+]

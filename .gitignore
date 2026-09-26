@@ -3,3 +3,15 @@ dist/
 .env
 reference/
 *.local
+
+# TypeScript build cache — regenerated on every build, not source
+tsconfig.tsbuildinfo
+*.tsbuildinfo
+
+# IDE / agent local config
+.vscode/
+.kiro/
+
+# npm lockfile: this repo standardises on pnpm (see packageManager in package.json).
+# A second lockfile makes Vercel's package-manager autodetection ambiguous.
+package-lock.json

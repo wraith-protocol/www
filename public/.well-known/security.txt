@@ -1,0 +1,24 @@
+# Canonical URI
+Canonical: https://usewraith.xyz/.well-known/security.txt
+
+# Contact information
+Contact: mailto:security@usewraith.xyz
+Contact: https://usewraith.xyz/security
+
+# PGP key for encrypted communications
+Encryption: https://keys.openpgp.org/vks/v1/by-fingerprint/ABCD123456789...
+
+# Preferred languages
+Preferred-Languages: en
+
+# Disclosure policy
+Policy: https://docs.usewraith.xyz/security/disclosure-policy
+
+# Acknowledgments page
+Acknowledgments: https://docs.usewraith.xyz/security/disclosures
+
+# Hiring security researchers
+Hiring: https://usewraith.xyz/careers
+
+# Expires
+Expires: 2027-08-26T23:59:59Z

@@ -1,0 +1,22 @@
+{
+  "wraith-team": {
+    "name": "Wraith Protocol Team",
+    "bio": "The core team building private, multichain stealth payments infrastructure at Wraith Protocol.",
+    "avatar": "",
+    "links": {
+      "website": "https://usewraith.xyz",
+      "github": "https://github.com/wraith-protocol"
+    },
+    "optIn": false
+  },
+  "lena-vogt": {
+    "name": "Lena Vogt",
+    "bio": "Cryptography researcher focused on stealth address schemes and zero-knowledge payments at Wraith Protocol.",
+    "avatar": "",
+    "links": {
+      "github": "https://github.com/wraith-protocol",
+      "twitter": "https://twitter.com/wraithprotocol"
+    },
+    "optIn": true
+  }
+}

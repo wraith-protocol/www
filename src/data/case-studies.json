@@ -1,0 +1,32 @@
+{
+  "entries": [
+    {
+      "id": "payroll-processor",
+      "slug": "payroll-processor",
+      "org": "Anonymous Payroll Provider",
+      "logo": "AP",
+      "industry": "Payroll & HR",
+      "useCase": "Contractor Payments",
+      "integrationDate": "2026-06-15",
+      "status": "production",
+      "quote": "Wraith Protocol solved our biggest privacy challenge. Our contractors receive payments without exposing their wallet addresses to every client they work for, and we integrated the SDK in under two days.",
+      "quotee": "Head of Product",
+      "summary": "A payroll processing platform using Wraith to enable private contractor payments, protecting recipient financial privacy across international jurisdictions.",
+      "challenge": "International contractors needed to receive payments from multiple clients without revealing their permanent wallet addresses, which exposed their entire transaction history and balances to every employer.",
+      "solution": "Integrated Wraith stealth addresses into the payroll payout flow. Each payment is sent to a one-time address that only the contractor can discover and claim, breaking the on-chain link between different clients.",
+      "results": {
+        "privacyImprovement": "100% of contractor payments now unlinkable",
+        "integrationTime": "2 days",
+        "txProcessed": "10,000+",
+        "chainsUsed": ["Stellar", "Horizen"]
+      },
+      "chains": ["stellar", "horizen"],
+      "testimonial": "The SDK documentation was excellent, and the stealth-address flow was far simpler than we expected. Our contractors love knowing their financial privacy is protected by default.",
+      "technical": {
+        "sdkVersion": "1.2.0",
+        "implementation": "TypeScript SDK with custom backend scanning service",
+        "challenges": "Initial key management UX refinement"
+      }
+    }
+  ]
+}

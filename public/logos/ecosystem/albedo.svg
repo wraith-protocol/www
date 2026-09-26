@@ -1,0 +1,7 @@
+<svg viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Albedo">
+  <rect width="30" height="30" fill="#1E3A5F"/>
+  <circle cx="15" cy="15" r="7" stroke="white" stroke-width="1.5" fill="none"/>
+  <circle cx="12" cy="13" r="1.5" fill="white" fill-opacity="0.8"/>
+  <circle cx="18" cy="13" r="1.5" fill="white" fill-opacity="0.8"/>
+  <path d="M12 18c1.5 1.5 4.5 1.5 6 0" stroke="white" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+</svg>

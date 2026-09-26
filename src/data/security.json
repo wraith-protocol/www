@@ -1,0 +1,73 @@
+{
+  "contact": {
+    "email": "security@usewraith.xyz",
+    "pgp": {
+      "enabled": true,
+      "fingerprint": "ABCD 1234 5678 90EF GHIJ  KLMN OPQR STUV WXYZ 0123",
+      "keyUrl": "https://keys.openpgp.org/vks/v1/by-fingerprint/ABCD123456789..."
+    },
+    "preferredLanguages": ["en"],
+    "acknowledgments": "https://docs.usewraith.xyz/security/disclosures"
+  },
+  "threatModel": {
+    "summary": "Wraith Protocol implements stealth address cryptography (ERC-5564/ERC-6538) for unlinkable payments. Our threat model assumes adversaries can observe all blockchain data and network traffic but cannot break discrete log assumptions or compromise user key material stored in secure enclaves.",
+    "assumptions": [
+      "Blockchain data is fully public and observable",
+      "Network traffic between client and infrastructure may be monitored",
+      "Attacker cannot break ECDSA or ECDH assumptions",
+      "User wallets and hardware devices are trusted security boundaries"
+    ],
+    "outOfScope": [
+      "Client-side wallet compromises",
+      "Social engineering attacks",
+      "Physical device theft without proper key protection",
+      "Denial of service attacks on public infrastructure"
+    ]
+  },
+  "disclosure": {
+    "policy": "coordinated",
+    "responseTime": "72 hours for initial acknowledgment",
+    "timeline": "90 days from report to public disclosure",
+    "scope": [
+      "@wraith-protocol/sdk package",
+      "Core stealth address implementation",
+      "Goldsky subgraph indexers",
+      "Demo and console applications",
+      "This marketing website (XSS, CSRF, data leaks)"
+    ]
+  },
+  "keyManagement": {
+    "signingInfra": "Release signing keys are stored in hardware security modules (HSMs) and rotated quarterly. Package signatures use Sigstore for transparency.",
+    "developerKeys": "Development team PGP keys are published at https://usewraith.xyz/.well-known/openpgpkey and cross-signed.",
+    "rotation": "Key rotation policy: 90 days for development keys, 180 days for release signing keys, immediate rotation on suspected compromise."
+  },
+  "dependencies": {
+    "policy": "All dependencies are pinned to specific versions in package-lock.json. Automated Dependabot alerts are enabled for critical vulnerabilities.",
+    "review": "Dependency updates are reviewed monthly, with security patches applied within 48 hours of disclosure.",
+    "supply": "We use npm audit and Snyk for continuous dependency scanning."
+  },
+  "audits": {
+    "lastCompleted": "2026-06-15",
+    "auditor": "Trail of Bits",
+    "scope": "Core SDK cryptographic implementation (ERC-5564 stealth address derivation and scanning)",
+    "findings": "3 low-severity findings, all remediated",
+    "nextScheduled": "2026-12-15",
+    "reports": "https://docs.usewraith.xyz/security/audits"
+  },
+  "bounty": {
+    "status": "active",
+    "platform": "self-hosted",
+    "url": "https://docs.usewraith.xyz/security/bug-bounty",
+    "maxReward": "$10,000 USD",
+    "eligibility": "Vulnerabilities in @wraith-protocol/sdk, stealth address implementation, or key infrastructure components.",
+    "ineligibility": "Issues already known, out-of-scope systems, or non-security bugs."
+  },
+  "disclosures": {
+    "count": 2,
+    "public": "https://docs.usewraith.xyz/security/disclosures"
+  },
+  "compliance": {
+    "standards": ["OWASP Top 10", "CWE Top 25", "RFC 9116 (security.txt)"],
+    "frameworks": "Our security posture is informed by NIST Cybersecurity Framework and Web3 security best practices."
+  }
+}

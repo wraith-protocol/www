@@ -9,6 +9,8 @@
     "allowImportingTsExtensions": true,
     "isolatedModules": true,
     "moduleDetection": "force",
+    "allowJs": true,
+    "checkJs": false,
     "noEmit": true,
     "jsx": "react-jsx",
     "strict": true,
@@ -17,5 +19,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true
   },
-  "include": ["src"]
+  "include": ["src", "scripts/gen-rss.d.ts"]
 }

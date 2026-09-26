@@ -1,0 +1,3 @@
+{
+  "rewrites": [{ "source": "/((?!api/|press-kit/).*)", "destination": "/index.html" }]
+}

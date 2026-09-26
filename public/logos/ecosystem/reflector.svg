@@ -1,0 +1,5 @@
+<svg viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Reflector">
+  <rect width="30" height="30" fill="#2D3748"/>
+  <path d="M8 15l5-5v3h4v4h-4v3l-5-5z" fill="white" fill-opacity="0.85"/>
+  <path d="M22 15l-5 5v-3h-4v-4h4v-3l5 5z" fill="white" fill-opacity="0.5"/>
+</svg>

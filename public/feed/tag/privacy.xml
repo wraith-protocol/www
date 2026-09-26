@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Wraith Protocol Blog — privacy</title>
+    <link>https://usewraith.xyz/blog/tag/privacy</link>
+    <description>Notes on stealth payments, private infrastructure, and the Wraith ecosystem.</description>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 29 Aug 2026 13:32:10 GMT</lastBuildDate>
+    <atom:link href="https://usewraith.xyz/feed/tag/privacy.xml" rel="self" type="application/rss+xml" />
+
+  <item>
+    <title>How Stealth Addresses Keep Payments Private</title>
+    <link>https://usewraith.xyz/blog/stealth-addresses-explained</link>
+    <guid>https://usewraith.xyz/blog/stealth-addresses-explained</guid>
+    <pubDate>Wed, 12 Aug 2026 00:00:00 GMT</pubDate>
+    <description>A look at the cryptography behind stealth addresses and why every Wraith payment lands on a fresh one-time address that cannot be linked to the recipient.</description>
+    <author>Lena Vogt</author>
+  </item>
+  <item>
+    <title>Privacy by default</title>
+    <link>https://usewraith.xyz/blog/privacy-by-default</link>
+    <guid>https://usewraith.xyz/blog/privacy-by-default</guid>
+    <pubDate>Mon, 20 Jul 2026 00:00:00 GMT</pubDate>
+    <description>How Wraith makes private payments practical for everyday apps.</description>
+    <author>Wraith Protocol Team</author>
+  </item>
+  </channel>
+</rss>

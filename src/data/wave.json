@@ -1,0 +1,82 @@
+{
+  "currentWave": {
+    "id": "wave-1",
+    "name": "Wave 1: Stealth Address Infrastructure",
+    "status": "open",
+    "openDate": "2025-06-01",
+    "closeDate": "2025-08-31",
+    "budget": "$150,000",
+    "fundingSource": "Drips + External",
+    "description": "Funding for teams building stealth address infrastructure, SDK integrations, and developer tooling. If you are building privacy-preserving payment rails, stealth-address middleware, or tooling that makes unlinkable payments easier to ship, this wave is for you.",
+    "howToApply": "Submit your proposal through the Drips platform. Include a clear scope, timeline, and budget breakdown with defined milestones.",
+    "applyUrl": "https://drips.network/grants/wraith/wave-1",
+    "rewardRange": "$5,000 – $50,000",
+    "eligibility": [
+      "Open to individual developers and teams",
+      "Projects must be open source",
+      "Must be building on or integrating with Wraith Protocol",
+      "Previous experience with blockchain development preferred"
+    ],
+    "reviewCriteria": [
+      "Technical feasibility and clarity of scope",
+      "Impact on the Wraith ecosystem",
+      "Team's experience and track record",
+      "Alignment with Wraith's privacy mission",
+      "Realistic timeline and budget planning"
+    ]
+  },
+  "pastWaves": [
+    {
+      "id": "wave-0",
+      "name": "Wave 0: Protocol Foundation",
+      "status": "closed",
+      "budget": "$75,000",
+      "fundingSource": "External",
+      "highlights": [
+        "Funded the initial SDK development",
+        "Supported stealth address implementation for EVM chains",
+        "Granted documentation and tutorial creation"
+      ],
+      "recipients": [
+        { "name": "Stealth Labs", "project": "EVM Stealth Address SDK", "grantAmount": "$25,000" }
+      ]
+    }
+  ],
+  "faq": [
+    {
+      "id": "what-is-drips",
+      "question": "What is Drips?",
+      "answer": "Drips is a protocol for recurring funding of open-source projects. Wraith grants are managed through Drips, which provides transparent, automated fund distribution on a milestone basis."
+    },
+    {
+      "id": "how-is-grant-funded",
+      "question": "How is the grant funded?",
+      "answer": "Each wave is funded through a combination of Drips recurring revenue and external contributions from ecosystem partners and the Wraith treasury. The funding source is listed per wave."
+    },
+    {
+      "id": "who-can-apply",
+      "question": "Who can apply?",
+      "answer": "Any developer or team building privacy-preserving payment infrastructure, stealth address tooling, or complementary SDK integrations. Both individual contributors and established teams are welcome."
+    },
+    {
+      "id": "how-are-grants-reviewed",
+      "question": "How are grants reviewed?",
+      "answer": "Proposals are reviewed by the Wraith core team based on technical merit, ecosystem impact, team capability, and alignment with Wraith's privacy mission. We aim to respond within two weeks of submission."
+    },
+    {
+      "id": "what-is-timeline",
+      "question": "What is the timeline?",
+      "answer": "Each wave runs for a fixed period. Applicants are notified of decisions within two weeks of the wave closing. Grant distributions are made through Drips on a milestone basis."
+    },
+    {
+      "id": "are-milestones-required",
+      "question": "Are milestones required?",
+      "answer": "Yes. Grants are distributed based on milestone completion. Each proposal should define clear, verifiable deliverables with associated funding tranches."
+    },
+    {
+      "id": "can-i-apply-multiple-waves",
+      "question": "Can I apply to multiple waves?",
+      "answer": "Yes. Unfunded proposals from previous waves are welcome to reapply. Past grantees can also apply for follow-up grants in subsequent waves."
+    }
+  ]
+}
