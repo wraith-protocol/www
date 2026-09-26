@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useInView } from '../hooks/useInView';
 import {
   loadStellarMetrics,
+  StellarRpcError,
   type MetricWindow,
   type StellarMetrics,
 } from '../utils/stellarMetrics';
@@ -78,25 +79,31 @@ export default function StellarMetrics() {
   const [metrics, setMetrics] = useState<StellarMetrics | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  const mountedRef = useRef(true);
+  const [stale, setStale] = useState(false);
+  const metricsRef = useRef<StellarMetrics | null>(null);
 
   useEffect(() => {
-    mountedRef.current = true;
+    const controller = new AbortController();
     let cancelled = false;
 
     async function load() {
       try {
         setLoading(true);
         setError(false);
-        const data = await loadStellarMetrics();
-        if (!cancelled && mountedRef.current) {
-          setMetrics(data);
-          setLoading(false);
-        }
-      } catch {
-        if (!cancelled && mountedRef.current) {
+        const data = await loadStellarMetrics({ signal: controller.signal });
+        if (cancelled) return;
+        metricsRef.current = data;
+        setMetrics(data);
+        setStale(false);
+        setLoading(false);
+      } catch (cause) {
+        if (cancelled) return;
+        if (cause instanceof StellarRpcError && cause.kind === 'aborted') return;
+        setLoading(false);
+        if (metricsRef.current) {
+          setStale(true);
+        } else {
           setError(true);
-          setLoading(false);
         }
       }
     }
@@ -105,7 +112,7 @@ export default function StellarMetrics() {
 
     return () => {
       cancelled = true;
-      mountedRef.current = false;
+      controller.abort();
     };
   }, []);
 
@@ -123,6 +130,11 @@ export default function StellarMetrics() {
             Real-time stealth payment activity on the Stellar Soroban testnet, scoped to the RPC's
             retained ledger window.
           </p>
+          {stale ? (
+            <p className="font-mono text-[10px] tracking-[1px] text-error">
+              Showing last known values. Live metrics are temporarily unavailable.
+            </p>
+          ) : null}
         </div>
 
         <div className="grid gap-4 md:grid-cols-3">
