@@ -5,10 +5,15 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+    types: [opened, synchronize, reopened, edited, labeled, unlabeled]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -18,4 +23,93 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm format:check
+      - run: pnpm test:lighthouse
       - run: pnpm build
+      - uses: browser-actions/setup-chrome@v1
+        id: chrome
+      - name: Start preview server
+        run: |
+          mkdir -p lighthouse-reports
+          pnpm preview --host 127.0.0.1 > /tmp/wraith-preview.log 2>&1 &
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:4173/ > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/wraith-preview.log
+          exit 1
+      - name: Lighthouse mobile
+        id: lighthouse_mobile
+        continue-on-error: true
+        run: >-
+          pnpm exec lighthouse http://127.0.0.1:4173/
+          --only-categories=performance,accessibility,best-practices,seo
+          --output=json --output-path=lighthouse-reports/mobile.json
+          --chrome-path="${{ steps.chrome.outputs.chrome-path }}"
+          --chrome-flags="--headless --no-sandbox"
+      - name: Lighthouse desktop
+        id: lighthouse_desktop
+        continue-on-error: true
+        run: >-
+          pnpm exec lighthouse http://127.0.0.1:4173/
+          --preset=desktop
+          --only-categories=performance,accessibility,best-practices,seo
+          --output=json --output-path=lighthouse-reports/desktop.json
+          --chrome-path="${{ steps.chrome.outputs.chrome-path }}"
+          --chrome-flags="--headless --no-sandbox"
+      - name: Evaluate Lighthouse budgets
+        if: always()
+        env:
+          MOBILE_OUTCOME: ${{ steps.lighthouse_mobile.outcome }}
+          DESKTOP_OUTCOME: ${{ steps.lighthouse_desktop.outcome }}
+        run: node scripts/lighthouse-budget.mjs summarize
+      - name: Comment on Lighthouse results
+        id: lighthouse_comment
+        if: ${{ always() && github.event_name == 'pull_request' }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('node:fs');
+            const results = JSON.parse(fs.readFileSync('lighthouse-budget-results.json', 'utf8'));
+            const marker = '<!-- wraith-lighthouse-budget -->';
+            const labels = context.payload.pull_request.labels.map((label) => label.name);
+            const reasonMatch = context.payload.pull_request.body?.match(/^Lighthouse budget override:\s*(.+)$/im);
+            const reason = reasonMatch?.[1]?.trim() ?? '';
+            const overrideAuthorized = labels.includes('lighthouse-budget-override') && reason.length > 0;
+            core.setOutput('override-authorized', String(overrideAuthorized));
+
+            const lines = [marker, '## Lighthouse budget'];
+            if (results.budgetFailures.length === 0 && results.auditFailures.length === 0) {
+              lines.push('All required categories met the 95-point budget in mobile and desktop audits.');
+            } else {
+              for (const failure of results.budgetFailures) {
+                const score = failure.score === null ? 'missing' : `${Math.round(failure.score * 100)}/95`;
+                lines.push(`- \`${failure.route}\` (${failure.profile}): ${failure.category} ${score}`);
+              }
+              for (const failure of results.auditFailures) {
+                lines.push(`- Lighthouse ${failure.profile} audit error: ${failure.message}`);
+              }
+            }
+            if (overrideAuthorized && results.budgetFailures.length > 0) {
+              lines.push('', `Override applied: ${reason}`);
+            } else if (results.budgetFailures.length > 0 && labels.includes('lighthouse-budget-override')) {
+              lines.push('', 'The override label is present, but a non-empty `Lighthouse budget override: <reason>` line is also required in the PR description.');
+            }
+            const body = lines.join('\n');
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const previous = comments.find((comment) => comment.user?.type === 'Bot' && comment.body?.includes(marker));
+            if (previous) {
+              await github.rest.issues.updateComment({ owner: context.repo.owner, repo: context.repo.repo, comment_id: previous.id, body });
+            } else {
+              await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: context.issue.number, body });
+            }
+      - name: Enforce Lighthouse budgets
+        if: always()
+        env:
+          LIGHTHOUSE_OVERRIDE_AUTHORIZED: ${{ steps.lighthouse_comment.outputs.override-authorized }}
+        run: node scripts/lighthouse-budget.mjs enforce
