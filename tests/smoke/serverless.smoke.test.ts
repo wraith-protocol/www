@@ -149,12 +149,18 @@ describe('POST /api/subscribe', () => {
     for (const email of ['', '   ', 'not-an-email', 'missing@domain', 'a@b@c.co', 42, null]) {
       const response = await postJson(subscribeUrl, { email });
       expect(response.status).toBe(422);
-      expect(await response.json()).toEqual({ error: 'invalid_email' });
+      expect(await response.json()).toEqual({
+        error: 'Enter a valid email address.',
+        code: 'invalid_email',
+      });
     }
 
     const response = await postJson(subscribeUrl, { tag: 'newsletter' });
     expect(response.status).toBe(422);
-    expect(await response.json()).toEqual({ error: 'invalid_email' });
+    expect(await response.json()).toEqual({
+      error: 'Enter a valid email address.',
+      code: 'invalid_email',
+    });
 
     expect((await recordedUpstreamCalls()).length).toBe(before);
   });
@@ -174,30 +180,45 @@ describe('POST /api/subscribe', () => {
     for (const method of ['GET', 'PUT', 'DELETE']) {
       const response = await fetch(subscribeUrl, { method });
       expect(response.status).toBe(405);
-      expect(await response.json()).toEqual({ error: 'Method not allowed' });
+      expect(await response.json()).toEqual({
+        error: 'Method not allowed.',
+        code: 'method_not_allowed',
+      });
     }
   });
 
   it('maps provider conflicts to already_subscribed', async () => {
     const conflict = await postJson(subscribeUrl, { email: 'dupe@stub-conflict.example' });
     expect(conflict.status).toBe(409);
-    expect(await conflict.json()).toEqual({ error: 'already_subscribed' });
+    expect(await conflict.json()).toEqual({
+      error: 'This email is already subscribed.',
+      code: 'already_subscribed',
+    });
 
     const duplicateCode = await postJson(subscribeUrl, {
       email: 'dupe@stub-duplicate-code.example',
     });
     expect(duplicateCode.status).toBe(409);
-    expect(await duplicateCode.json()).toEqual({ error: 'already_subscribed' });
+    expect(await duplicateCode.json()).toEqual({
+      error: 'This email is already subscribed.',
+      code: 'already_subscribed',
+    });
   });
 
   it('maps provider outages and network failures to 502', async () => {
     const outage = await postJson(subscribeUrl, { email: 'user@stub-outage.example' });
     expect(outage.status).toBe(502);
-    expect(await outage.json()).toEqual({ error: 'Subscription service is unavailable.' });
+    expect(await outage.json()).toEqual({
+      error: 'Subscription service is unavailable.',
+      code: 'upstream_error',
+    });
 
     const offline = await postJson(subscribeUrl, { email: 'user@stub-offline.example' });
     expect(offline.status).toBe(502);
-    expect(await offline.json()).toEqual({ error: 'Subscription service is unavailable.' });
+    expect(await offline.json()).toEqual({
+      error: 'Subscription service is unavailable.',
+      code: 'upstream_error',
+    });
   });
 });
 
@@ -295,7 +316,10 @@ describe('serverless failure responses', () => {
     });
 
     expect(response.status).toBe(500);
-    expect(await response.json()).toEqual({ error: 'Subscription service is not configured.' });
+    expect(await response.json()).toEqual({
+      error: 'Subscription service is not configured.',
+      code: 'not_configured',
+    });
   });
 
   it('still serves the built site', async () => {
