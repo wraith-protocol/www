@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build && node scripts/inline-css.js && tsx scripts/og.ts && tsx scripts/sitemap.ts && node scripts/gen-rss.mjs",
+    "build": "tsc -b && vite build && node scripts/inline-css.js && node scripts/gen-blog-manifest.mjs && tsx scripts/og.ts && tsx scripts/sitemap.ts && node scripts/gen-rss.mjs",
     "og:generate": "tsx scripts/og.ts",
     "generate:sitemap": "node scripts/gen-sitemap.mjs",
     "preview": "vite preview",

@@ -325,6 +325,234 @@
     "ogTitle": "Wraith Protocol",
     "ogDescription": "Pagamentos privados para cada rede. Endereços ocultos, SDK multi-rede e agentes de privacidade com IA."
   },
+  "ogRoutes": {
+    "/": {
+      "title": "Wraith Protocol",
+      "description": "Pagamentos privados para cada rede. Endereços ocultos, SDK multi-rede e agentes de privacidade com IA.",
+      "ogImage": {
+        "title": "Wraith Protocol",
+        "subtitle": "Pagamentos privados para cada rede",
+        "chainBadge": "EVM · Stellar"
+      },
+      "ogType": "website"
+    },
+    "/blog": {
+      "title": "Blog — Wraith Protocol",
+      "description": "Atualizações, guias e análises aprofundadas da equipe Wraith.",
+      "ogImage": {
+        "title": "Blog",
+        "subtitle": "Atualizações, guias e análises da equipe Wraith"
+      },
+      "ogType": "website"
+    },
+    "/case-studies": {
+      "title": "Casos de Estudo — Wraith Protocol",
+      "description": "Soluções de privacidade reais construídas sobre o Wraith Protocol. De processadores de folha de pagamento a DAOs.",
+      "ogImage": {
+        "title": "Casos de Estudo",
+        "subtitle": "Soluções de privacidade reais sobre o Wraith Protocol"
+      },
+      "ogType": "website"
+    },
+    "/careers": {
+      "title": "Carreiras — Wraith Protocol",
+      "description": "Recompensas de código aberto e trabalho por contrato no Wraith Protocol.",
+      "ogImage": {
+        "title": "Carreiras",
+        "subtitle": "Recompensas de código aberto e trabalho por contrato"
+      },
+      "ogType": "website"
+    },
+    "/contributors": {
+      "title": "Colaboradores — Wraith Protocol",
+      "description": "As pessoas que construem e melhoram o Wraith Protocol.",
+      "ogImage": {
+        "title": "Colaboradores",
+        "subtitle": "As pessoas que constroem e melhoram o Wraith Protocol"
+      },
+      "ogType": "website"
+    },
+    "/faq": {
+      "title": "Perguntas Frequentes — Wraith Protocol",
+      "description": "Perguntas frequentes sobre o Wraith Protocol e endereços ocultos.",
+      "ogImage": {
+        "title": "Perguntas Frequentes",
+        "subtitle": "Perguntas frequentes sobre o Wraith Protocol"
+      },
+      "ogType": "website"
+    },
+    "/grants": {
+      "title": "Bolsas — Wraith Protocol",
+      "description": "O Wraith Protocol mantém um programa de bolsas para infraestrutura de privacidade. Construa pagamentos privados e receba financiamento.",
+      "ogImage": {
+        "title": "Bolsas",
+        "subtitle": "Construa pagamentos privados. Receba financiamento.",
+        "chainBadge": "Stellar · EVM"
+      },
+      "ogType": "website"
+    },
+    "/about": {
+      "title": "Sobre — Wraith Protocol",
+      "description": "Construindo infraestrutura de pagamentos que preserva a privacidade para todos.",
+      "ogImage": {
+        "title": "Sobre",
+        "subtitle": "Infraestrutura de pagamentos que preserva a privacidade"
+      },
+      "ogType": "website"
+    },
+    "/newsletter": {
+      "title": "Newsletter — Wraith Protocol",
+      "description": "Atualizações de mainnet, avisos de segurança e notícias de bolsas, sem rastreamento.",
+      "ogImage": {
+        "title": "Newsletter",
+        "subtitle": "Atualizações de mainnet, avisos de segurança e bolsas"
+      },
+      "ogType": "website"
+    },
+    "/privacy": {
+      "title": "Política de Privacidade — Wraith Protocol",
+      "description": "Como lidamos com seus dados — spoiler: não coletamos nenhum.",
+      "ogImage": {
+        "title": "Política de Privacidade",
+        "subtitle": "Não coletamos seus dados — é simples assim"
+      },
+      "ogType": "website"
+    },
+    "/roadmap": {
+      "title": "Roteiro — Wraith Protocol",
+      "description": "O futuro do Wraith Protocol — um roteiro público dos próximos recursos.",
+      "ogImage": {
+        "title": "Roteiro",
+        "subtitle": "O futuro do Wraith"
+      },
+      "ogType": "website"
+    },
+    "/stellar": {
+      "title": "Integração Stellar — Wraith Protocol",
+      "description": "Suporte nativo a endereços ocultos na rede Stellar com metadados baseados em memo.",
+      "ogImage": {
+        "title": "Integração Stellar",
+        "subtitle": "Endereços ocultos nativos na rede Stellar",
+        "chainBadge": "Stellar"
+      },
+      "ogType": "website"
+    },
+    "/use-cases": {
+      "title": "Casos de Uso — Wraith Protocol",
+      "description": "Quem usa o Wraith Protocol e por quê — de folha de pagamento a DAOs.",
+      "ogImage": {
+        "title": "Casos de Uso",
+        "subtitle": "Quem usa o Wraith Protocol e por quê"
+      },
+      "ogType": "website"
+    },
+    "/vitals": {
+      "title": "Painel de Web Vitals — Wraith Protocol",
+      "description": "Telemetria de desempenho real de usuários para usewraith.xyz.",
+      "ogImage": {
+        "title": "Web Vitals",
+        "subtitle": "Telemetria de desempenho real de usuários"
+      },
+      "ogType": "website"
+    },
+    "/chains": {
+      "title": "Matriz comparativa de chains — Wraith Protocol",
+      "description": "Compare tempos de bloco, taxas, finalidade, suporte a carteiras e status de integração entre as chains suportadas pelo Wraith Protocol.",
+      "ogImage": {
+        "title": "Matriz comparativa de chains",
+        "subtitle": "Tempos de bloco, taxas, finalidade, carteiras"
+      },
+      "ogType": "website"
+    },
+    "/ecosystem": {
+      "title": "Ecossistema e parceiros — Wraith Protocol",
+      "description": "Explore o ecossistema do Wraith Protocol: carteiras, DEXs, protocolos de lending, indexadores e oráculos integrados a endereços stealth.",
+      "ogImage": {
+        "title": "Ecossistema e parceiros",
+        "subtitle": "Carteiras, DEXs, lending, indexadores, oráculos"
+      },
+      "ogType": "website"
+    },
+    "/security": {
+      "title": "Compromissos de segurança — Wraith Protocol",
+      "description": "Postura de segurança do Wraith Protocol: modelo de ameaças, política de divulgação coordenada, auditorias e programa de bug bounty.",
+      "ogImage": {
+        "title": "Compromissos de segurança",
+        "subtitle": "Ameaças, auditorias, divulgação, bug bounty"
+      },
+      "ogType": "website"
+    },
+    "/status": {
+      "title": "Status do sistema — Wraith Protocol",
+      "description": "Disponibilidade ao vivo e histórico de incidentes da API, do SDK e das chains suportadas do Wraith Protocol.",
+      "ogImage": {
+        "title": "Status do sistema",
+        "subtitle": "Disponibilidade e histórico de incidentes"
+      },
+      "ogType": "website"
+    },
+    "/governance": {
+      "title": "Governança — Wraith Protocol",
+      "description": "Como o Wraith Protocol é governado: propostas, direitos de decisão e como o roadmap muda.",
+      "ogImage": {
+        "title": "Governança",
+        "subtitle": "Propostas, decisões, mudanças no roadmap"
+      },
+      "ogType": "website"
+    },
+    "/threat-model": {
+      "title": "Modelo de ameaças — Wraith Protocol",
+      "description": "O que um observador on-chain, um observador de rede, um RPC comprometido, uma contraparte maliciosa ou um indexador intimado pode e não pode aprender em fluxos de texto simples, assinaturas de anel, mixer e Wraith.",
+      "ogImage": {
+        "title": "Modelo de ameaças",
+        "subtitle": "O que cada observador pode aprender"
+      },
+      "ogType": "website"
+    },
+    "/use-cases/calculator": {
+      "title": "Calculadora de custos de pagamento — Wraith Protocol",
+      "description": "Estime as taxas de rede e o sobrecusto modelado de pagamentos stealth mensais nas chains suportadas pelo Wraith.",
+      "ogImage": {
+        "title": "Calculadora de custos",
+        "subtitle": "Estime as taxas de pagamentos stealth"
+      },
+      "ogType": "website"
+    }
+  },
+  "ogContent": {
+    "/blog/wave-7-kickoff": {
+      "title": "Início da onda 7 + o que entregamos na onda 6",
+      "description": "Anunciamos o início da onda 7 com um resumo das entregas da onda 6: transações stealth em EVM, lançamento do SDK v1.4, integrações do ecossistema Stellar e melhorias de privacidade em TEE.",
+      "ogImage": {
+        "title": "Início da onda 7",
+        "subtitle": "Transações stealth, SDK v1.4, Stellar e TEE"
+      }
+    },
+    "/blog/stealth-addresses-explained": {
+      "title": "Endereços stealth explicados",
+      "description": "Uma introdução direta aos endereços stealth e por que eles importam.",
+      "ogImage": {
+        "title": "Endereços stealth explicados",
+        "subtitle": "O que são e por que importam"
+      }
+    },
+    "/blog/privacy-by-default": {
+      "title": "Privacidade por padrão",
+      "description": "Como o Wraith torna pagamentos privados práticos para aplicativos do dia a dia.",
+      "ogImage": {
+        "title": "Privacidade por padrão",
+        "subtitle": "Pagamentos privados no dia a dia"
+      }
+    },
+    "/case-studies/payroll-processor": {
+      "title": "Provedor de folha de pagamento anônimo",
+      "description": "Uma plataforma de processamento de folha de pagamento que usa o Wraith para habilitar pagamentos privados a prestadores, protegendo a privacidade financeira dos recebedores em diferentes jurisdições.",
+      "ogImage": {
+        "title": "Provedor de folha anônimo",
+        "subtitle": "Pagamentos privados a prestadores"
+      }
+    }
+  },
   "caseStudies": {
     "eyebrow": "ESTUDOS DE CASO",
     "heading": "Soluções de privacidade do mundo real.",
