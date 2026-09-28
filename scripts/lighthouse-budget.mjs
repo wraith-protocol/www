@@ -60,8 +60,17 @@ function enforce() {
   const overrideAuthorized = process.env.LIGHTHOUSE_OVERRIDE_AUTHORIZED === 'true';
 
   if (shouldFail(results, overrideAuthorized)) {
+    const details = [
+      ...results.budgetFailures.map((failure) => {
+        const score = failure.score === null ? 'missing' : `${(failure.score * 100).toFixed(1)}/95`;
+        return `${failure.route} (${failure.profile}): ${failure.category} ${score}`;
+      }),
+      ...results.auditFailures.map(
+        (failure) => `${failure.profile} audit error: ${failure.message}`,
+      ),
+    ];
     console.error(
-      'Lighthouse budget enforcement failed. See the PR comment for route and category details.',
+      `Lighthouse budget enforcement failed:\n${details.map((detail) => `- ${detail}`).join('\n')}`,
     );
     process.exitCode = 1;
   }
