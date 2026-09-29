@@ -4,8 +4,10 @@ export const config = {
   runtime: 'edge',
 };
 
-const font = fetch(new URL('../public/fonts/inter-700-normal.woff2', import.meta.url)).then((res) =>
-  res.arrayBuffer(),
+// The OG renderer parses TTF/OTF/WOFF only — it cannot read woff2 — so this
+// points at the legacy-format copy downloaded by `scripts/download-fonts.js`.
+const font = fetch(new URL('../../public/fonts/inter-700-normal.woff', import.meta.url)).then(
+  (res) => res.arrayBuffer(),
 );
 
 export default async function handler(req: Request) {

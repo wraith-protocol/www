@@ -118,6 +118,30 @@ jobs:
       - run: pnpm build
       - run: pnpm validate:jsonld
 
+      - name: Ensure Playwright reports are not tracked
+        run: |
+          if git ls-files --error-unmatch 'playwright-report/**' >/dev/null 2>&1; then
+            echo "::error::Generated Playwright reports must not be committed."
+            exit 1
+          fi
+
+  serverless-smoke:
+    name: Serverless Smoke
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+
+      - name: Smoke test the serverless routes
+        run: pnpm test:smoke
+
   playwright-a11y:
     name: Playwright A11y Gate
     needs: build
@@ -137,3 +161,124 @@ jobs:
 
       - name: Run Playwright a11y tests
         run: pnpm test:a11y:playwright
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          if-no-files-found: ignore
+          retention-days: 14
+
+  lighthouse:
+    name: Lighthouse Audit
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+
+      - name: Run Lighthouse on Mobile
+        id: lighthouse_mobile
+        continue-on-error: true
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          urls: |
+            http://localhost:4173/
+          startServerCommand: pnpm preview
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+
+      - name: Save Mobile Manifest
+        if: steps.lighthouse_mobile.outcome == 'success'
+        run: cp -r .lighthouseci .lighthouseci-mobile
+
+      - name: Run Lighthouse on Desktop
+        id: lighthouse_desktop
+        continue-on-error: true
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          urls: |
+            http://localhost:4173/
+          startServerCommand: pnpm preview
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+          configPath: './.github/lhci-desktop.json'
+
+      - name: Save Desktop Manifest
+        if: steps.lighthouse_desktop.outcome == 'success'
+        run: cp -r .lighthouseci .lighthouseci-desktop
+
+      - name: Post Comment on PR
+        uses: actions/github-script@v7
+        if: >-
+          github.event_name == 'pull_request' &&
+          steps.lighthouse_mobile.outcome == 'success' &&
+          steps.lighthouse_desktop.outcome == 'success'
+        env:
+          MOBILE_LINKS: ${{ steps.lighthouse_mobile.outputs.links }}
+          DESKTOP_LINKS: ${{ steps.lighthouse_desktop.outputs.links }}
+        with:
+          script: |
+            const fs = require('fs');
+            const mobileManifest = JSON.parse(fs.readFileSync('.lighthouseci-mobile/manifest.json', 'utf8'));
+            const desktopManifest = JSON.parse(fs.readFileSync('.lighthouseci-desktop/manifest.json', 'utf8'));
+
+            const mobile = mobileManifest[0];
+            const desktop = desktopManifest[0];
+
+            const formatScore = (val) => Math.round(val * 100);
+
+            const mobilePerf = formatScore(mobile.summary.performance);
+            const mobileA11y = formatScore(mobile.summary.accessibility);
+            const mobileBp = formatScore(mobile.summary['best-practices']);
+            const mobileSeo = formatScore(mobile.summary.seo);
+
+            const desktopPerf = formatScore(desktop.summary.performance);
+            const desktopA11y = formatScore(desktop.summary.accessibility);
+            const desktopBp = formatScore(desktop.summary['best-practices']);
+            const desktopSeo = formatScore(desktop.summary.seo);
+
+            const getScoreEmoji = (score) => {
+              if (score >= 95) return '🟢';
+              if (score >= 90) return '🟡';
+              return '🔴';
+            };
+
+            const mobileLinks = JSON.parse(process.env.MOBILE_LINKS || '{}');
+            const desktopLinks = JSON.parse(process.env.DESKTOP_LINKS || '{}');
+            const mobileReport = mobileLinks['http://localhost:4173/'] || '';
+            const desktopReport = desktopLinks['http://localhost:4173/'] || '';
+
+            const reportLinks = [];
+            if (mobileReport) reportLinks.push(`[Mobile Report](${mobileReport})`);
+            if (desktopReport) reportLinks.push(`[Desktop Report](${desktopReport})`);
+            const reportText = reportLinks.length > 0 ? `📄 **Reports:** ${reportLinks.join(' | ')}` : '';
+
+            const body = `### ⚡ Lighthouse Audit Results
+
+            | Category | Mobile | Desktop | Target |
+            | --- | --- | --- | --- |
+            | **Performance** | ${getScoreEmoji(mobilePerf)} **${mobilePerf}** | ${getScoreEmoji(desktopPerf)} **${desktopPerf}** | >= 95 |
+            | **Accessibility** | ${getScoreEmoji(mobileA11y)} **${mobileA11y}** | ${getScoreEmoji(desktopA11y)} **${desktopA11y}** | >= 95 |
+            | **Best Practices** | ${getScoreEmoji(mobileBp)} **${mobileBp}** | ${getScoreEmoji(desktopBp)} **${desktopBp}** | >= 95 |
+            | **SEO** | ${getScoreEmoji(mobileSeo)} **${mobileSeo}** | ${getScoreEmoji(desktopSeo)} **${desktopSeo}** | >= 95 |
+
+            ${reportText}
+
+            *Audit ran against the latest build on preview server.*`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });

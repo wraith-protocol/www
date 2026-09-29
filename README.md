@@ -27,6 +27,30 @@ The build pipeline performs the following steps:
 2. Runs the Open Graph image generator (`scripts/og.ts`) to pre-render cards for all routes and patches the output HTML files with page-specific titles, descriptions, and JSON-LD breadcrumb schemas.
 3. Runs the sitemap generator (`scripts/gen-sitemap.mjs`) to generate a fresh `sitemap.xml` covering all static and dynamic routes.
 
+## Serverless routes
+
+`vite preview` only serves the static build, so the API routes (`/api/subscribe` in
+`api/subscribe.ts` and `/api/og` in `src/api/og.tsx`) are unavailable locally and on
+CI runners. `pnpm preview:functions` serves the same `dist/` output with those routes
+mounted on port 4174:
+
+```bash
+pnpm build
+pnpm preview:functions
+```
+
+## Smoke tests
+
+```bash
+pnpm test:smoke
+```
+
+Smoke tests run against `scripts/preview-server.ts` over HTTP: the subscribe proxy
+(including invalid input, provider conflicts, outages and the unconfigured case) and
+the OG image endpoint (rendering, query escaping, cache headers and the failure
+response). Buttondown is stubbed, so no mail is sent and no test touches the network.
+The suite runs on every pull request in CI.
+
 ## SEO & Metadata
 
 - **`robots.txt`**: Located in `public/robots.txt` and copied to the build root. It allows search engine crawling while excluding staging, preview, admin, and 404 routes, and points crawlers to the sitemap location.

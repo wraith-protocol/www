@@ -4,6 +4,7 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import React from 'react';
+import { listOgImageJobs, type OgImageJob } from '../src/utils/og-metadata';
 
 const h = React.createElement;
 
@@ -20,69 +21,7 @@ const C = {
   outlineVariant: '#444444',
 } as const;
 
-interface RouteConfig {
-  slug: string;
-  routePath: string;
-  title: string;
-  subtitle: string;
-  chainBadge?: string;
-}
-
-const routes: RouteConfig[] = [
-  {
-    slug: 'home',
-    routePath: '/',
-    title: 'Wraith Protocol',
-    subtitle: 'Private payments for every chain',
-    chainBadge: 'EVM · Stellar',
-  },
-  {
-    slug: 'stellar',
-    routePath: '/stellar',
-    title: 'Stellar Integration',
-    subtitle: 'Native stealth addresses on the Stellar network',
-    chainBadge: 'Stellar',
-  },
-  {
-    slug: 'compare',
-    routePath: '/compare',
-    title: 'Privacy Comparison',
-    subtitle: 'How Wraith stacks up against the alternatives',
-    chainBadge: 'EVM · Stellar',
-  },
-  {
-    slug: 'faq',
-    routePath: '/faq',
-    title: 'FAQ',
-    subtitle: 'Everything you need to know about Wraith Protocol',
-  },
-  {
-    slug: 'privacy',
-    routePath: '/privacy',
-    title: 'Privacy Policy',
-    subtitle: "How we handle your data — spoiler: we don't collect any",
-  },
-  {
-    slug: 'use-cases',
-    routePath: '/use-cases',
-    title: 'Use Cases',
-    subtitle: 'Who uses Wraith Protocol and why',
-  },
-  {
-    slug: 'blog',
-    routePath: '/blog',
-    title: 'Blog',
-    subtitle: 'Updates, guides, and deep dives from the Wraith team',
-  },
-  {
-    slug: 'newsletter',
-    routePath: '/newsletter',
-    title: 'Newsletter',
-    subtitle: 'Mainnet updates, security advisories, and grant news — no tracking',
-  },
-];
-
-function ogCard({ title, subtitle, chainBadge }: RouteConfig) {
+function ogCard({ title, subtitle, chainBadge }: OgImageJob) {
   const titleSize = title.length > 25 ? 60 : title.length > 18 ? 68 : 76;
 
   return h(
@@ -209,31 +148,44 @@ function loadFont(filename: string): ArrayBuffer {
 
 type FontDef = { name: string; data: ArrayBuffer; weight: 400 | 700; style: 'normal' };
 
-async function renderPng(config: RouteConfig, fonts: FontDef[]): Promise<Buffer> {
+async function renderPng(config: OgImageJob, fonts: FontDef[]): Promise<Buffer> {
   const svg = await satori(ogCard(config), { width: 1200, height: 630, fonts });
   const resvg = new Resvg(svg, { fitTo: { mode: 'width', value: 1200 } });
   return Buffer.from(resvg.render().asPng());
 }
 
-function patchMetadata(html: string, config: RouteConfig): string {
-  const imageUrl = `https://usewraith.xyz/og/${config.slug}.png`;
+function patchMetadata(html: string, config: OgImageJob): string {
+  const imageUrl = `https://usewraith.xyz/og/${config.file}`;
   let patched = html
     .replace(/(<meta\s+property="og:image"\s+content=")[^"]*(")/g, `$1${imageUrl}$2`)
     .replace(/(<meta\s+name="twitter:image"\s+content=")[^"]*(")/g, `$1${imageUrl}$2`);
 
-  const title = config.routePath === '/' ? config.title : `${config.title} — Wraith Protocol`;
-  const desc = config.subtitle;
+  const displayTitle =
+    config.routePath === '/' ? config.title : `${config.title} — Wraith Protocol`;
+  const desc = config.description;
 
   patched = patched
-    .replace(/<title>[^<]*<\/title>/g, `<title>${title}</title>`)
-    .replace(/(<meta\s+property="og:title"\s+content=")[^"]*(")/g, `$1${title}$2`)
-    .replace(/(<meta\s+name="twitter:title"\s+content=")[^"]*(")/g, `$1${title}$2`);
+    .replace(/<title>[^<]*<\/title>/g, `<title>${escapeHtml(displayTitle)}</title>`)
+    .replace(
+      /(<meta\s+property="og:title"\s+content=")[^"]*(")/g,
+      `$1${escapeHtml(displayTitle)}$2`,
+    )
+    .replace(
+      /(<meta\s+name="twitter:title"\s+content=")[^"]*(")/g,
+      `$1${escapeHtml(displayTitle)}$2`,
+    );
 
   if (desc) {
     patched = patched
-      .replace(/(<meta\s+name="description"\s+content=")[^"]*(")/g, `$1${desc}$2`)
-      .replace(/(<meta\s+property="og:description"\s+content=")[^"]*(")/g, `$1${desc}$2`)
-      .replace(/(<meta\s+name="twitter:description"\s+content=")[^"]*(")/g, `$1${desc}$2`);
+      .replace(/(<meta\s+name="description"\s+content=")[^"]*(")/g, `$1${escapeHtml(desc)}$2`)
+      .replace(
+        /(<meta\s+property="og:description"\s+content=")[^"]*(")/g,
+        `$1${escapeHtml(desc)}$2`,
+      )
+      .replace(
+        /(<meta\s+name="twitter:description"\s+content=")[^"]*(")/g,
+        `$1${escapeHtml(desc)}$2`,
+      );
   }
 
   // Breadcrumb JSON-LD
@@ -273,9 +225,23 @@ function patchMetadata(html: string, config: RouteConfig): string {
   return patched;
 }
 
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function getRouteOutputDir(routePath: string): string {
+  if (routePath === '/') return distDir;
+  const cleaned = routePath.slice(1);
+  return join(distDir, cleaned);
+}
+
 async function main() {
   if (!existsSync(distDir)) {
-    console.error('dist/ not found — run `pnpm build` first');
+    console.error('dist/ not found — run `npm run build` first');
     process.exit(1);
   }
 
@@ -299,25 +265,27 @@ async function main() {
 
   const baseHtml = readFileSync(join(distDir, 'index.html'), 'utf8');
 
-  for (const config of routes) {
-    process.stdout.write(`og: ${config.slug}.png ... `);
-    const png = await renderPng(config, fonts);
-    writeFileSync(join(ogDir, `${config.slug}.png`), png);
+  const allJobs = listOgImageJobs();
 
-    const html = patchMetadata(baseHtml, config);
-
-    if (config.routePath === '/') {
-      writeFileSync(join(distDir, 'index.html'), html, 'utf8');
-    } else {
-      const routeDir = join(distDir, config.slug);
-      mkdirSync(routeDir, { recursive: true });
-      writeFileSync(join(routeDir, 'index.html'), html, 'utf8');
-    }
-
+  for (const job of allJobs) {
+    process.stdout.write(`og: ${job.file} ... `);
+    const png = await renderPng(job, fonts);
+    writeFileSync(join(ogDir, job.file), png);
     console.log('done');
   }
 
+  const englishJobs = allJobs.filter((job) => job.locale === 'en');
+
+  for (const job of englishJobs) {
+    const html = patchMetadata(baseHtml, job);
+
+    const routeDir = getRouteOutputDir(job.routePath);
+    mkdirSync(routeDir, { recursive: true });
+    writeFileSync(join(routeDir, 'index.html'), html, 'utf8');
+  }
+
   console.log('og: all images generated →', ogDir);
+  console.log(`og: ${allJobs.length} images across ${englishJobs.length} routes`);
 }
 
 main().catch((err) => {
