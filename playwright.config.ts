@@ -21,6 +21,14 @@ export default defineConfig({
       testDir: './tests/a11y',
       use: { ...devices['Desktop Chrome'] },
     },
+    // The same route matrix at a mobile viewport: the navigation collapses into
+    // the hamburger menu and the responsive layouts kick in, which is where
+    // accessibility regressions actually differ from desktop.
+    {
+      name: 'a11y-chromium-mobile',
+      testDir: './tests/a11y',
+      use: { ...devices['Pixel 5'] },
+    },
   ],
   webServer: {
     command: 'pnpm build && pnpm preview -- --port 4173',

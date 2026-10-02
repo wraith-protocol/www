@@ -91,6 +91,214 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
 
+      # The audited routes come from route-matrix.json, not from this file. Both
+      # presets below run exactly this list, and the Playwright accessibility
+      # suite reads the same matrix, so a new route cannot be audited by one gate
+      # and silently missed by the other. Mark a route "lighthouse": true to add
+      # it to the budgeted subset (kept representative rather than exhaustive so
+      # the audit stays affordable as the site grows).
+      - name: Resolve audited routes from route-matrix.json
+        id: routes
+        run: |
+          node scripts/route-matrix.mjs --check
+          {
+            echo 'urls<<ROUTE_MATRIX_EOF'
+            node scripts/route-matrix.mjs --urls --lighthouse
+            echo 'ROUTE_MATRIX_EOF'
+          } >> "$GITHUB_OUTPUT"
+          echo "Auditing $(node scripts/route-matrix.mjs --urls --lighthouse | wc -l) routes per preset"
+
+      - name: Run Lighthouse on Mobile
+        id: lighthouse_mobile
+        continue-on-error: true
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          urls: ${{ steps.routes.outputs.urls }}
+          startServerCommand: pnpm preview
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+          configPath: './.github/lhci-mobile.json'
+
+      - name: Save Mobile Manifest
+        if: steps.lighthouse_mobile.outcome == 'success'
+        run: cp -r .lighthouseci .lighthouseci-mobile
+
+      - name: Upload per-route mobile results
+        if: steps.lighthouse_mobile.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-mobile-per-route
+          path: .lighthouseci-mobile
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Run Lighthouse on Desktop
+        id: lighthouse_desktop
+        continue-on-error: true
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          urls: ${{ steps.routes.outputs.urls }}
+          startServerCommand: pnpm preview
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+          configPath: './.github/lhci-desktop.json'
+
+      - name: Save Desktop Manifest
+        if: steps.lighthouse_desktop.outcome == 'success'
+        run: cp -r .lighthouseci .lighthouseci-desktop
+
+      - name: Upload per-route desktop results
+        if: steps.lighthouse_desktop.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-desktop-per-route
+          path: .lighthouseci-desktop
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Post Comment on PR
+        uses: actions/github-script@v7
+        if: >-
+          github.event_name == 'pull_request' &&
+          steps.lighthouse_mobile.outcome == 'success' &&
+          steps.lighthouse_desktop.outcome == 'success'
+        env:
+          MOBILE_LINKS: ${{ steps.lighthouse_mobile.outputs.links }}
+          DESKTOP_LINKS: ${{ steps.lighthouse_desktop.outputs.links }}
+        with:
+          script: |
+            const fs = require('fs');
+
+            const matrix = JSON.parse(fs.readFileSync('route-matrix.json', 'utf8'));
+            const AUDITED = matrix.routes.filter((route) => route.lighthouse);
+
+            const pct = (value) => Math.round((value ?? 0) * 100);
+            const emoji = (score) => (score >= 95 ? '🟢' : score >= 90 ? '🟡' : '🔴');
+            const AXES = ['performance', 'accessibility', 'best-practices', 'seo'];
+
+            // One manifest entry per URL per run; numberOfRuns is 1, but take the
+            // first entry per URL so a future bump to numberOfRuns cannot produce
+            // duplicate rows.
+            const index = (runs) => {
+              const map = new Map();
+              for (const run of runs) if (!map.has(run.url)) map.set(run.url, run);
+              return map;
+            };
+
+            const mobile = index(JSON.parse(fs.readFileSync('.lighthouseci-mobile/manifest.json', 'utf8')));
+            const desktop = index(JSON.parse(fs.readFileSync('.lighthouseci-desktop/manifest.json', 'utf8')));
+
+            const linksFor = (raw) => {
+              try {
+                return JSON.parse(raw || '{}');
+              } catch {
+                return {};
+              }
+            };
+            const mobileLinks = linksFor(process.env.MOBILE_LINKS);
+            const desktopLinks = linksFor(process.env.DESKTOP_LINKS);
+
+            const scores = (entry) => {
+              if (!entry) return '— not audited —';
+              return AXES.map((axis) => `${emoji(pct(entry.summary[axis]))} ${pct(entry.summary[axis])}`).join(' · ');
+            };
+
+            const reportLink = (url) => {
+              const mobileReport = mobileLinks[url];
+              const desktopReport = desktopLinks[url];
+              const parts = [];
+              if (mobileReport) parts.push(`[m](${mobileReport})`);
+              if (desktopReport) parts.push(`[d](${desktopReport})`);
+              return parts.length > 0 ? parts.join(' ') : '—';
+            };
+
+            const rows = AUDITED.map((route) => {
+              const url = `${matrix.origin}${route.path}`;
+              return `| \`${route.path}\` | ${scores(mobile.get(url))} | ${scores(desktop.get(url))} | ${reportLink(url)} |`;
+            });
+
+            const missing = AUDITED.filter((route) => {
+              const url = `${matrix.origin}${route.path}`;
+              return !mobile.has(url) || !desktop.has(url);
+            });
+
+            // Surface regressions first: any axis below the 95 target, in either preset.
+            const regressions = [];
+            for (const route of AUDITED) {
+              const url = `${matrix.origin}${route.path}`;
+              for (const [preset, runs] of [['Mobile', mobile], ['Desktop', desktop]]) {
+                const entry = runs.get(url);
+                if (!entry) continue;
+                for (const axis of AXES) {
+                  const score = pct(entry.summary[axis]);
+                  if (score < 95) regressions.push(`- **${preset} / ${axis}** on \`${route.path}\`: ${emoji(score)} ${score} (target >= 95)`);
+                }
+              }
+            }
+
+            const body = [
+              '### ⚡ Lighthouse Audit Results',
+              '',
+              `Audited **${AUDITED.length}** of ${matrix.routes.length} routes in \`route-matrix.json\` on mobile and desktop (P · A · BP · SEO).`,
+              '',
+              '| Route | Mobile | Desktop | Reports |',
+              '| --- | --- | --- | --- |',
+              ...rows,
+              '',
+              regressions.length > 0
+                ? `#### Below target\n\n${regressions.join('\n')}`
+                : 'All audited axes meet the >= 95 target on both presets.',
+              '',
+              missing.length > 0
+                ? `> ⚠️ ${missing.length} route(s) produced no result for at least one preset — see the \`lighthouse-*-per-route\` artifacts.`
+                : '> Per-route JSON and HTML reports are attached to this run as the `lighthouse-mobile-per-route` and `lighthouse-desktop-per-route` artifacts.',
+              '',
+              '*Audit ran against the latest build on the preview server. Route list: `route-matrix.json`.*',
+            ].join('\n');
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
+      - run: pnpm validate:jsonld
+
+  playwright-a11y:
+    name: Playwright A11y Gate
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright a11y tests
+        run: pnpm test:a11y:playwright
+
+  lighthouse:
+    name: Lighthouse Audit
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+
       - name: Run Lighthouse on Mobile
         id: lighthouse_mobile
         continue-on-error: true

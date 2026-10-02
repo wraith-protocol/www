@@ -94,3 +94,71 @@ We integrated a pull request Lighthouse audit gate into `.github/workflows/ci.ym
 - Executes Lighthouse CI (LHCI) on mobile and desktop profiles.
 - Uploads HTML reports to temporary public storage.
 - Posts a summary table with score cards and links to HTML reports as comments on pull requests.
+
+---
+
+## Audited Route Matrix (issue #152)
+
+The Lighthouse job used to audit only `/`, and the Playwright accessibility suite
+kept its own separate list of pages. Two lists meant two blind spots: a regression
+on grants, blog, case studies, Stellar, status or the localized routes could ship
+without either gate looking at it.
+
+`route-matrix.json` at the repository root is now the single source of truth. Both
+gates read it, so a route cannot be audited by one and missed by the other.
+
+### Shape
+
+```json
+{
+  "origin": "http://localhost:4173",
+  "routes": [
+    { "path": "/", "name": "homepage", "lighthouse": true },
+    { "path": "/status", "name": "status", "lighthouse": false }
+  ]
+}
+```
+
+- `path` — the production route, relative to `origin`.
+- `name` — human-readable label used in CI output, PR comments and test titles.
+- `lighthouse` — whether the route is in the **budgeted subset** that gets mobile
+  *and* desktop Lighthouse runs. Every route in the matrix gets axe accessibility
+  checks regardless.
+
+### Why a budgeted subset
+
+Lighthouse is the expensive gate: each route is audited twice (mobile + desktop)
+against a freshly built preview server. Auditing all routes on every push would
+grow linearly with the site and delay every PR. The subset is the
+highest-traffic and highest-regression-risk surface — home, FAQ, grants,
+use cases and the calculator, Stellar, the case-studies list and a detail page,
+the blog list and a post — while the rest of the matrix stays covered by the
+cheap axe checks. Flip `"lighthouse": true` on a route to promote it.
+
+Dynamic routes are pinned to a real slug (`/blog/stealth-addresses-explained`,
+`/case-studies/payroll-processor`) so the audit hits a populated page instead of
+an empty shell.
+
+### Using it
+
+```bash
+npm run routes          # every route, one URL per line
+npm run routes:check    # validate the matrix (paths, duplicates, budget)
+node scripts/route-matrix.mjs --urls --lighthouse   # what CI audits
+node scripts/route-matrix.mjs --names               # path -> name table
+```
+
+`npm run routes:check` runs at the start of the Lighthouse job, so a malformed
+matrix (missing leading slash, trailing slash, duplicate `path` or `name`, an
+empty Lighthouse subset) fails the build with a readable message rather than
+silently auditing a 404.
+
+### Where the results go
+
+- The PR comment renders a per-route table for both presets, lists every axis
+  below the 95 target, and flags any route that produced no result.
+- Per-route JSON and HTML reports are uploaded as the
+  `lighthouse-mobile-per-route` and `lighthouse-desktop-per-route` artifacts.
+- The Playwright a11y suite runs the same matrix on both Desktop Chrome and a
+  Pixel 5 viewport, since the collapsed navigation and responsive layouts are
+  where accessibility behaviour differs from desktop.

@@ -20,6 +20,8 @@
     "lint:i18n": "node scripts/lint-i18n.mjs",
     "generate:og": "node scripts/generate-og.mjs",
     "validate:jsonld": "tsx scripts/validate-jsonld.mjs",
+    "routes": "node scripts/route-matrix.mjs",
+    "routes:check": "node scripts/route-matrix.mjs --check",
     "prepare": "husky"
   },
   "dependencies": {

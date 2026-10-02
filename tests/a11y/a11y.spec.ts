@@ -1,18 +1,13 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import { allRoutes, validateMatrix } from '../../scripts/route-matrix.mjs';
 
-const pages = [
-  { path: '/', name: 'homepage' },
-  { path: '/faq', name: 'FAQ' },
-  { path: '/roadmap', name: 'roadmap' },
-  { path: '/privacy', name: 'privacy policy' },
-  { path: '/use-cases', name: 'use cases' },
-  { path: '/use-cases/calculator', name: 'payment cost calculator' },
-  { path: '/stellar', name: 'Stellar page' },
-  { path: '/case-studies', name: 'case studies list' },
-  { path: '/case-studies/payroll-processor', name: 'case study detail' },
-  { path: '/nonexistent-page', name: '404 not found' },
-];
+// The audited routes come from the shared production route matrix (issue #152),
+// the same file the Lighthouse job reads, so the two gates cannot drift apart.
+const pages = allRoutes;
+
+// Fail loudly on a malformed matrix rather than silently auditing a subset.
+validateMatrix();
 
 for (const { path, name } of pages) {
   test(`has zero critical/serious axe violations on ${name}`, async ({ page }) => {
