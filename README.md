@@ -51,6 +51,47 @@ the OG image endpoint (rendering, query escaping, cache headers and the failure
 response). Buttondown is stubbed, so no mail is sent and no test touches the network.
 The suite runs on every pull request in CI.
 
+## Production link checks
+
+```bash
+pnpm build
+pnpm exec playwright install chromium
+pnpm check:links
+pnpm test:links
+```
+
+The pull request `Production Links` job runs the same checker against `dist/`.
+It discovers all built HTML routes and sitemap URLs, then uses Chromium to crawl
+rendered links and validate same-page and cross-page anchors (including MDX headings).
+Production-origin URLs resolve against the local build. Missing files and rendered
+not-found pages fail even when the preview server returns an SPA fallback with HTTP 200.
+The checker parses the sitemap, checks built-route coverage, and validates the main
+RSS feed, every generated tag feed, and feeds expected by sitemap tag archives.
+RSS channel, item, permalink GUID, and self URLs are checked too.
+
+External HTTP(S) destinations use GET with a ten-second timeout, at most two attempts,
+and six concurrent requests. External fragments are not checked. `mailto:` and `tel:`
+links are skipped. For an offline internal check, use `pnpm check:links --internal-only`;
+CI always runs the full check. Failures include source and destination in the console
+and `playwright-report/link-check.json`, uploaded as a CI artifact.
+
+Intentional external failures must be recorded in `scripts/link-check-allowlist.json`
+as exact normalized URLs (no fragment or wildcard), with a reason and the specific
+allowed HTTP statuses or `"network"` for a known unavailable host. For example:
+
+```json
+[
+  {
+    "url": "https://example.org/protected",
+    "reason": "Intentionally requires authentication",
+    "failures": [401]
+  }
+]
+```
+
+The allowlist starts empty. It cannot suppress internal links, anchors, or XML failures.
+Allowed failures remain visible in the report; unexpected failure statuses still fail CI.
+
 ## SEO & Metadata
 
 - **`robots.txt`**: Located in `public/robots.txt` and copied to the build root. It allows search engine crawling while excluding staging, preview, admin, and 404 routes, and points crawlers to the sitemap location.
