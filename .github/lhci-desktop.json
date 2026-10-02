@@ -4,7 +4,55 @@
       "numberOfRuns": 1,
       "settings": {
         "preset": "desktop"
+      },
+      "url": [
+        "https://stellar.org/",
+        "https://stellar.org/grants/",
+        "https://stellar.org/blog/",
+        "https://stellar.org/case-studies/",
+        "https://stellar.org/stellar/",
+        "https://stellar.org/status/",
+        "https://stellar.org/es/",
+        "https://stellar.org/zh/"
+      ]
+    },
+    "assert": {
+      "preset": "lighthouse:all",
+      "assertions": {
+        "category:performance": [
+          "warn:maxScore",
+          {
+            "maxScore": 0.85
+          }
+        ],
+        "category:accessibility": [
+          "warn:maxScore",
+          {
+            "maxScore": 0.95
+          }
+        ],
+        "category:best-practices": [
+          "warn:maxScore",
+          {
+            "maxScore": 0.85
+          }
+        ],
+        "category:seo": [
+          "warn:maxScore",
+          {
+            "maxScore": 0.85
+          }
+        ]
       }
+    },
+    "upload": {
+      "target": "temporary-public-storage",
+      "serverBaseUrl": "https://lhci-upload-server.herokuapp.com",
+      "outputDir": "./lhci-reports/desktop",
+      "reports": [
+        "lhtml",
+        "json"
+      ]
     }
   }
 }
