@@ -72,6 +72,35 @@ function parseFrontmatter(content) {
   return { metadata, content: body };
 }
 
+export function isAllowedPost(post) {
+  if (!post || typeof post !== 'object') return false;
+  if (post.draft === true || post.draft === 'true') return false;
+  if (post.preview === true || post.preview === 'true') return false;
+  if (post.status === 'draft' || post.status === 'preview') return false;
+  const rawDate = post.publishedAt || post.date;
+  if (!rawDate) return false;
+  const parsedTime = Date.parse(rawDate);
+  if (isNaN(parsedTime)) return false;
+  const url = String(post.url || '');
+  const lowerUrl = url.toLowerCase();
+  if (
+    lowerUrl.includes('/preview') ||
+    lowerUrl.includes('/staging') ||
+    lowerUrl.includes('/draft')
+  ) {
+    return false;
+  }
+  const slug = String(post.slug || '').toLowerCase();
+  if (
+    slug.includes('preview') ||
+    slug.includes('staging') ||
+    slug.includes('draft')
+  ) {
+    return false;
+  }
+  return true;
+}
+
 export function getPosts() {
   const postsMap = new Map();
 
@@ -94,6 +123,9 @@ export function getPosts() {
           author: resolveAuthorName(metadata.author),
           tags: parseTags(metadata.tags),
           url: metadata.url ?? `${siteUrl}/blog/${slug}`,
+          draft: metadata.draft === true || metadata.draft === 'true',
+          preview: metadata.preview === true || metadata.preview === 'true',
+          status: metadata.status,
         });
       }
     }
@@ -116,6 +148,9 @@ export function getPosts() {
               author: resolveAuthorName(post.author),
               tags: parseTags(post.tags),
               url: post.url ?? `${siteUrl}/blog/${post.slug}`,
+              draft: post.draft === true || post.draft === 'true',
+              preview: post.preview === true || post.preview === 'true',
+              status: post.status,
             });
           }
         }
@@ -126,7 +161,7 @@ export function getPosts() {
   }
 
   return Array.from(postsMap.values())
-    .filter((post) => Boolean(post.publishedAt))
+    .filter(isAllowedPost)
     .sort((left, right) => Date.parse(right.publishedAt) - Date.parse(left.publishedAt));
 }
 
@@ -136,8 +171,16 @@ export function buildRssFeed(posts, baseUrl = siteUrl, options = {}) {
   const selfPath = tag ? `/feed/tag/${slugifyTag(tag)}.xml` : '/feed.xml';
   const channelLink = tag ? `${baseUrl}/blog/tag/${slugifyTag(tag)}` : `${baseUrl}/blog`;
 
-  const items = posts
-    .filter((post) => Boolean(post.publishedAt))
+  const seenUrls = new Set();
+  const validPosts = (posts || []).filter((post) => {
+    if (!isAllowedPost(post)) return false;
+    const link = post.url ?? `${baseUrl}/blog/${post.slug}`;
+    if (seenUrls.has(link)) return false;
+    seenUrls.add(link);
+    return true;
+  });
+
+  const items = validPosts
     .map((post) => {
       const link = post.url ?? `${baseUrl}/blog/${post.slug}`;
       const description =

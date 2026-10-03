@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildRssFeed, getPosts } from '../../scripts/gen-rss.mjs';
+import { buildRssFeed, getPosts, isAllowedPost } from '../../scripts/gen-rss.mjs';
 
 describe('gen-rss script', () => {
   it('getPosts retrieves posts including MDX posts', () => {
@@ -76,5 +76,55 @@ describe('gen-rss script', () => {
     const mdxPost = posts.find((p) => p.slug === 'wave-7-kickoff');
     expect(Array.isArray(mdxPost?.tags)).toBe(true);
     expect(mdxPost?.tags).toContain('stealth-payments');
+  });
+
+  it('rejects posts marked as draft or preview', () => {
+    expect(isAllowedPost({ slug: 'test', publishedAt: '2026-01-01', draft: true })).toBe(false);
+    expect(isAllowedPost({ slug: 'test', publishedAt: '2026-01-01', preview: true })).toBe(false);
+    expect(isAllowedPost({ slug: 'test', publishedAt: '2026-01-01', status: 'draft' })).toBe(false);
+    expect(isAllowedPost({ slug: 'preview-feature', publishedAt: '2026-01-01' })).toBe(false);
+    expect(
+      isAllowedPost({
+        slug: 'test',
+        publishedAt: '2026-01-01',
+        url: 'https://usewraith.xyz/preview/test',
+      }),
+    ).toBe(false);
+    expect(
+      isAllowedPost({
+        slug: 'test',
+        publishedAt: '2026-01-01',
+        url: 'https://usewraith.xyz/staging/test',
+      }),
+    ).toBe(false);
+  });
+
+  it('rejects posts with invalid or missing dates', () => {
+    expect(isAllowedPost({ slug: 'test', publishedAt: 'invalid-date' })).toBe(false);
+    expect(isAllowedPost({ slug: 'test', publishedAt: '' })).toBe(false);
+    expect(isAllowedPost({ slug: 'test' })).toBe(false);
+  });
+
+  it('deduplicates posts with duplicate URLs in buildRssFeed', () => {
+    const xml = buildRssFeed(
+      [
+        {
+          slug: 'duplicate-post',
+          title: 'Duplicate Post',
+          publishedAt: '2026-07-20T12:00:00.000Z',
+          url: 'https://usewraith.xyz/blog/duplicate-post',
+        },
+        {
+          slug: 'duplicate-post',
+          title: 'Duplicate Post Second Time',
+          publishedAt: '2026-07-20T12:00:00.000Z',
+          url: 'https://usewraith.xyz/blog/duplicate-post',
+        },
+      ],
+      'https://usewraith.xyz',
+    );
+
+    const matches = xml.match(/<link>https:\/\/usewraith\.xyz\/blog\/duplicate-post<\/link>/g);
+    expect(matches).toHaveLength(1);
   });
 });

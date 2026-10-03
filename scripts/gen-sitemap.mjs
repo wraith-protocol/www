@@ -1,34 +1,65 @@
 import { writeFileSync, readFileSync, readdirSync, statSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
-import { slugifyTag, parseTags } from './feed-utils.mjs';
+import { fileURLToPath, pathToFileURL } from 'url';
+import { slugifyTag } from './feed-utils.mjs';
+import { getPosts, isAllowedPost } from './gen-rss.mjs';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 const rootDir = join(__dirname, '..');
 const distDir = join(rootDir, 'dist');
 const publicDir = join(rootDir, 'public');
-const siteUrl = 'https://usewraith.xyz';
+export const siteUrl = 'https://usewraith.xyz';
 
-/**
- * Known static application routes
- */
-const knownRoutes = [
+export const staticRoutes = [
   '/',
-  '/faq',
-  '/privacy',
-  '/use-cases',
-  '/roadmap',
-  '/case-studies',
-  '/stellar',
+  '/about',
+  '/blog',
   '/careers',
+  '/case-studies',
+  '/chains',
+  '/contributors',
+  '/ecosystem',
+  '/faq',
+  '/governance',
+  '/grants',
+  '/newsletter',
   '/press',
+  '/privacy',
+  '/roadmap',
+  '/security',
+  '/status',
+  '/stellar',
+  '/threat-model',
+  '/use-cases',
+  '/use-cases/calculator',
+  '/vitals',
 ];
 
-/**
- * Dynamically extract routes from case studies data
- */
-function getCaseStudyRoutes() {
-  const routes = [];
+export function isValidRoute(route) {
+  if (!route || typeof route !== 'string') return false;
+  if (!route.startsWith('/')) return false;
+  if (route.includes('//')) return false;
+  if (route === '/404' || route.startsWith('/404/')) return false;
+
+  const lower = route.toLowerCase();
+  if (
+    lower.includes('preview') ||
+    lower.includes('staging') ||
+    lower.includes('draft') ||
+    lower.includes('admin')
+  ) {
+    return false;
+  }
+
+  if (route.includes('?') || route.includes('#')) return false;
+  if (/\s/.test(route)) return false;
+
+  return true;
+}
+
+export function getCaseStudyRoutes() {
+  const entries = [];
   const csPath = join(rootDir, 'src', 'data', 'case-studies.json');
   if (existsSync(csPath)) {
     try {
@@ -36,70 +67,15 @@ function getCaseStudyRoutes() {
       if (Array.isArray(data.entries)) {
         for (const entry of data.entries) {
           if (entry.slug) {
-            routes.push(`/case-studies/${entry.slug}`);
-          }
-        }
-      }
-    } catch (err) {
-      console.warn('Could not read case-studies.json:', err.message);
-    }
-  }
-  return routes;
-}
-
-/**
- * Discover html routes from dist build directory if available
- */
-function getDistRoutes(dir, base = '') {
-  const routes = [];
-  if (!existsSync(dir)) return routes;
-
-  const files = readdirSync(dir);
-  if (files.includes('index.html') && base) {
-    routes.push(base);
-  }
-
-  for (const file of files) {
-    if (file === 'og' || file === '404' || file.startsWith('.')) continue;
-    const fullPath = join(dir, file);
-    if (statSync(fullPath).isDirectory()) {
-      routes.push(...getDistRoutes(fullPath, `${base}/${file}`));
-    }
-  }
-
-  return routes;
-}
-
-/**
- * Collect every unique blog tag and emit a /blog/tag/:slug archive route
- */
-function getBlogTagRoutes() {
-  const routes = [];
-  const tags = new Set();
-
-  const blogDir = join(rootDir, 'src', 'content', 'blog');
-  if (existsSync(blogDir)) {
-    for (const file of readdirSync(blogDir).filter((f) => /\.mdx?$/.test(f))) {
-      const raw = readFileSync(join(blogDir, file), 'utf8');
-      const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---/);
-      if (match) {
-        const tagsLine = match[1].split('\n').find((line) => line.trim().startsWith('tags:'));
-        if (tagsLine) {
-          const value = tagsLine.slice(tagsLine.indexOf(':') + 1).trim();
-          parseTags(value).forEach((tag) => tags.add(tag));
-        }
-      }
-    }
-  }
-
-  const manifestPath = join(rootDir, 'src', 'data', 'blog-posts.json');
-  if (existsSync(manifestPath)) {
-    try {
-      const data = JSON.parse(readFileSync(manifestPath, 'utf8'));
-      if (Array.isArray(data)) {
-        for (const post of data) {
-          if (Array.isArray(post.tags)) {
-            post.tags.forEach((tag) => tags.add(tag));
+            const route = `/case-studies/${entry.slug}`;
+            if (isValidRoute(route)) {
+              entries.push({
+                route,
+                lastmod: entry.integrationDate,
+                priority: '0.7',
+                changefreq: 'weekly',
+              });
+            }
           }
         }
       }
@@ -107,36 +83,193 @@ function getBlogTagRoutes() {
       // ignore
     }
   }
+  return entries;
+}
 
-  for (const tag of tags) {
-    routes.push(`/blog/tag/${slugifyTag(tag)}`);
+export function getAuthorRoutes() {
+  const routes = [];
+  const authorsPath = join(rootDir, 'src', 'data', 'authors.json');
+  const optOutPath = join(rootDir, 'src', 'data', 'authors-optout.json');
+  if (!existsSync(authorsPath)) return routes;
+  try {
+    const authors = JSON.parse(readFileSync(authorsPath, 'utf8'));
+    const optOut = existsSync(optOutPath) ? JSON.parse(readFileSync(optOutPath, 'utf8')) : [];
+    const posts = getPosts();
+    for (const [id, author] of Object.entries(authors)) {
+      if (optOut.includes(id)) continue;
+      if (author?.optIn) {
+        const authorRoute = `/blog/author/${id}`;
+        if (!isValidRoute(authorRoute)) continue;
+        const authorPosts = posts.filter(
+          (p) => p.author === author.name || p.author === id,
+        );
+        const latestDate =
+          authorPosts.length > 0 ? (authorPosts[0].publishedAt || '').split('T')[0] : undefined;
+        routes.push({
+          route: authorRoute,
+          lastmod: latestDate,
+          priority: '0.8',
+          changefreq: 'weekly',
+        });
+      }
+    }
+  } catch {
+    // ignore
+  }
+  return routes;
+}
+
+export function getBlogPostRoutes() {
+  const posts = getPosts();
+  const entries = [];
+  for (const post of posts) {
+    if (!isAllowedPost(post)) continue;
+    const route = `/blog/${post.slug}`;
+    if (!isValidRoute(route)) continue;
+    const dateStr = (post.publishedAt || '').split('T')[0];
+    entries.push({
+      route,
+      lastmod: dateStr,
+      priority: '0.8',
+      changefreq: 'weekly',
+    });
+  }
+  return entries;
+}
+
+export function getBlogTagRoutes() {
+  const routes = [];
+  const tagLatestDate = new Map();
+  const posts = getPosts();
+
+  for (const post of posts) {
+    if (!isAllowedPost(post)) continue;
+    const dateStr = (post.publishedAt || '').split('T')[0];
+    for (const tag of post.tags || []) {
+      const slug = slugifyTag(tag);
+      const existing = tagLatestDate.get(slug);
+      if (!existing || (dateStr && dateStr > existing)) {
+        tagLatestDate.set(slug, dateStr);
+      }
+    }
+  }
+
+  for (const [tagSlug, latestDate] of tagLatestDate.entries()) {
+    const route = `/blog/tag/${tagSlug}`;
+    if (isValidRoute(route)) {
+      routes.push({
+        route,
+        lastmod: latestDate,
+        priority: '0.8',
+        changefreq: 'weekly',
+      });
+    }
   }
 
   return routes;
 }
 
-function generateSitemap() {
-  try {
-    const csRoutes = getCaseStudyRoutes();
-    const distRoutes = existsSync(distDir) ? getDistRoutes(distDir) : [];
-    const tagRoutes = getBlogTagRoutes();
+export function getDistRoutes(dir = distDir, base = '') {
+  const routes = [];
+  if (!existsSync(dir)) return routes;
 
-    const allRoutes = Array.from(
-      new Set([...knownRoutes, ...csRoutes, ...distRoutes, ...tagRoutes]),
-    ).filter((r) => r && r !== '/404' && !r.includes('/staging') && !r.includes('/preview'));
+  const files = readdirSync(dir);
+  if (files.includes('index.html') && base) {
+    if (isValidRoute(base)) {
+      routes.push(base);
+    }
+  }
+  for (const file of files) {
+    if (file === 'og' || file === '404' || file.startsWith('.')) continue;
+    const path = join(dir, file);
+    if (statSync(path).isDirectory()) {
+      routes.push(...getDistRoutes(path, `${base}/${file}`));
+    }
+  }
+  return routes;
+}
 
-    const today = new Date().toISOString().split('T')[0];
+export function getSitemapEntries() {
+  const entryMap = new Map();
+  const baselineDate = '2026-09-25';
 
-    const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
+  for (const route of staticRoutes) {
+    if (isValidRoute(route)) {
+      entryMap.set(route, {
+        route,
+        lastmod: baselineDate,
+        priority: route === '/' ? '1.0' : '0.8',
+        changefreq: route === '/' ? 'daily' : 'weekly',
+      });
+    }
+  }
+
+  for (const cs of getCaseStudyRoutes()) {
+    if (isValidRoute(cs.route)) {
+      entryMap.set(cs.route, cs);
+    }
+  }
+
+  for (const post of getBlogPostRoutes()) {
+    if (isValidRoute(post.route)) {
+      entryMap.set(post.route, post);
+    }
+  }
+
+  for (const tag of getBlogTagRoutes()) {
+    if (isValidRoute(tag.route)) {
+      entryMap.set(tag.route, tag);
+    }
+  }
+
+  for (const author of getAuthorRoutes()) {
+    if (isValidRoute(author.route)) {
+      entryMap.set(author.route, author);
+    }
+  }
+
+  if (existsSync(distDir)) {
+    const distRoutes = getDistRoutes(distDir);
+    for (const r of distRoutes) {
+      if (isValidRoute(r) && !entryMap.has(r)) {
+        entryMap.set(r, {
+          route: r,
+          lastmod: baselineDate,
+          priority: '0.8',
+          changefreq: 'weekly',
+        });
+      }
+    }
+  }
+
+  return Array.from(entryMap.values()).sort((a, b) => {
+    if (a.route === '/') return -1;
+    if (b.route === '/') return 1;
+    return a.route.localeCompare(b.route);
+  });
+}
+
+export function buildSitemapXml(entries, baseUrl = siteUrl) {
+  const today = new Date().toISOString().split('T')[0];
+  const sorted = [...entries].sort((a, b) => {
+    if (a.route === '/') return -1;
+    if (b.route === '/') return 1;
+    return a.route.localeCompare(b.route);
+  });
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${allRoutes
-  .map((r) => {
-    const loc = `${siteUrl}${r === '/' ? '' : r}`;
-    const priority = r === '/' ? '1.0' : r.startsWith('/case-studies/') ? '0.7' : '0.8';
-    const changefreq = r === '/' ? 'daily' : 'weekly';
+${sorted
+  .map((entry) => {
+    const r = entry.route;
+    const loc = `${baseUrl}${r === '/' ? '' : r}`;
+    const lastmod = entry.lastmod || today;
+    const changefreq = entry.changefreq || (r === '/' ? 'daily' : 'weekly');
+    const priority =
+      entry.priority || (r === '/' ? '1.0' : r.startsWith('/case-studies/') ? '0.7' : '0.8');
     return `  <url>
     <loc>${loc}</loc>
-    <lastmod>${today}</lastmod>
+    <lastmod>${lastmod}</lastmod>
     <changefreq>${changefreq}</changefreq>
     <priority>${priority}</priority>
   </url>`;
@@ -144,16 +277,25 @@ ${allRoutes
   .join('\n')}
 </urlset>
 `;
+}
 
-    if (existsSync(distDir)) {
-      writeFileSync(join(distDir, 'sitemap.xml'), sitemapXml, 'utf8');
+export function generateSitemap(targetDirs = [publicDir, distDir]) {
+  const entries = getSitemapEntries();
+  const xml = buildSitemapXml(entries, siteUrl);
+  for (const dir of targetDirs) {
+    if (existsSync(dir)) {
+      writeFileSync(join(dir, 'sitemap.xml'), xml, 'utf8');
     }
-    writeFileSync(join(publicDir, 'sitemap.xml'), sitemapXml, 'utf8');
-    console.log(`sitemap.xml generated successfully: ${allRoutes.length} routes found.`);
+  }
+  return { xml, entries };
+}
+
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  try {
+    const { entries } = generateSitemap();
+    console.log(`sitemap.xml generated successfully: ${entries.length} routes found.`);
   } catch (error) {
     console.error('Failed to generate sitemap.xml:', error);
     process.exit(1);
   }
 }
-
-generateSitemap();
