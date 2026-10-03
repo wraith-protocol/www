@@ -188,13 +188,35 @@ function patchMetadata(html: string, config: OgImageJob): string {
       );
   }
 
+  // Canonical + hreflang alternates
+  // Remove any previously injected canonical/hreflang links so we don't duplicate on re-runs.
+  patched = patched.replace(/\s*<link\s+rel="canonical"[^>]*>\s*/g, '\n    ');
+  patched = patched.replace(/\s*<link\s+rel="alternate"\s+hreflang=[^>]*>\s*/g, '\n    ');
+
+  const SITE_URL = 'https://usewraith.xyz';
+  const cleanPath = config.routePath === '/' ? '' : config.routePath;
+  const enUrl = `${SITE_URL}${cleanPath}`;
+  const esUrl = `${SITE_URL}/es${cleanPath}`;
+  const ptUrl = `${SITE_URL}/pt${cleanPath}`;
+
+  const hreflangLinks = [
+    `<link rel="canonical" href="${enUrl}" />`,
+    `<link rel="alternate" hreflang="en" href="${enUrl}" />`,
+    `<link rel="alternate" hreflang="es" href="${esUrl}" />`,
+    `<link rel="alternate" hreflang="pt-BR" href="${ptUrl}" />`,
+    `<link rel="alternate" hreflang="x-default" href="${enUrl}" />`,
+  ].join('\n    ');
+
+  // Inject before </head>
+  patched = patched.replace('</head>', `    ${hreflangLinks}\n  </head>`);
+
   // Breadcrumb JSON-LD
   const breadcrumbListElement: any[] = [
     {
       '@type': 'ListItem',
       position: 1,
       name: 'Home',
-      item: 'https://usewraith.xyz',
+      item: SITE_URL,
     },
   ];
 
@@ -203,7 +225,7 @@ function patchMetadata(html: string, config: OgImageJob): string {
       '@type': 'ListItem',
       position: 2,
       name: config.title,
-      item: `https://usewraith.xyz${config.routePath}`,
+      item: enUrl,
     });
   }
 

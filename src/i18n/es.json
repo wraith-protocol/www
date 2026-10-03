@@ -302,7 +302,14 @@
       "erc5564": "Especificación ERC-5564",
       "erc6538": "Especificación ERC-6538",
       "security": "Seguridad",
-      "press": "Prensa"
+      "press": "Prensa",
+      "blog": "Blog",
+      "caseStudies": "Casos de Estudio",
+      "stellar": "Integración Stellar",
+      "careers": "Empleos",
+      "about": "Acerca de",
+      "governance": "Gobernanza",
+      "vitals": "Web Vitals"
     },
     "acknowledgmentsAria": "Con el apoyo de la Stellar Development Foundation a través del programa Stellar Wave vía Drips",
     "acknowledgmentsText": "Con el apoyo de la Stellar Development Foundation a través del programa Stellar Wave vía Drips",
@@ -317,6 +324,28 @@
       "privacy": "Privacidad",
       "vitals": "Web Vitals",
       "securityTxt": "Security.txt"
+    }
+  },
+  "pageSeo": {
+    "home": {
+      "title": "Wraith Protocol — Pagos privados para cada cadena",
+      "description": "Wraith Protocol habilita pagos privados en cualquier blockchain usando direcciones ocultas. Un SDK, múltiples cadenas."
+    },
+    "stellar": {
+      "title": "Integración Stellar — Wraith Protocol",
+      "description": "Soporte nativo de direcciones ocultas en la red Stellar con metadatos basados en memo."
+    },
+    "grants": {
+      "title": "Subvenciones — Wraith Protocol",
+      "description": "Wraith Protocol mantiene un programa de subvenciones para infraestructura de privacidad. Construye pagos privados y obtén financiación."
+    },
+    "blog": {
+      "title": "Blog — Wraith Protocol",
+      "description": "Actualizaciones, guías y análisis a fondo del equipo de Wraith."
+    },
+    "caseStudies": {
+      "title": "Casos de Estudio — Wraith Protocol",
+      "description": "Soluciones de privacidad reales construidas sobre Wraith Protocol. Desde procesadores de nómina hasta DAOs."
     }
   },
   "og": {

@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { trackOutbound } from '../utils/track';
 import waveData from '../data/wave.json';
 import { howTo, serializeJsonLd, SITE_URL } from '../utils/jsonld';
+import { usePageSeo } from '../utils/seo';
 
 type Wave = (typeof waveData)['currentWave'];
 type PastWave = (typeof waveData)['pastWaves'][number];
@@ -47,9 +49,25 @@ const labelStyles = 'font-mono text-[10px] font-semibold uppercase tracking-[1.8
 
 export default function Grants() {
   const [openFaqId, setOpenFaqId] = useState<string | null>(null);
+  const seo = usePageSeo('grants');
 
   return (
     <div className="mx-auto flex max-w-[1120px] flex-col px-6 py-10 md:px-12 md:py-16">
+      <Helmet>
+        <title>{seo.title}</title>
+        <meta name="description" content={seo.description} />
+        <link rel="canonical" href={seo.canonical} />
+        {seo.alternates.map((alt) => (
+          <link key={alt.hrefLang} rel="alternate" hrefLang={alt.hrefLang} href={alt.href} />
+        ))}
+        <meta property="og:title" content={seo.title} />
+        <meta property="og:description" content={seo.description} />
+        <meta property="og:url" content={seo.canonical} />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={seo.title} />
+        <meta name="twitter:description" content={seo.description} />
+      </Helmet>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(grantsHowTo) }}

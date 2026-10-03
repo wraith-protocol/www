@@ -52,7 +52,7 @@
     "github-slugger": "^2.0.0",
     "husky": "^9.1.7",
     "jsdom": "^29.1.1",
-    "prettier": "^3.8.2",
+    "prettier": "3.8.2",
     "rehype-slug": "^6.0.0",
     "remark-frontmatter": "^5.0.0",
     "remark-mdx-frontmatter": "^5.2.0",

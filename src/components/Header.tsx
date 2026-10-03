@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import { changeLocale, Locale } from '../i18n';
+import { useLocalePath } from '../hooks/useLocalePath';
 import { trackOutbound } from '../utils/track';
 
 export default function Header() {
@@ -11,6 +12,7 @@ export default function Header() {
   const { theme, toggleTheme } = useTheme();
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  const lp = useLocalePath();
 
   const currentLocale = (i18n.language.split('-')[0] ?? 'en') as Locale;
   const nextLocale: Locale = currentLocale === 'en' ? 'es' : 'en';
@@ -103,38 +105,38 @@ export default function Header() {
           >
             {t('header.nav.console')}
           </a>
-          <a
-            href="/press"
+          <Link
+            to={lp('/press')}
             className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
           >
             {t('header.nav.press')}
-          </a>
-          <a
-            href="/use-cases"
+          </Link>
+          <Link
+            to={lp('/use-cases')}
             className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
           >
             {t('header.nav.useCases')}
-          </a>
+          </Link>
           <Link
-            to="/grants"
+            to={lp('/grants')}
             className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
           >
             {t('header.nav.grants')}
           </Link>
           <Link
-            to="/stellar"
+            to={lp('/stellar')}
             className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
           >
             Stellar
           </Link>
           <Link
-            to="/roadmap"
+            to={lp('/roadmap')}
             className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
           >
             {t('header.nav.roadmap')}
           </Link>
           <Link
-            to="/blog"
+            to={lp('/blog')}
             className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
           >
             {t('header.nav.blog')}
@@ -266,43 +268,43 @@ export default function Header() {
             >
               {t('header.nav.console')}
             </a>
-            <a
-              href="/press"
+            <Link
+              to={lp('/press')}
               onClick={closeMenu}
               className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
             >
               {t('header.nav.press')}
-            </a>
-            <a
-              href="/use-cases"
+            </Link>
+            <Link
+              to={lp('/use-cases')}
               onClick={closeMenu}
               className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
             >
               {t('header.nav.useCases')}
-            </a>
+            </Link>
             <Link
-              to="/grants"
+              to={lp('/grants')}
               onClick={closeMenu}
               className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
             >
               {t('header.nav.grants')}
             </Link>
             <Link
-              to="/stellar"
+              to={lp('/stellar')}
               onClick={closeMenu}
               className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
             >
               Stellar
             </Link>
             <Link
-              to="/roadmap"
+              to={lp('/roadmap')}
               onClick={closeMenu}
               className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
             >
               {t('header.nav.roadmap')}
             </Link>
             <Link
-              to="/blog"
+              to={lp('/blog')}
               onClick={closeMenu}
               className="font-body text-[13px] text-outline transition-colors duration-150 hover:text-on-surface-variant"
             >

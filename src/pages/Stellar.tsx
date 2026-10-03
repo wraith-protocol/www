@@ -6,6 +6,7 @@ import { trackEvent } from '../analytics';
 import { track, trackOutbound } from '../utils/track';
 import EcosystemPartners from '../components/EcosystemPartners';
 import { getDeployment } from '@wraith-protocol/sdk/chains/stellar';
+import { usePageSeo } from '../utils/seo';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -171,6 +172,7 @@ const props = [
 export default function Stellar() {
   const [activeTab, setActiveTab] = useState<Tab>('send.ts');
   const [copyStatus, setCopyStatus] = useState<'idle' | 'copied' | 'failed'>('idle');
+  const seo = usePageSeo('stellar');
 
   const { ref: heroRef, isInView: heroInView } = useInView({ threshold: 0.1 });
   const { ref: stepsRef, isInView: stepsInView } = useInView({ threshold: 0.1 });
@@ -227,9 +229,11 @@ export default function Stellar() {
           content="Low-cost, sub-second, ed25519 stealth payments on Stellar with Soroban smart contracts."
         />
         <meta property="og:image" content="https://usewraith.xyz/og/stellar.png" />
-        <meta property="og:url" content="https://usewraith.xyz/stellar" />
+        <meta property="og:url" content={seo.canonical} />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={seo.title} />
+        <meta name="twitter:description" content={seo.description} />
       </Helmet>
 
       {/* Layout already provides <main> — we render sections directly */}

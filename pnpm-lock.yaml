@@ -88,7 +88,7 @@ importers:
         specifier: ^29.1.1
         version: 29.1.1(@noble/hashes@1.8.0)
       prettier:
-        specifier: ^3.8.2
+        specifier: 3.8.2
         version: 3.8.2
       rehype-slug:
         specifier: ^6.0.0

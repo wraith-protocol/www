@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useLocalePath } from '../hooks/useLocalePath';
 import { entries } from '../data/case-studies.json';
 
 type CaseStudy = {
@@ -18,6 +19,7 @@ type CaseStudy = {
 
 export default function CaseStudiesStrip() {
   const { t } = useTranslation();
+  const lp = useLocalePath();
 
   if (!entries || entries.length === 0) return null;
 
@@ -40,7 +42,7 @@ export default function CaseStudiesStrip() {
             </p>
           </div>
           <Link
-            to="/case-studies"
+            to={lp('/case-studies')}
             className="group flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[1.5px] text-outline transition-colors duration-150 hover:text-primary"
           >
             {t('caseStudiesStrip.viewAll')}
@@ -58,7 +60,7 @@ export default function CaseStudiesStrip() {
             return (
               <Link
                 key={study.id}
-                to={`/case-studies/${study.slug}`}
+                to={lp(`/case-studies/${study.slug}`)}
                 className="group flex flex-col gap-5 border border-outline-variant bg-surface-container p-7 transition-colors duration-150 hover:bg-surface-bright"
               >
                 <div className="flex items-start justify-between">

@@ -25,6 +25,14 @@ const knownRoutes = [
 ];
 
 /**
+ * Pages that have locale-prefixed alternates.
+ * Must stay in sync with LOCALE_URL_PREFIX in src/utils/seo.ts and the
+ * locale-prefixed <Route> entries in App.tsx.
+ */
+const LOCALE_PREFIXED_PAGES = ['/', '/stellar', '/grants', '/blog', '/case-studies'];
+const SUPPORTED_LOCALE_PREFIXES = ['/es', '/pt'];
+
+/**
  * Dynamically extract routes from case studies data
  */
 function getCaseStudyRoutes() {
@@ -121,8 +129,13 @@ function generateSitemap() {
     const distRoutes = existsSync(distDir) ? getDistRoutes(distDir) : [];
     const tagRoutes = getBlogTagRoutes();
 
+    // Build locale-prefixed alternates for pages that have translations.
+    const localeRoutes = SUPPORTED_LOCALE_PREFIXES.flatMap((prefix) =>
+      LOCALE_PREFIXED_PAGES.map((page) => (page === '/' ? prefix : `${prefix}${page}`)),
+    );
+
     const allRoutes = Array.from(
-      new Set([...knownRoutes, ...csRoutes, ...distRoutes, ...tagRoutes]),
+      new Set([...knownRoutes, ...csRoutes, ...distRoutes, ...tagRoutes, ...localeRoutes]),
     ).filter((r) => r && r !== '/404' && !r.includes('/staging') && !r.includes('/preview'));
 
     const today = new Date().toISOString().split('T')[0];
@@ -132,8 +145,10 @@ function generateSitemap() {
 ${allRoutes
   .map((r) => {
     const loc = `${siteUrl}${r === '/' ? '' : r}`;
-    const priority = r === '/' ? '1.0' : r.startsWith('/case-studies/') ? '0.7' : '0.8';
-    const changefreq = r === '/' ? 'daily' : 'weekly';
+    const isLocaleRoot = r === '/es' || r === '/pt';
+    const priority =
+      r === '/' || isLocaleRoot ? '1.0' : r.startsWith('/case-studies/') ? '0.7' : '0.8';
+    const changefreq = r === '/' || isLocaleRoot ? 'daily' : 'weekly';
     return `  <url>
     <loc>${loc}</loc>
     <lastmod>${today}</lastmod>
