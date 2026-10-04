@@ -123,10 +123,11 @@ describe('locale-aware page metadata', () => {
 
   it('Stellar page emits Spanish title when locale is es', async () => {
     await i18n.changeLanguage('es');
-    window.history.replaceState({}, '', '/stellar');
+    // Use locale-prefixed route to avoid LocaleSync resetting to English
+    window.history.replaceState({}, '', '/es/stellar');
     const { default: App } = await import('../App');
     render(<App />);
-    await screen.findByRole('heading', { level: 1, name: /stellar integration/i });
+    await screen.findByRole('heading', { level: 1, name: /integrac/i });
     expect(getDocumentTitle()).toMatch(/Stellar/i);
     // Spanish translation contains "Stellar" and "Wraith Protocol"
     expect(getDocumentTitle()).toMatch(/Wraith Protocol/i);
@@ -136,10 +137,11 @@ describe('locale-aware page metadata', () => {
 
   it('Stellar page emits Portuguese title when locale is pt', async () => {
     await i18n.changeLanguage('pt');
-    window.history.replaceState({}, '', '/stellar');
+    // Use locale-prefixed route to avoid LocaleSync resetting to English
+    window.history.replaceState({}, '', '/pt/stellar');
     const { default: App } = await import('../App');
     render(<App />);
-    await screen.findByRole('heading', { level: 1, name: /stellar integration/i });
+    await screen.findByRole('heading', { level: 1, name: /stellar/i });
     expect(getDocumentTitle()).toMatch(/Stellar/i);
     expect(getDocumentTitle()).not.toBe('Stealth payments on Stellar – Wraith Protocol');
   });
@@ -158,10 +160,11 @@ describe('locale-aware page metadata', () => {
 
   it('Grants page emits Spanish title when locale is es', async () => {
     await i18n.changeLanguage('es');
-    window.history.replaceState({}, '', '/grants');
+    // Use locale-prefixed route to avoid LocaleSync resetting to English
+    window.history.replaceState({}, '', '/es/grants');
     const { default: App } = await import('../App');
     render(<App />);
-    await screen.findByRole('heading', { level: 1, name: /build private payments/i });
+    await screen.findByRole('heading', { level: 1, name: /construye pagos privados/i });
     // Spanish: "Subvenciones – Wraith Protocol"
     expect(getDocumentTitle()).toMatch(/Subvenciones/i);
     expect(getDocumentTitle()).toMatch(/Wraith Protocol/i);
@@ -169,10 +172,11 @@ describe('locale-aware page metadata', () => {
 
   it('Grants page emits Portuguese title when locale is pt', async () => {
     await i18n.changeLanguage('pt');
-    window.history.replaceState({}, '', '/grants');
+    // Use locale-prefixed route to avoid LocaleSync resetting to English
+    window.history.replaceState({}, '', '/pt/grants');
     const { default: App } = await import('../App');
     render(<App />);
-    await screen.findByRole('heading', { level: 1, name: /build private payments/i });
+    await screen.findByRole('heading', { level: 1, name: /construa pagamentos privados/i });
     // Portuguese: "Bolsas – Wraith Protocol"
     expect(getDocumentTitle()).toMatch(/Bolsas/i);
     expect(getDocumentTitle()).toMatch(/Wraith Protocol/i);
@@ -192,7 +196,8 @@ describe('locale-aware page metadata', () => {
 
   it('Blog page emits Spanish title when locale is es', async () => {
     await i18n.changeLanguage('es');
-    window.history.replaceState({}, '', '/blog');
+    // Use locale-prefixed route to avoid LocaleSync resetting to English
+    window.history.replaceState({}, '', '/es/blog');
     const { default: App } = await import('../App');
     render(<App />);
     await screen.findByRole('heading', { level: 1, name: /wraith protocol blog/i });
@@ -220,12 +225,13 @@ describe('locale-aware page metadata', () => {
 
   it('Case Studies page emits Spanish title when locale is es', async () => {
     await i18n.changeLanguage('es');
-    window.history.replaceState({}, '', '/case-studies');
+    // Use locale-prefixed route to avoid LocaleSync resetting to English
+    window.history.replaceState({}, '', '/es/case-studies');
     const { default: App } = await import('../App');
     render(<App />);
     await screen.findByRole('heading', {
       level: 1,
-      name: /real-world privacy solutions/i,
+      name: /soluciones de privacidad en el mundo real/i,
     });
     // Spanish: "Casos de estudio – Wraith Protocol"
     expect(getDocumentTitle()).toMatch(/Casos de estudio/i);
@@ -234,12 +240,13 @@ describe('locale-aware page metadata', () => {
 
   it('Case Studies page emits Portuguese title when locale is pt', async () => {
     await i18n.changeLanguage('pt');
-    window.history.replaceState({}, '', '/case-studies');
+    // Use locale-prefixed route to avoid LocaleSync resetting to English
+    window.history.replaceState({}, '', '/pt/case-studies');
     const { default: App } = await import('../App');
     render(<App />);
     await screen.findByRole('heading', {
       level: 1,
-      name: /real-world privacy solutions/i,
+      name: /soluções de privacidade do mundo real/i,
     });
     // Portuguese: "Estudos de caso – Wraith Protocol"
     expect(getDocumentTitle()).toMatch(/Estudos de caso/i);
@@ -259,20 +266,22 @@ describe('locale-aware page metadata', () => {
 
   it('Home page emits Spanish title when locale is es', async () => {
     await i18n.changeLanguage('es');
-    window.history.replaceState({}, '', '/');
+    // Use locale-prefixed route to avoid LocaleSync resetting to English
+    window.history.replaceState({}, '', '/es');
     const { default: App } = await import('../App');
     render(<App />);
-    await screen.findByRole('heading', { level: 1, name: /private payments/i });
+    await screen.findByRole('heading', { level: 1, name: /pagos privados/i });
     // Spanish: "Wraith Protocol — Pagos privados para cada cadena"
     expect(getDocumentTitle()).toMatch(/Pagos privados/i);
   });
 
   it('Home page emits Portuguese title when locale is pt', async () => {
     await i18n.changeLanguage('pt');
-    window.history.replaceState({}, '', '/');
+    // Use locale-prefixed route to avoid LocaleSync resetting to English
+    window.history.replaceState({}, '', '/pt');
     const { default: App } = await import('../App');
     render(<App />);
-    await screen.findByRole('heading', { level: 1, name: /private payments/i });
+    await screen.findByRole('heading', { level: 1, name: /pagamentos privados/i });
     // Portuguese: "Wraith Protocol — Pagamentos privados para cada rede"
     expect(getDocumentTitle()).toMatch(/Pagamentos privados/i);
   });
@@ -281,10 +290,11 @@ describe('locale-aware page metadata', () => {
 
   it('renders hreflang link tags for each supported locale on Stellar', async () => {
     await i18n.changeLanguage('en');
-    window.history.replaceState({}, '', '/stellar');
+    // Use locale-prefixed route to test hreflang generation
+    window.history.replaceState({}, '', '/es/stellar');
     const { default: App } = await import('../App');
     render(<App />);
-    await screen.findByRole('heading', { level: 1, name: /stellar integration/i });
+    await screen.findByRole('heading', { level: 1, name: /integrac/i });
 
     await waitFor(() => {
       const links = Array.from(document.head.querySelectorAll('link[rel="alternate"][hreflang]'));
@@ -298,10 +308,11 @@ describe('locale-aware page metadata', () => {
 
   it('all hreflang links on Stellar point to the canonical URL', async () => {
     await i18n.changeLanguage('en');
-    window.history.replaceState({}, '', '/stellar');
+    // Use locale-prefixed route to test hreflang generation
+    window.history.replaceState({}, '', '/es/stellar');
     const { default: App } = await import('../App');
     render(<App />);
-    await screen.findByRole('heading', { level: 1, name: /stellar integration/i });
+    await screen.findByRole('heading', { level: 1, name: /integrac/i });
 
     await waitFor(() => {
       const links = Array.from(document.head.querySelectorAll('link[rel="alternate"][hreflang]'));
@@ -310,7 +321,7 @@ describe('locale-aware page metadata', () => {
       const ptLink = links.find((l) => l.getAttribute('hreflang') === 'pt-BR');
       const xDefault = links.find((l) => l.getAttribute('hreflang') === 'x-default');
 
-      // English and x-default → canonical
+      // English and x-default → canonical (non-prefixed)
       expect(enLink?.getAttribute('href')).toBe(`${SITE_ORIGIN}/stellar`);
       expect(xDefault?.getAttribute('href')).toBe(`${SITE_ORIGIN}/stellar`);
       // Non-English → locale-prefixed distinct URLs

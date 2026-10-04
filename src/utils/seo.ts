@@ -100,6 +100,24 @@ export function localizedDynamicUrl(page: SeoPageKey, locale: Locale, dynamicPat
 }
 
 /**
+ * Returns hreflang alternates for a dynamic page.
+ */
+export function hreflangAlternatesDynamic(
+  page: SeoPageKey,
+  dynamicPath: string,
+): HreflangAlternate[] {
+  const alternates: HreflangAlternate[] = SUPPORTED_LOCALES.map((locale) => ({
+    hrefLang: LOCALE_LANG_TAG[locale],
+    href: localizedDynamicUrl(page, locale, dynamicPath),
+  }));
+
+  // x-default always points to the canonical English URL
+  alternates.push({ hrefLang: 'x-default', href: localizedDynamicUrl(page, 'en', dynamicPath) });
+
+  return alternates;
+}
+
+/**
  * Returns the full list of hreflang `<link>` alternates for a page,
  * including `x-default` pointing at the canonical English URL.
  *

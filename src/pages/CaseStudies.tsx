@@ -7,6 +7,7 @@ import Layout from '../components/Layout';
 import { article, breadcrumbList, serializeJsonLd, SITE_URL } from '../utils/jsonld';
 import { usePageSeo } from '../utils/seo';
 import { useLocalizedPath } from '../hooks/useLocalePath';
+import { localizedDynamicUrl, hreflangAlternatesDynamic } from '../utils/seo';
 
 type CaseStudy = {
   id: string;
@@ -40,13 +41,16 @@ type CaseStudy = {
 function CaseStudyDetail({ study }: { study: CaseStudy }) {
   const { t } = useTranslation();
   const lp = useLocalizedPath();
+  const { i18n: i18nInstance } = useTranslation();
+  const locale = (i18nInstance.language?.split('-')[0] ?? 'en') as 'en' | 'es' | 'pt';
   const formattedDate = new Intl.DateTimeFormat('en-US', {
     month: 'long',
     year: 'numeric',
   }).format(new Date(study.integrationDate));
 
   // Schema.org structured data for SEO
-  const studyUrl = `${SITE_URL}/case-studies/${study.slug}`;
+  const dynamicPath = `/${study.slug}`;
+  const studyUrl = localizedDynamicUrl('caseStudies', locale, dynamicPath);
   const structuredData = article({
     headline: `${study.org} - ${study.useCase}`,
     description: study.summary,
@@ -56,9 +60,10 @@ function CaseStudyDetail({ study }: { study: CaseStudy }) {
   });
   const breadcrumbs = breadcrumbList([
     { name: 'Home', url: SITE_URL },
-    { name: 'Case Studies', url: `${SITE_URL}/case-studies` },
+    { name: 'Case Studies', url: localizedDynamicUrl('caseStudies', locale, '') },
     { name: study.org, url: studyUrl },
   ]);
+  const alternates = hreflangAlternatesDynamic('caseStudies', dynamicPath);
 
   return (
     <Layout>
@@ -70,6 +75,16 @@ function CaseStudyDetail({ study }: { study: CaseStudy }) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbs) }}
       />
+      <Helmet>
+        <title>
+          {study.org} - {study.useCase} – Wraith Protocol
+        </title>
+        <meta name="description" content={study.summary} />
+        <link rel="canonical" href={studyUrl} />
+        {alternates.map((alt) => (
+          <link key={alt.hrefLang} rel="alternate" hrefLang={alt.hrefLang} href={alt.href} />
+        ))}
+      </Helmet>
       <div className="mx-auto max-w-4xl px-6 py-16 md:px-12">
         <Link
           to={lp('/case-studies')}

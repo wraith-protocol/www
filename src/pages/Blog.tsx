@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   getAllPosts,
   getPostBySlug,
@@ -16,9 +17,9 @@ import {
 import BlogToc from '../components/BlogToc';
 import { article, breadcrumbList, serializeJsonLd, SITE_URL } from '../utils/jsonld';
 import { track } from '../utils/track';
-import i18n from '../i18n';
 import { usePageSeo } from '../utils/seo';
 import { useLocalizedPath } from '../hooks/useLocalePath';
+import { localizedDynamicUrl, hreflangAlternatesDynamic } from '../utils/seo';
 
 function AuthorByline({ post, lp }: { post: BlogPost; lp: (path: string) => string }) {
   if (!post.author) return null;
@@ -135,6 +136,8 @@ function BlogPostDetail({ slug }: { slug: string }) {
   // independent of re-renders or continued scrolling.
   const readFiredRef = useRef(false);
   const lp = useLocalizedPath();
+  const { i18n: i18nInstance } = useTranslation();
+  const locale = (i18nInstance.language?.split('-')[0] ?? 'en') as 'en' | 'es' | 'pt';
 
   useEffect(() => {
     if (!post) return;
@@ -147,7 +150,7 @@ function BlogPostDetail({ slug }: { slug: string }) {
       readFiredRef.current = true;
       track('blog_post_read', {
         slug: post.slug,
-        locale: normalizeLocale(i18n.language),
+        locale: normalizeLocale(i18nInstance.language),
       });
       window.removeEventListener('scroll', onScroll);
     };
@@ -175,7 +178,7 @@ function BlogPostDetail({ slug }: { slug: string }) {
     onScroll();
 
     return () => window.removeEventListener('scroll', onScroll);
-  }, [post, slug]);
+  }, [post, slug, i18nInstance.language]);
 
   if (!post) {
     return (
@@ -194,7 +197,8 @@ function BlogPostDetail({ slug }: { slug: string }) {
 
   const { Component } = post;
 
-  const postUrl = `${SITE_URL}/blog/${post.slug}`;
+  const dynamicPath = `/${post.slug}`;
+  const postUrl = localizedDynamicUrl('blog', locale, dynamicPath);
   const postArticle = article({
     headline: post.title,
     description: post.excerpt,
@@ -204,9 +208,10 @@ function BlogPostDetail({ slug }: { slug: string }) {
   });
   const postCrumbs = breadcrumbList([
     { name: 'Home', url: SITE_URL },
-    { name: 'Blog', url: `${SITE_URL}/blog` },
+    { name: 'Blog', url: localizedDynamicUrl('blog', locale, '') },
     { name: post.title, url: postUrl },
   ]);
+  const alternates = hreflangAlternatesDynamic('blog', dynamicPath);
 
   return (
     <article className="mx-auto max-w-5xl px-6 py-12 md:px-12">
@@ -221,6 +226,10 @@ function BlogPostDetail({ slug }: { slug: string }) {
       <Helmet>
         <title>{post.title} – Wraith Protocol</title>
         {post.excerpt && <meta name="description" content={post.excerpt} />}
+        <link rel="canonical" href={postUrl} />
+        {alternates.map((alt) => (
+          <link key={alt.hrefLang} rel="alternate" hrefLang={alt.hrefLang} href={alt.href} />
+        ))}
         {post.tags.map((tag) => (
           <link
             key={tag}
@@ -293,6 +302,8 @@ function AuthorInitials({ name }: { name: string }) {
 function BlogAuthor({ id }: { id: string }) {
   const author = getAuthorById(id);
   const lp = useLocalizedPath();
+  const { i18n: i18nInstance } = useTranslation();
+  const locale = (i18nInstance.language?.split('-')[0] ?? 'en') as 'en' | 'es' | 'pt';
 
   if (!author) {
     return (
@@ -319,6 +330,10 @@ function BlogAuthor({ id }: { id: string }) {
     string,
   ][];
 
+  const dynamicPath = `/author/${id}`;
+  const authorUrl = localizedDynamicUrl('blog', locale, dynamicPath);
+  const alternates = hreflangAlternatesDynamic('blog', dynamicPath);
+
   return (
     <div className="mx-auto flex max-w-4xl flex-col gap-8 px-6 py-12 md:px-12">
       <script
@@ -327,8 +342,8 @@ function BlogAuthor({ id }: { id: string }) {
           __html: serializeJsonLd(
             breadcrumbList([
               { name: 'Home', url: SITE_URL },
-              { name: 'Blog', url: `${SITE_URL}/blog` },
-              { name: author.name, url: `${SITE_URL}/blog/author/${id}` },
+              { name: 'Blog', url: localizedDynamicUrl('blog', locale, '') },
+              { name: author.name, url: authorUrl },
             ]),
           ),
         }}
@@ -339,6 +354,10 @@ function BlogAuthor({ id }: { id: string }) {
           name="description"
           content={`Posts by ${author.name} on Wraith Protocol's privacy-preserving payments blog.`}
         />
+        <link rel="canonical" href={authorUrl} />
+        {alternates.map((alt) => (
+          <link key={alt.hrefLang} rel="alternate" hrefLang={alt.hrefLang} href={alt.href} />
+        ))}
       </Helmet>
 
       <div className="flex flex-col gap-6 border border-outline-variant-30 p-6">
@@ -454,6 +473,8 @@ function RelatedPosts({ slug }: { slug: string }) {
 function TagArchive({ tagSlug }: { tagSlug: string }) {
   const tag = getTagFromSlug(tagSlug);
   const lp = useLocalizedPath();
+  const { i18n: i18nInstance } = useTranslation();
+  const locale = (i18nInstance.language?.split('-')[0] ?? 'en') as 'en' | 'es' | 'pt';
 
   if (!tag) {
     return (
@@ -472,6 +493,10 @@ function TagArchive({ tagSlug }: { tagSlug: string }) {
 
   const posts = getPostsByTag(tag);
 
+  const dynamicPath = `/tag/${tagSlug}`;
+  const tagUrl = localizedDynamicUrl('blog', locale, dynamicPath);
+  const alternates = hreflangAlternatesDynamic('blog', dynamicPath);
+
   return (
     <div className="mx-auto flex max-w-4xl flex-col gap-8 px-6 py-12 md:px-12">
       <Helmet>
@@ -480,6 +505,10 @@ function TagArchive({ tagSlug }: { tagSlug: string }) {
           name="description"
           content={`Blog posts tagged ${tag} from Wraith Protocol on private payments and stealth infrastructure.`}
         />
+        <link rel="canonical" href={tagUrl} />
+        {alternates.map((alt) => (
+          <link key={alt.hrefLang} rel="alternate" hrefLang={alt.hrefLang} href={alt.href} />
+        ))}
         <link
           rel="alternate"
           type="application/rss+xml"
