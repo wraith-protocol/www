@@ -1,0 +1,136 @@
+{
+  "$comment": "Authoritative production route matrix. Both the Lighthouse job and the Playwright accessibility suite read this file, so a route can never be audited by one gate and missed by the other. 'lighthouse' marks the representative budgeted subset that gets mobile + desktop Lighthouse runs; every route here gets axe checks. Consecutive unparameterised shell commands are static: dynamic routes are pinned to a real slug so the audit hits a populated page rather than an empty shell.",
+  "origin": "http://localhost:4173",
+  "routes": [
+    {
+      "path": "/",
+      "name": "homepage",
+      "lighthouse": true
+    },
+    {
+      "path": "/faq",
+      "name": "FAQ",
+      "lighthouse": true
+    },
+    {
+      "path": "/grants",
+      "name": "grants",
+      "lighthouse": true
+    },
+    {
+      "path": "/use-cases",
+      "name": "use cases",
+      "lighthouse": true
+    },
+    {
+      "path": "/use-cases/calculator",
+      "name": "payment cost calculator",
+      "lighthouse": true
+    },
+    {
+      "path": "/stellar",
+      "name": "Stellar",
+      "lighthouse": true
+    },
+    {
+      "path": "/case-studies",
+      "name": "case studies list",
+      "lighthouse": true
+    },
+    {
+      "path": "/case-studies/payroll-processor",
+      "name": "case study detail",
+      "lighthouse": true
+    },
+    {
+      "path": "/blog",
+      "name": "blog list",
+      "lighthouse": true
+    },
+    {
+      "path": "/blog/stealth-addresses-explained",
+      "name": "blog post detail",
+      "lighthouse": true
+    },
+    {
+      "path": "/blog/tag/stealth-payments",
+      "name": "blog tag archive",
+      "lighthouse": false
+    },
+    {
+      "path": "/blog/author/wraith-team",
+      "name": "blog author archive",
+      "lighthouse": false
+    },
+    {
+      "path": "/roadmap",
+      "name": "roadmap",
+      "lighthouse": false
+    },
+    {
+      "path": "/privacy",
+      "name": "privacy policy",
+      "lighthouse": false
+    },
+    {
+      "path": "/newsletter",
+      "name": "newsletter",
+      "lighthouse": false
+    },
+    {
+      "path": "/ecosystem",
+      "name": "ecosystem",
+      "lighthouse": false
+    },
+    {
+      "path": "/vitals",
+      "name": "vitals",
+      "lighthouse": false
+    },
+    {
+      "path": "/security",
+      "name": "security",
+      "lighthouse": false
+    },
+    {
+      "path": "/threat-model",
+      "name": "threat model",
+      "lighthouse": false
+    },
+    {
+      "path": "/status",
+      "name": "status",
+      "lighthouse": false
+    },
+    {
+      "path": "/careers",
+      "name": "careers",
+      "lighthouse": false
+    },
+    {
+      "path": "/about",
+      "name": "about",
+      "lighthouse": false
+    },
+    {
+      "path": "/governance",
+      "name": "governance",
+      "lighthouse": false
+    },
+    {
+      "path": "/contributors",
+      "name": "contributors",
+      "lighthouse": false
+    },
+    {
+      "path": "/chains",
+      "name": "chains",
+      "lighthouse": false
+    },
+    {
+      "path": "/nonexistent-page",
+      "name": "404 not found",
+      "lighthouse": false
+    }
+  ]
+}
