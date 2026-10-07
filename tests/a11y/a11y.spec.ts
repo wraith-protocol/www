@@ -1,21 +1,45 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
-const pages = [
+// Production route matrix. This is the single source of truth for the
+// Lighthouse + accessibility CI coverage. Every route listed here is
+// exercised by the axe scans below and is expected to be covered by
+// the Lighthouse matrix in the CI workflow.
+const routeMatrix = [
+  // Marketing / top-level
   { path: '/', name: 'homepage' },
   { path: '/faq', name: 'FAQ' },
   { path: '/roadmap', name: 'roadmap' },
   { path: '/privacy', name: 'privacy policy' },
+  { path: '/terms', name: 'terms of service' },
+  { path: '/status', name: 'status page' },
+
+  // Use cases
   { path: '/use-cases', name: 'use cases' },
   { path: '/use-cases/calculator', name: 'payment cost calculator' },
+
+  // Stellar
   { path: '/stellar', name: 'Stellar page' },
+
+  // Grants
+  { path: '/grants', name: 'grants list' },
+
+  // Blog
+  { path: '/blog', name: 'blog list' },
+
+  // Case studies
   { path: '/case-studies', name: 'case studies list' },
   { path: '/case-studies/payroll-processor', name: 'case study detail' },
-  { path: '/nonexistent-page', name: '404 not found' },
-];
 
-for (const { path, name } of pages) {
-  test(`has zero critical/serious axe violations on ${name}`, async ({ page }) => {
+  // Localized routes
+  { path: '/es', name: 'homepage (ES)' },
+
+  // 404
+  { path: '/nonexistent-page', name: '404 not found' },
+] as const;
+
+for (const { path, name } of routeMatrix) {
+  test(`${name} (${path}) has zero critical/serious axe violations`, async ({ page }) => {
     await page.goto(path);
     await page.waitForLoadState('domcontentloaded');
 

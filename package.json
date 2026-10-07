@@ -21,7 +21,8 @@
     "generate:og": "node scripts/generate-og.mjs",
     "validate:jsonld": "tsx scripts/validate-jsonld.mjs",
     "validate:content": "tsx scripts/validate-content.ts",
-    "prepare": "husky"
+    "prepare": "husky",
+    "test:lighthouse": "node scripts/lighthouse-matrix.mjs"
   },
   "dependencies": {
     "@stellar/stellar-sdk": "^13.3.0",
@@ -62,7 +63,8 @@
     "typescript": "^6.0.2",
     "vite": "^8.0.8",
     "vitest": "^4.1.9",
-    "vitest-axe": "^0.1.0"
+    "vitest-axe": "^0.1.0",
+    "lighthouse": "^12.8.1"
   },
   "packageManager": "pnpm@10.28.2"
 }
