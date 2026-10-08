@@ -114,6 +114,17 @@ function requireUrl(ctx: Ctx, obj: Record<string, unknown>, field: string): void
   }
 }
 
+function requireUrlOrInternalPath(ctx: Ctx, obj: Record<string, unknown>, field: string): void {
+  const value = obj[field];
+
+  if (!isString(value) || (!isUrl(value) && !/^\/(?!\/)/.test(value))) {
+    fail(
+      ctx,
+      `field "${field}" must be a valid absolute URL or root-relative path (got ${JSON.stringify(value)})`,
+    );
+  }
+}
+
 function optionalUrl(ctx: Ctx, obj: Record<string, unknown>, field: string): void {
   if (field in obj && obj[field] !== '' && obj[field] != null && !isUrl(obj[field])) {
     fail(
@@ -690,7 +701,7 @@ function validateTrust(file: string): void {
       requireNonEmpty(ctx, uptime, 'eyebrow');
       requireNonEmpty(ctx, uptime, 'fallbackPercent');
       requireNonEmpty(ctx, uptime, 'windowLabel');
-      requireUrl(ctx, uptime, 'statusPageUrl');
+      requireUrlOrInternalPath(ctx, uptime, 'statusPageUrl');
     }
   }
 }

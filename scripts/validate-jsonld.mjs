@@ -248,11 +248,6 @@ if (wave) {
           text: wave.howToApply ?? 'Include a clear scope, timeline, and budget breakdown.',
         },
         {
-          name: 'Submit on Drips',
-          text: `Open the Drips grant page and submit before the wave closes: ${wave.applyUrl}`,
-          url: wave.applyUrl,
-        },
-        {
           name: 'Await review',
           text: `Proposals are reviewed against: ${(wave.reviewCriteria ?? []).join(' ')}`,
         },

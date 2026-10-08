@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import { changeLocale, Locale } from '../i18n';
-import { useLocalePath } from '../hooks/useLocalePath';
+import { useLocalizedPath } from '../hooks/useLocalePath';
 import { trackOutbound } from '../utils/track';
 
 export default function Header() {
@@ -12,7 +12,7 @@ export default function Header() {
   const { theme, toggleTheme } = useTheme();
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
-  const lp = useLocalePath();
+  const lp = useLocalizedPath();
 
   const currentLocale = (i18n.language.split('-')[0] ?? 'en') as Locale;
   const nextLocale: Locale = currentLocale === 'en' ? 'es' : 'en';

@@ -32,11 +32,6 @@ const grantsHowTo = howTo({
         'Include a clear scope, timeline, and budget breakdown with defined milestones.',
     },
     {
-      name: 'Submit on Drips',
-      text: `Open the Drips grant page and submit your proposal before the wave closes. Apply here: ${currentWave?.applyUrl}`,
-      url: currentWave?.applyUrl,
-    },
-    {
       name: 'Await review',
       text: `The Wraith team reviews proposals against the published review criteria: ${(
         currentWave?.reviewCriteria ?? []
@@ -136,15 +131,6 @@ export default function Grants() {
               <p className="font-body text-[14px] leading-[1.7] text-on-surface-variant">
                 {currentWave.howToApply}
               </p>
-              <a
-                href={currentWave.applyUrl}
-                target="_blank"
-                onClick={trackOutbound('other')}
-                rel="noopener noreferrer"
-                className="inline-flex h-11 w-fit items-center justify-center bg-primary px-6 font-heading text-[13px] font-semibold uppercase tracking-[1.5px] text-surface transition-[filter] duration-150 hover:brightness-110"
-              >
-                Apply on Drips
-              </a>
             </div>
           </div>
 

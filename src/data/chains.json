@@ -21,7 +21,7 @@
       "wallets": "Horizen Wallet, MetaMask (EON)",
       "status": "live",
       "audit": "In-house + third-party",
-      "docs": "https://docs.usewraith.xyz/chains/horizen",
+      "docs": "https://docs.usewraith.xyz/sdk/chains/evm",
       "description": "Horizen EON is an EVM-compatible sidechain with low fees and fast block times. Wraith stealth addresses are fully operational on EON mainnet with SDK support for send and scan flows."
     },
     {
@@ -33,7 +33,7 @@
       "wallets": "Freighter,LOBSTR,Rabet",
       "status": "live",
       "audit": "Stellar Development Foundation audits",
-      "docs": "https://docs.usewraith.xyz/chains/stellar",
+      "docs": "https://docs.usewraith.xyz/sdk/chains/stellar",
       "description": "Stellar offers sub-cent transaction fees and deterministic finality. Wraith stealth addresses on Stellar use the Soroban smart contract layer for on-chain scanning and withdrawal."
     },
     {
@@ -45,7 +45,7 @@
       "wallets": "Phantom, Solflare, Backpack",
       "status": "devnet",
       "audit": "In progress",
-      "docs": "https://docs.usewraith.xyz/chains/solana",
+      "docs": "https://docs.usewraith.xyz/sdk/chains/solana",
       "description": "Solana provides high throughput with sub-second block times. Wraith stealth addresses on Solana are in active development on devnet, targeting low-latency privacy transfers."
     },
     {
@@ -57,7 +57,7 @@
       "wallets": "Neuron, JoyID",
       "status": "testnet",
       "audit": "Nervos Foundation audits",
-      "docs": "https://docs.usewraith.xyz/chains/nervos",
+      "docs": "https://docs.usewraith.xyz/sdk/chains/ckb",
       "description": "Nervos CKB uses a UTXO model with RISC-V smart contracts. Wraith stealth addresses leverage CKB's cell model for on-chain lock ownership verification."
     },
     {
@@ -69,7 +69,7 @@
       "wallets": "MetaMask, Ledger, Rainbow, Coinbase Wallet",
       "status": "planned",
       "audit": "Pending",
-      "docs": "https://docs.usewraith.xyz/chains/ethereum",
+      "docs": "https://docs.usewraith.xyz/sdk/chains/evm",
       "description": "Ethereum mainnet support is planned for a future release. Higher fees are offset by the deepest wallet ecosystem and largest DeFi surface."
     },
     {
@@ -81,7 +81,7 @@
       "wallets": "MetaMask, Ledger, Rainbow",
       "status": "planned",
       "audit": "Pending",
-      "docs": "https://docs.usewraith.xyz/chains/polygon",
+      "docs": "https://docs.usewraith.xyz/sdk/chains/evm",
       "description": "Polygon PoS offers EVM compatibility with low fees. Wraith support is planned to extend stealth payments to Polygon's growing DeFi ecosystem."
     },
     {
@@ -93,7 +93,7 @@
       "wallets": "MetaMask, Coinbase Wallet, Rainbow",
       "status": "planned",
       "audit": "Pending",
-      "docs": "https://docs.usewraith.xyz/chains/base",
+      "docs": "https://docs.usewraith.xyz/sdk/chains/evm",
       "description": "Base is an Optimism-powered L2 with Coinbase distribution. Planned Wraith integration targets the L2's growing developer and consumer app ecosystem."
     }
   ]

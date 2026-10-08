@@ -30,17 +30,14 @@ describe('Grants page', () => {
     }
   });
 
-  it('renders the apply button with correct URL when wave is open', async () => {
+  it('does not render a stale grant application CTA', async () => {
     window.history.replaceState({}, '', '/grants');
 
     render(<App />);
 
-    const currentWave = waveData.currentWave;
-    if (currentWave?.status === 'open') {
-      const applyLink = await screen.findByRole('link', { name: /apply on drips/i });
-      expect(applyLink).toHaveAttribute('href', currentWave.applyUrl);
-      expect(applyLink).toHaveAttribute('target', '_blank');
-    }
+    await screen.findByRole('heading', { level: 1, name: /build private payments/i });
+
+    expect(screen.queryByRole('link', { name: /apply on drips/i })).not.toBeInTheDocument();
   });
 
   it('renders eligibility and review criteria lists', async () => {

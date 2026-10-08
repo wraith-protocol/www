@@ -48,6 +48,32 @@ jobs:
       - name: Smoke test the serverless routes
         run: pnpm test:smoke
 
+  production-links:
+    name: Production Links
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test:links
+      - run: pnpm build
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm check:links
+      - name: Upload link check report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-links
+          path: playwright-report/link-check.json
+          if-no-files-found: ignore
+          retention-days: 14
+
   playwright-a11y:
     name: Playwright A11y Gate
     needs: build

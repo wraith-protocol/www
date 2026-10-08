@@ -20,6 +20,8 @@
     "lint:i18n": "node scripts/lint-i18n.mjs",
     "generate:og": "node scripts/generate-og.mjs",
     "validate:jsonld": "tsx scripts/validate-jsonld.mjs",
+    "check:links": "node scripts/check-links.mjs",
+    "test:links": "vitest run tests/link-checker.test.mjs",
     "validate:content": "tsx scripts/validate-content.ts",
     "prepare": "husky"
   },

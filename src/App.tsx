@@ -27,6 +27,7 @@ const Footer = lazy(() => import('./components/Footer'));
 // Lazy load pages
 const Faq = lazy(() => import('./pages/Faq'));
 const Privacy = lazy(() => import('./pages/Privacy'));
+const Press = lazy(() => import('./pages/Press'));
 const Newsletter = lazy(() => import('./pages/Newsletter'));
 const UseCases = lazy(() => import('./pages/UseCases'));
 const CostCalculatorPage = lazy(() => import('./pages/CostCalculatorPage'));
@@ -257,6 +258,14 @@ export default function App() {
               element={
                 <Layout>
                   <ChainsPage />
+                </Layout>
+              }
+            />
+            <Route
+              path="/press"
+              element={
+                <Layout>
+                  <Press />
                 </Layout>
               }
             />

@@ -26,7 +26,7 @@ describe('Footer status badge', () => {
     expect(await screen.findByText(/all systems normal/i)).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /open wraith protocol status page/i })).toHaveAttribute(
       'href',
-      'https://status.usewraith.xyz',
+      '/status',
     );
   });
 });

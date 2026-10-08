@@ -278,14 +278,6 @@ export default function Security() {
                 <dd className="mt-1 font-body text-base text-on-surface">{audits.nextScheduled}</dd>
               </div>
             </div>
-            <a
-              href={audits.reports}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 font-body text-sm text-primary transition-colors hover:text-primary-variant"
-            >
-              View Audit Reports ↗
-            </a>
           </div>
         </section>
 
@@ -329,15 +321,6 @@ export default function Security() {
                 </p>
               </div>
             </div>
-
-            <a
-              href={bounty.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 font-body text-sm text-primary transition-colors hover:text-primary-variant"
-            >
-              View Bounty Program ↗
-            </a>
           </div>
         </section>
 
@@ -358,14 +341,6 @@ export default function Security() {
                 {disclosures.count}
               </p>
             </div>
-            <a
-              href={disclosures.public}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 font-body text-sm text-primary transition-colors hover:text-primary-variant"
-            >
-              View Disclosure Log ↗
-            </a>
           </div>
         </section>
 
@@ -515,14 +490,6 @@ export default function Security() {
             >
               Privacy Policy →
             </Link>
-            <a
-              href="https://docs.usewraith.xyz/security"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded border border-outline-variant bg-surface-container px-4 py-2 font-body text-sm text-on-surface transition-colors hover:border-outline hover:bg-surface-bright"
-            >
-              Full Security Docs ↗
-            </a>
           </div>
         </section>
       </div>

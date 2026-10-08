@@ -20,7 +20,7 @@ const acknowledgments = [
   { label: 'Drips', src: '/logos/drips-mark.svg' },
 ];
 
-const statusPageUrl = import.meta.env.VITE_STATUS_PAGE_URL || 'https://status.usewraith.xyz';
+const statusPageUrl = import.meta.env.VITE_STATUS_PAGE_URL || '/status';
 const statusApiUrl = import.meta.env.VITE_STATUS_API_URL || '';
 
 function normalizeStatus(payload: unknown): StatusState {
@@ -217,16 +217,14 @@ export default function Footer() {
         { label: t('footer.product.docs'), href: 'https://docs.usewraith.xyz' },
         { label: t('footer.product.demo'), href: 'https://demo.usewraith.xyz' },
         { label: t('footer.product.console'), href: 'https://console.usewraith.xyz' },
-        { label: t('footer.product.compare'), href: '#compare' },
+        { label: t('footer.product.compare'), href: '/#compare' },
         { label: t('footer.product.faq'), href: '/faq' },
-        { label: t('footer.product.changelog'), href: 'https://docs.usewraith.xyz/changelog' },
       ],
     },
     {
       title: t('footer.columns.developers'),
       links: [
         { label: t('footer.developers.sdk'), href: 'https://docs.usewraith.xyz/sdk/overview' },
-        { label: t('footer.developers.apiReference'), href: 'https://docs.usewraith.xyz/api' },
         { label: t('footer.developers.github'), href: 'https://github.com/wraith-protocol' },
         {
           label: t('footer.developers.npm'),
@@ -239,7 +237,6 @@ export default function Footer() {
       links: [
         { label: t('footer.resources.erc5564'), href: 'https://eips.ethereum.org/EIPS/eip-5564' },
         { label: t('footer.resources.erc6538'), href: 'https://eips.ethereum.org/EIPS/eip-6538' },
-        { label: t('footer.resources.security'), href: 'https://docs.usewraith.xyz/security' },
         { label: t('footer.resources.press'), href: '/press' },
         { label: t('footer.resources.blog'), href: '/blog' },
         { label: t('footer.resources.caseStudies'), href: '/case-studies' },
@@ -377,13 +374,6 @@ export default function Footer() {
             >
               {t('footer.legal.privacy')}
             </Link>
-            <a
-              href="https://usewraith.xyz/terms"
-              onClick={trackOutbound('other')}
-              className="font-body text-xs text-outline transition-colors duration-150 hover:text-on-surface-variant"
-            >
-              {t('footer.legal.terms')}
-            </a>
             <a
               href="https://usewraith.xyz/.well-known/security.txt"
               onClick={trackOutbound('other')}

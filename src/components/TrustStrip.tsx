@@ -109,12 +109,8 @@ export default function TrustStrip() {
           </a>
         ))}
 
-        <a
-          href={integrations.link}
-          target="_blank"
-          onClick={trackOutbound('other')}
-          rel="noopener noreferrer"
-          className="group flex flex-col justify-center gap-1 border border-outline-variant-30 bg-surface-container p-5 transition-colors duration-150 hover:border-outline"
+        <div
+          className="flex flex-col justify-center gap-1 border border-outline-variant-30 bg-surface-container p-5"
           data-reveal={isInView}
           style={{ transitionDelay: isInView ? '120ms' : '0ms' }}
         >
@@ -127,8 +123,7 @@ export default function TrustStrip() {
           <span className="font-body text-[11px] leading-[1.4] text-on-surface-variant">
             {integrations.label}
           </span>
-        </a>
-
+        </div>
         <a
           href={uptime.statusPageUrl}
           target="_blank"

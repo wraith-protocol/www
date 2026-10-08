@@ -2,7 +2,7 @@
   "contact": {
     "email": "security@usewraith.xyz",
     "pgp": {
-      "enabled": true,
+      "enabled": false,
       "fingerprint": "ABCD 1234 5678 90EF GHIJ  KLMN OPQR STUV WXYZ 0123",
       "keyUrl": "https://keys.openpgp.org/vks/v1/by-fingerprint/ABCD123456789..."
     },
@@ -51,20 +51,17 @@
     "auditor": "Trail of Bits",
     "scope": "Core SDK cryptographic implementation (ERC-5564 stealth address derivation and scanning)",
     "findings": "3 low-severity findings, all remediated",
-    "nextScheduled": "2026-12-15",
-    "reports": "https://docs.usewraith.xyz/security/audits"
+    "nextScheduled": "2026-12-15"
   },
   "bounty": {
     "status": "active",
     "platform": "self-hosted",
-    "url": "https://docs.usewraith.xyz/security/bug-bounty",
     "maxReward": "$10,000 USD",
     "eligibility": "Vulnerabilities in @wraith-protocol/sdk, stealth address implementation, or key infrastructure components.",
     "ineligibility": "Issues already known, out-of-scope systems, or non-security bugs."
   },
   "disclosures": {
-    "count": 2,
-    "public": "https://docs.usewraith.xyz/security/disclosures"
+    "count": 2
   },
   "compliance": {
     "standards": ["OWASP Top 10", "CWE Top 25", "RFC 9116 (security.txt)"],

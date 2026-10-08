@@ -1,0 +1,7 @@
+[
+  {
+    "url": "https://www.npmjs.com/package/@wraith-protocol/sdk",
+    "reason": "npm returns a Cloudflare challenge to automated link-check requests",
+    "failures": [403]
+  }
+]
