@@ -109,12 +109,19 @@ describe('subscribe proxy — request validation', () => {
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
-  it('exposes a request id on every response', async () => {
+  it('exposes a request id and security headers on every response', async () => {
     fetchMock.mockResolvedValue(providerResponse(201));
 
     const response = await invoke({ email: VALID_EMAIL });
 
     expect(response.headers['x-request-id']).toBeTruthy();
+    expect(response.headers['cache-control']).toBe('no-store');
+    expect(response.headers['x-content-type-options']).toBe('nosniff');
+    expect(response.headers['x-frame-options']).toBe('DENY');
+    expect(response.headers['referrer-policy']).toBe('no-referrer');
+    expect(response.headers['content-security-policy']).toBe(
+      "default-src 'none'; frame-ancestors 'none'",
+    );
   });
 });
 

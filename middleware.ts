@@ -5,6 +5,7 @@ import {
   CACHE_CONTROL,
   OG_LOCALE_TAGS,
 } from './src/utils/og-metadata';
+import { PAGE_SECURITY_HEADERS } from './src/utils/security-headers';
 
 export const config = {
   matcher: ['/:path*'],
@@ -95,7 +96,7 @@ export default async function middleware(request: Request) {
 
     html = html.replace(/<html lang="(en|es|pt)"\s*>/i, `<html lang="${metadata.locale}">`);
 
-    const headers = new Headers();
+    const headers = new Headers(PAGE_SECURITY_HEADERS);
     headers.set('content-type', 'text/html;charset=UTF-8');
     headers.set('cache-control', CACHE_CONTROL);
 

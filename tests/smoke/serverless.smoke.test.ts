@@ -1,5 +1,13 @@
 import { spawn, type ChildProcessWithoutNullStreams } from 'node:child_process';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import {
+  API_CONTENT_SECURITY_POLICY,
+  COMMON_SECURITY_HEADERS,
+  FEED_CONTENT_SECURITY_POLICY,
+  PAGE_CONTENT_SECURITY_POLICY,
+  PAGE_SECURITY_HEADERS,
+  SUBSCRIBE_API_SECURITY_HEADERS,
+} from '../../src/utils/security-headers';
 
 /**
  * Preview smoke tests for the serverless routes.
@@ -106,6 +114,18 @@ function pngSize(bytes: Uint8Array): { width: number; height: number } {
 const PNG_SIGNATURE = [0x89, 0x50, 0x4e, 0x47];
 const isPng = (bytes: Uint8Array) => [...bytes.slice(0, 4)].join() === PNG_SIGNATURE.join();
 
+function expectCommonSecurityHeaders(
+  response: Response,
+  overrides: Partial<Record<string, string>> = {},
+) {
+  const expected = { ...COMMON_SECURITY_HEADERS, ...overrides };
+  for (const [key, value] of Object.entries(expected)) {
+    if (value !== undefined) {
+      expect(response.headers.get(key), `Header ${key} mismatch`).toBe(value);
+    }
+  }
+}
+
 // ─── /api/subscribe ─────────────────────────────────────────────────────────
 
 describe('POST /api/subscribe', () => {
@@ -129,6 +149,7 @@ describe('POST /api/subscribe', () => {
 
     expect(response.status).toBe(201);
     expect(response.headers.get('content-type')).toContain('application/json');
+    expectCommonSecurityHeaders(response, SUBSCRIBE_API_SECURITY_HEADERS);
     expect(await response.json()).toEqual({ ok: true });
   });
 
@@ -174,12 +195,14 @@ describe('POST /api/subscribe', () => {
     });
 
     expect(response.status).toBe(400);
+    expectCommonSecurityHeaders(response, SUBSCRIBE_API_SECURITY_HEADERS);
   });
 
   it('answers 405 for non-POST methods', async () => {
     for (const method of ['GET', 'PUT', 'DELETE']) {
       const response = await fetch(subscribeUrl, { method });
       expect(response.status).toBe(405);
+      expectCommonSecurityHeaders(response, SUBSCRIBE_API_SECURITY_HEADERS);
       expect(await response.json()).toEqual({
         error: 'Method not allowed.',
         code: 'method_not_allowed',
@@ -247,6 +270,9 @@ describe('GET /api/og', () => {
     expect(response.headers.get('cache-control')).toContain('public');
     expect(response.headers.get('cache-control')).toContain('immutable');
     expect(response.headers.get('cache-control')).toContain('max-age=31536000');
+    expectCommonSecurityHeaders(response, {
+      'Content-Security-Policy': API_CONTENT_SECURITY_POLICY,
+    });
     expect(isPng(bytes)).toBe(true);
     expect(bytes.byteLength).toBeGreaterThan(1_000);
     expect(pngSize(bytes)).toEqual({ width: 1200, height: 630 });
@@ -307,6 +333,9 @@ describe('serverless failure responses', () => {
     const response = await get(`${preview.baseUrl}/api/og?title=Broken`);
 
     expect(response.status).toBe(500);
+    expectCommonSecurityHeaders(response, {
+      'Content-Security-Policy': API_CONTENT_SECURITY_POLICY,
+    });
     expect(await response.text()).toContain('Failed to generate the image');
   });
 
@@ -316,6 +345,7 @@ describe('serverless failure responses', () => {
     });
 
     expect(response.status).toBe(500);
+    expectCommonSecurityHeaders(response, SUBSCRIBE_API_SECURITY_HEADERS);
     expect(await response.json()).toEqual({
       error: 'Subscription service is not configured.',
       code: 'not_configured',
@@ -328,5 +358,90 @@ describe('serverless failure responses', () => {
       expect(response.status).toBe(200);
       expect(response.headers.get('content-type')).toContain('text/html');
     }
+  });
+});
+
+// ─── security headers verification (preview smoke server & deployed preview) ──
+
+describe('production security headers across pages, feeds, assets, and API routes', () => {
+  let preview: Preview | undefined;
+  let targetBaseUrl: string;
+
+  beforeAll(async () => {
+    const externalPreviewUrl = process.env.PREVIEW_URL?.trim();
+    if (externalPreviewUrl) {
+      targetBaseUrl = externalPreviewUrl.replace(/\/+$/, '');
+    } else {
+      preview = await startPreview();
+      targetBaseUrl = preview.baseUrl;
+    }
+  });
+
+  afterAll(async () => {
+    if (preview) {
+      await preview.stop();
+    }
+  });
+
+  it('serves HTML pages and SPA fallback routes with PAGE_SECURITY_HEADERS and JSON-LD intact', async () => {
+    for (const route of ['/', '/stellar', '/blog/wave-7-kickoff', '/spa-client-route']) {
+      const response = await get(`${targetBaseUrl}${route}`);
+      expect(response.status).toBe(200);
+      expect(response.headers.get('content-type')).toContain('text/html');
+      expectCommonSecurityHeaders(response, PAGE_SECURITY_HEADERS);
+
+      const csp = response.headers.get('content-security-policy') ?? '';
+      expect(csp).toBe(PAGE_CONTENT_SECURITY_POLICY);
+
+      const html = await response.text();
+      expect(html).toContain('<script type="application/ld+json">');
+    }
+  });
+
+  it('serves RSS feeds and XML sitemaps with feed-appropriate headers', async () => {
+    for (const feedRoute of ['/feed.xml', '/feed/tag/wave-7.xml']) {
+      const response = await get(`${targetBaseUrl}${feedRoute}`);
+      expect(response.status).toBe(200);
+      expect(response.headers.get('content-type')).toBe('application/rss+xml; charset=utf-8');
+      expect(response.headers.get('cache-control')).toContain('max-age=3600');
+      expectCommonSecurityHeaders(response, {
+        'Content-Security-Policy': FEED_CONTENT_SECURITY_POLICY,
+      });
+    }
+
+    const sitemapResponse = await get(`${targetBaseUrl}/sitemap.xml`);
+    expect(sitemapResponse.status).toBe(200);
+    expect(sitemapResponse.headers.get('content-type')).toBe('application/xml; charset=utf-8');
+    expect(sitemapResponse.headers.get('cache-control')).toContain('max-age=3600');
+    expectCommonSecurityHeaders(sitemapResponse, {
+      'Content-Security-Policy': FEED_CONTENT_SECURITY_POLICY,
+    });
+  });
+
+  it('serves self-hosted fonts, fingerprinted bundles, and static media with asset headers', async () => {
+    const fontResponse = await get(`${targetBaseUrl}/fonts/space-grotesk-700-normal.woff2`);
+    expect(fontResponse.status).toBe(200);
+    expect(fontResponse.headers.get('cache-control')).toBe('public, max-age=31536000, immutable');
+    expect(fontResponse.headers.get('access-control-allow-origin')).toBe('*');
+    expectCommonSecurityHeaders(fontResponse);
+
+    const homeHtml = await (await get(`${targetBaseUrl}/`)).text();
+    const assetMatch = homeHtml.match(/src="(\/assets\/[^"]+\.js)"/);
+    expect(assetMatch?.[1]).toBeTruthy();
+
+    const bundleResponse = await get(`${targetBaseUrl}${assetMatch![1]}`);
+    expect(bundleResponse.status).toBe(200);
+    expect(bundleResponse.headers.get('cache-control')).toBe('public, max-age=31536000, immutable');
+    expectCommonSecurityHeaders(bundleResponse);
+
+    const ogAssetResponse = await get(`${targetBaseUrl}/og/home.png`);
+    expect(ogAssetResponse.status).toBe(200);
+    expect(ogAssetResponse.headers.get('cache-control')).toContain('max-age=86400');
+    expectCommonSecurityHeaders(ogAssetResponse);
+
+    const pressKitResponse = await get(`${targetBaseUrl}/press-kit.zip`);
+    expect(pressKitResponse.status).toBe(200);
+    expect(pressKitResponse.headers.get('cache-control')).toContain('max-age=86400');
+    expectCommonSecurityHeaders(pressKitResponse);
   });
 });

@@ -1,4 +1,5 @@
 import { ImageResponse } from '@vercel/og';
+import { OG_API_SECURITY_HEADERS } from '../utils/security-headers';
 
 export const config = {
   runtime: 'edge',
@@ -66,6 +67,7 @@ export default async function handler(req: Request) {
       {
         width: 1200,
         height: 630,
+        headers: OG_API_SECURITY_HEADERS,
         fonts: [
           {
             name: 'Inter',
@@ -78,6 +80,13 @@ export default async function handler(req: Request) {
     );
   } catch (e: any) {
     console.error(`${e.message}`);
-    return new Response(`Failed to generate the image`, { status: 500 });
+    return new Response(`Failed to generate the image`, {
+      status: 500,
+      headers: {
+        ...OG_API_SECURITY_HEADERS,
+        'Content-Type': 'text/plain; charset=utf-8',
+        'Cache-Control': 'no-store',
+      },
+    });
   }
 }

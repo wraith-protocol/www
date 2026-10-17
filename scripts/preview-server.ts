@@ -37,6 +37,11 @@ import { createServer, type IncomingMessage, type ServerResponse } from 'node:ht
 import { readFile } from 'node:fs/promises';
 import { dirname, extname, join, normalize, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import {
+  PAGE_SECURITY_HEADERS,
+  SUBSCRIBE_API_SECURITY_HEADERS,
+  resolveStaticRouteHeaders,
+} from '../src/utils/security-headers.ts';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const rootDir = join(__dirname, '..');
@@ -76,6 +81,12 @@ const MIME_TYPES: Record<string, string> = {
 
 function contentType(filePath: string): string {
   return MIME_TYPES[extname(filePath).toLowerCase()] ?? 'application/octet-stream';
+}
+
+function applyHeaders(res: ServerResponse, headers: Record<string, string>): void {
+  for (const [key, value] of Object.entries(headers)) {
+    res.setHeader(key, value);
+  }
 }
 
 // ─── Edge-runtime shims ─────────────────────────────────────────────────────
@@ -167,7 +178,9 @@ function decodePath(rawPath: string): string | null {
 
 function badRequest(res: ServerResponse): void {
   res.statusCode = 400;
+  applyHeaders(res, PAGE_SECURITY_HEADERS);
   res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+  res.setHeader('Cache-Control', 'no-store');
   res.end('Bad request');
 }
 
@@ -190,12 +203,12 @@ async function serveStatic(req: IncomingMessage, res: ServerResponse): Promise<v
     if (!data) {
       continue;
     }
+    const candidateExt = extname(candidate).toLowerCase();
+    const resolved = resolveStaticRouteHeaders(urlPath, candidateExt);
     res.statusCode = 200;
-    res.setHeader('Content-Type', contentType(candidate));
-    res.setHeader(
-      'Cache-Control',
-      extname(candidate) === '.html' ? 'no-store' : 'public, max-age=3600',
-    );
+    applyHeaders(res, resolved.headers);
+    res.setHeader('Content-Type', resolved.contentType ?? contentType(candidate));
+    res.setHeader('Cache-Control', resolved.cacheControl);
     res.end(data);
     return;
   }
@@ -205,16 +218,20 @@ async function serveStatic(req: IncomingMessage, res: ServerResponse): Promise<v
   if (!urlPath.startsWith('/api/') && !urlPath.startsWith('/press-kit/')) {
     const shell = await readFileOrNull(join(distDir, 'index.html'));
     if (shell) {
+      const resolved = resolveStaticRouteHeaders(urlPath, '.html');
       res.statusCode = 200;
+      applyHeaders(res, resolved.headers);
       res.setHeader('Content-Type', 'text/html; charset=utf-8');
-      res.setHeader('Cache-Control', 'no-store');
+      res.setHeader('Cache-Control', resolved.cacheControl);
       res.end(shell);
       return;
     }
   }
 
   res.statusCode = 404;
+  applyHeaders(res, PAGE_SECURITY_HEADERS);
   res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+  res.setHeader('Cache-Control', 'no-store');
   res.end('Not found');
 }
 
@@ -236,7 +253,8 @@ async function handleSubscribe(req: IncomingMessage, res: ServerResponse): Promi
       (req as IncomingMessage & { body?: unknown }).body = JSON.parse(raw);
     } catch {
       res.statusCode = 400;
-      res.setHeader('Content-Type', 'application/json');
+      applyHeaders(res, SUBSCRIBE_API_SECURITY_HEADERS);
+      res.setHeader('Content-Type', 'application/json; charset=utf-8');
       res.end(JSON.stringify({ error: 'Invalid JSON body' }));
       return;
     }
