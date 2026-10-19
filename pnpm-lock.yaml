@@ -32,6 +32,9 @@ importers:
       react-router-dom:
         specifier: ^7.18.1
         version: 7.18.1(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+      yaml:
+        specifier: ^2.9.0
+        version: 2.9.0
     devDependencies:
       '@axe-core/playwright':
         specifier: ^4.12.1

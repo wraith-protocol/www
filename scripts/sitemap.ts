@@ -1,7 +1,8 @@
 import { writeFileSync, readFileSync, readdirSync, statSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { slugifyTag, parseTags } from './feed-utils.mjs';
+import { slugifyTag } from './feed-utils.mjs';
+import { readManifest } from './lib/blog-manifest.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const rootDir = join(__dirname, '..');
@@ -86,34 +87,10 @@ function getBlogTagRoutes(): string[] {
   const routes: string[] = [];
   const tags = new Set<string>();
 
-  const blogDir = join(rootDir, 'src', 'content', 'blog');
-  if (existsSync(blogDir)) {
-    for (const file of readdirSync(blogDir).filter((f) => /\.mdx?$/.test(f))) {
-      const raw = readFileSync(join(blogDir, file), 'utf8');
-      const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---/);
-      if (match) {
-        const tagsLine = match[1].split('\n').find((line) => line.trim().startsWith('tags:'));
-        if (tagsLine) {
-          const value = tagsLine.slice(tagsLine.indexOf(':') + 1).trim();
-          parseTags(value).forEach((tag) => tags.add(tag));
-        }
-      }
-    }
-  }
-
-  const manifestPath = join(rootDir, 'src', 'data', 'blog-posts.json');
-  if (existsSync(manifestPath)) {
-    try {
-      const data = JSON.parse(readFileSync(manifestPath, 'utf8'));
-      if (Array.isArray(data)) {
-        for (const post of data) {
-          if (Array.isArray(post.tags)) {
-            post.tags.forEach((tag: string) => tags.add(tag));
-          }
-        }
-      }
-    } catch {
-      // ignore
+  // Authoritative tag source is the shared manifest.
+  for (const post of readManifest()) {
+    for (const tag of post.tags) {
+      tags.add(tag);
     }
   }
 

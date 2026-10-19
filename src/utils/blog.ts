@@ -2,13 +2,16 @@ import type { ComponentType } from 'react';
 import GithubSlugger from 'github-slugger';
 import authorsData from '../data/authors.json';
 import authorsOptOutData from '../data/authors-optout.json';
+import blogManifest from '../data/blog-manifest.json';
 
-export interface BlogPostFrontmatter {
+export interface ManifestEntry {
+  slug: string;
   title: string;
   date: string;
   author: string;
   excerpt: string;
   tags: string[];
+  url: string;
 }
 
 export interface TocItem {
@@ -48,20 +51,11 @@ export interface BlogPost {
   Component: ComponentType;
 }
 
-interface MDXModule {
-  default: ComponentType;
-  frontmatter: BlogPostFrontmatter;
-}
-
 const COLLAPSED_NAME = 'Wraith Team';
 
 const authors = (authorsData ?? {}) as Record<string, Author>;
 const optOutList = (authorsOptOutData ?? []) as string[];
 
-/**
- * Returns the public author profile for an id, or undefined if the author
- * opted out (or is unknown). Opted-out and unknown ids never get a page.
- */
 export function getAuthorById(id: string): AuthorProfile | undefined {
   const author = authors[id];
   if (!author) return undefined;
@@ -69,11 +63,6 @@ export function getAuthorById(id: string): AuthorProfile | undefined {
   return { ...author, id };
 }
 
-/**
- * Resolves a raw frontmatter author id into a display name and an optional
- * page link id. Opted-out authors collapse to "Wraith Team" with no link;
- * unknown ids fall back to the raw string with no link (graceful, no crash).
- */
 export function resolveAuthor(authorId: string): { name: string; linkId: string | null } {
   if (optOutList.includes(authorId)) {
     return { name: COLLAPSED_NAME, linkId: null };
@@ -90,7 +79,9 @@ export function resolveAuthor(authorId: string): { name: string; linkId: string 
   return { name: authorId, linkId: null };
 }
 
-const modules = import.meta.glob<MDXModule>('/src/content/blog/*.mdx', { eager: true });
+const modules = import.meta.glob<{ default: ComponentType }>('/src/content/blog/*.mdx', {
+  eager: true,
+});
 const rawModules = import.meta.glob('/src/content/blog/*.mdx', {
   query: '?raw',
   import: 'default',
@@ -114,13 +105,19 @@ let cachedPosts: BlogPost[] | null = null;
 export function getAllPosts(): BlogPost[] {
   if (cachedPosts) return cachedPosts;
 
+  const manifestBySlug = new Map<string, ManifestEntry>();
+  for (const entry of blogManifest as ManifestEntry[]) {
+    manifestBySlug.set(entry.slug, entry);
+  }
+
   cachedPosts = Object.entries(modules)
     .map(([filepath, mod]) => {
       const filename = filepath.split('/').pop() || '';
       const slug = filename.replace(/\.mdx$/, '');
-      const frontmatter = mod.frontmatter || {};
-      const rawAuthor = frontmatter.author || '';
-      const { name: authorName, linkId: authorId } = resolveAuthor(rawAuthor);
+      const entry = manifestBySlug.get(slug);
+      if (!entry) return null;
+
+      const { name: authorName, linkId: authorId } = resolveAuthor(entry.author);
 
       const rawContent = getRawContent(rawModules[filepath]);
       const body = rawContent.replace(/^---[\s\S]*?^---/m, '');
@@ -135,7 +132,6 @@ export function getAllPosts(): BlogPost[] {
         if (!match[1] || !match[2]) continue;
         const level = match[1].length;
         const text = match[2].trim();
-        // Remove markdown formatting like **, _ etc if any
         const cleanText = text.replace(/[*_`]/g, '');
         const id = slugger.slug(cleanText);
         toc.push({ id, text: cleanText, level });
@@ -143,19 +139,20 @@ export function getAllPosts(): BlogPost[] {
 
       return {
         slug,
-        title: frontmatter.title || slug,
-        date: frontmatter.date || '',
-        author: rawAuthor,
+        title: entry.title,
+        date: entry.date,
+        author: entry.author,
         authorName,
         authorId,
-        excerpt: frontmatter.excerpt || '',
-        tags: Array.isArray(frontmatter.tags) ? frontmatter.tags : [],
+        excerpt: entry.excerpt,
+        tags: entry.tags,
         readingTimeMin,
         wordCount: words,
         toc,
         Component: mod.default,
       };
     })
+    .filter((post): post is BlogPost => post !== null)
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   return cachedPosts;

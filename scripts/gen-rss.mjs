@@ -1,7 +1,8 @@
-import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'fs';
-import { dirname, join } from 'path';
+import { existsSync, readFileSync, readdirSync, writeFileSync, mkdirSync } from 'fs';
+import { join, dirname } from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
 import { slugifyTag, parseTags } from './feed-utils.mjs';
+import { readManifest, resolveAuthorName } from './lib/blog-manifest.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -9,6 +10,7 @@ const rootDir = join(__dirname, '..');
 const publicDir = join(rootDir, 'public');
 const distDir = join(rootDir, 'dist');
 const siteUrl = 'https://usewraith.xyz';
+const blogDir = join(rootDir, 'src', 'content', 'blog');
 
 function escapeXml(value) {
   return String(value)
@@ -23,83 +25,51 @@ function toRfc822(date) {
   return new Date(date).toUTCString();
 }
 
-let authorsCache = null;
-let optOutCache = null;
-
-function resolveAuthorName(authorId) {
-  if (!authorId) return 'Wraith Team';
-  try {
-    if (!authorsCache) {
-      const aPath = join(rootDir, 'src', 'data', 'authors.json');
-      authorsCache = existsSync(aPath) ? JSON.parse(readFileSync(aPath, 'utf8')) : {};
-    }
-    if (!optOutCache) {
-      const oPath = join(rootDir, 'src', 'data', 'authors-optout.json');
-      optOutCache = existsSync(oPath) ? JSON.parse(readFileSync(oPath, 'utf8')) : [];
-    }
-  } catch {
-    return authorId;
-  }
-  if (optOutCache.includes(authorId)) return 'Wraith Team';
-  const author = authorsCache[authorId];
-  if (author && author.optIn) return author.name;
-  if (author && !author.optIn) return 'Wraith Team';
-  return authorId;
-}
-
-function parseFrontmatter(content) {
-  const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
-  if (!match) return { metadata: {}, content };
-  const yaml = match[1];
-  const body = content.slice(match[0].length).trim();
-  const metadata = {};
-
-  yaml.split('\n').forEach((line) => {
-    const colonIdx = line.indexOf(':');
-    if (colonIdx > -1) {
-      const key = line.slice(0, colonIdx).trim();
-      let value = line.slice(colonIdx + 1).trim();
-      if (
-        (value.startsWith('"') && value.endsWith('"')) ||
-        (value.startsWith("'") && value.endsWith("'"))
-      ) {
-        value = value.slice(1, -1);
+function readPostBody(slug) {
+  for (const ext of ['.mdx', '.md']) {
+    const file = join(blogDir, `${slug}${ext}`);
+    if (existsSync(file)) {
+      const source = readFileSync(file, 'utf8');
+      const match = source.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+      if (match) {
+        return source.slice(match[0].length);
       }
-      metadata[key] = value;
+      return source;
     }
-  });
-
-  return { metadata, content: body };
+  }
+  return '';
 }
 
+function toRssPost(entry) {
+  return {
+    slug: entry.slug,
+    title: entry.title,
+    excerpt: entry.excerpt,
+    content: readPostBody(entry.slug),
+    publishedAt: entry.date,
+    author: resolveAuthorName(entry.author),
+    tags: entry.tags,
+    url: entry.url,
+  };
+}
+
+let postsCache = null;
+
+/**
+ * Returns all blog posts for RSS feeds, sorted newest first.
+ * Metadata comes from the shared blog manifest; post bodies are read from MDX.
+ * @returns {RssPost[]}
+ */
 export function getPosts() {
+  if (postsCache) return postsCache;
+
+  const manifest = readManifest();
   const postsMap = new Map();
 
-  // 1. Read MDX posts from src/content/blog/
-  const blogDir = join(rootDir, 'src', 'content', 'blog');
-  if (existsSync(blogDir)) {
-    const files = readdirSync(blogDir).filter((f) => f.endsWith('.mdx') || f.endsWith('.md'));
-    for (const file of files) {
-      const slug = file.replace(/\.mdx?$/, '');
-      const rawContent = readFileSync(join(blogDir, file), 'utf8');
-      const { metadata, content } = parseFrontmatter(rawContent);
-
-      if (metadata.title) {
-        postsMap.set(slug, {
-          slug,
-          title: metadata.title,
-          excerpt: metadata.excerpt ?? '',
-          content: content ?? '',
-          publishedAt: metadata.publishedAt || metadata.date,
-          author: resolveAuthorName(metadata.author),
-          tags: parseTags(metadata.tags),
-          url: metadata.url ?? `${siteUrl}/blog/${slug}`,
-        });
-      }
-    }
+  for (const entry of manifest) {
+    postsMap.set(entry.slug, toRssPost(entry));
   }
 
-  // 2. Read JSON posts from src/data/blog-posts.json
   const manifestPath = join(rootDir, 'src', 'data', 'blog-posts.json');
   if (existsSync(manifestPath)) {
     try {
@@ -112,7 +82,7 @@ export function getPosts() {
               title: post.title,
               excerpt: post.excerpt ?? '',
               content: post.content ?? '',
-              publishedAt: post.publishedAt || post.date,
+              publishedAt: post.publishedAt || post.date || '',
               author: resolveAuthorName(post.author),
               tags: parseTags(post.tags),
               url: post.url ?? `${siteUrl}/blog/${post.slug}`,
@@ -125,9 +95,11 @@ export function getPosts() {
     }
   }
 
-  return Array.from(postsMap.values())
+  postsCache = Array.from(postsMap.values())
     .filter((post) => Boolean(post.publishedAt))
     .sort((left, right) => Date.parse(right.publishedAt) - Date.parse(left.publishedAt));
+
+  return postsCache;
 }
 
 export function buildRssFeed(posts, baseUrl = siteUrl, options = {}) {
