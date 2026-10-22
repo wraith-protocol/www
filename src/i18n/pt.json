@@ -580,6 +580,70 @@
         "title": "Provedor de folha anônimo",
         "subtitle": "Pagamentos privados a prestadores"
       }
+    },
+    "/blog/tag/privacy": {
+      "title": "Privacidade",
+      "description": "Posts do Wraith Protocol sobre privacidade — endereços ocultos, design de privacidade on-chain e pagamentos privados na prática.",
+      "ogImage": {
+        "title": "Privacidade",
+        "subtitle": "Blog do Wraith Protocol"
+      }
+    },
+    "/blog/tag/stealth-payments": {
+      "title": "Pagamentos stealth",
+      "description": "Tudo sobre pagamentos stealth no Wraith Protocol — como funcionam, por que importam e como integrá-los.",
+      "ogImage": {
+        "title": "Pagamentos stealth",
+        "subtitle": "Blog do Wraith Protocol"
+      }
+    },
+    "/blog/tag/cryptography": {
+      "title": "Criptografia",
+      "description": "Análises aprofundadas dos primitivos criptográficos por trás do Wraith Protocol — ERC-5564, curvas elípticas e esquemas de endereços ocultos.",
+      "ogImage": {
+        "title": "Criptografia",
+        "subtitle": "Blog do Wraith Protocol"
+      }
+    },
+    "/blog/tag/announcements": {
+      "title": "Anúncios",
+      "description": "Anúncios oficiais da equipe do Wraith Protocol — novos lançamentos, início de ondas e novidades do ecossistema.",
+      "ogImage": {
+        "title": "Anúncios",
+        "subtitle": "Blog do Wraith Protocol"
+      }
+    },
+    "/blog/tag/sdk": {
+      "title": "SDK",
+      "description": "Atualizações, guias e notas de lançamento do SDK do Wraith Protocol.",
+      "ogImage": {
+        "title": "SDK",
+        "subtitle": "Blog do Wraith Protocol"
+      }
+    },
+    "/blog/tag/wave-6": {
+      "title": "Onda 6",
+      "description": "Wraith Protocol Onda 6 — marcos, funcionalidades entregues e atualizações da equipe.",
+      "ogImage": {
+        "title": "Onda 6",
+        "subtitle": "Blog do Wraith Protocol"
+      }
+    },
+    "/blog/tag/wave-7": {
+      "title": "Onda 7",
+      "description": "Wraith Protocol Onda 7 — marcos, funcionalidades entregues e atualizações da equipe.",
+      "ogImage": {
+        "title": "Onda 7",
+        "subtitle": "Blog do Wraith Protocol"
+      }
+    },
+    "/blog/author/lena-vogt": {
+      "title": "Lena Vogt",
+      "description": "Posts de Lena Vogt — pesquisadora de criptografia no Wraith Protocol focada em esquemas de endereços stealth e pagamentos de conhecimento zero.",
+      "ogImage": {
+        "title": "Lena Vogt",
+        "subtitle": "Blog do Wraith Protocol"
+      }
     }
   },
   "caseStudies": {

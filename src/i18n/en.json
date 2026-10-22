@@ -580,6 +580,70 @@
         "title": "Anonymous Payroll Provider",
         "subtitle": "A payroll processing platform using Wraith to enable private contractor payments, protecting recipient financial privacy across international jurisdictions."
       }
+    },
+    "/blog/tag/privacy": {
+      "title": "Privacy",
+      "description": "Wraith Protocol posts about privacy — stealth addresses, on-chain privacy design, and practical private payments.",
+      "ogImage": {
+        "title": "Privacy",
+        "subtitle": "Wraith Protocol Blog"
+      }
+    },
+    "/blog/tag/stealth-payments": {
+      "title": "Stealth Payments",
+      "description": "Everything about stealth payments on Wraith Protocol — how they work, why they matter, and how to integrate them.",
+      "ogImage": {
+        "title": "Stealth Payments",
+        "subtitle": "Wraith Protocol Blog"
+      }
+    },
+    "/blog/tag/cryptography": {
+      "title": "Cryptography",
+      "description": "Deep dives into the cryptographic primitives behind Wraith Protocol — ERC-5564, elliptic curves, and stealth address schemes.",
+      "ogImage": {
+        "title": "Cryptography",
+        "subtitle": "Wraith Protocol Blog"
+      }
+    },
+    "/blog/tag/announcements": {
+      "title": "Announcements",
+      "description": "Official announcements from the Wraith Protocol team — new releases, wave kick-offs, and ecosystem news.",
+      "ogImage": {
+        "title": "Announcements",
+        "subtitle": "Wraith Protocol Blog"
+      }
+    },
+    "/blog/tag/sdk": {
+      "title": "SDK",
+      "description": "Updates, guides, and release notes for the Wraith Protocol SDK.",
+      "ogImage": {
+        "title": "SDK",
+        "subtitle": "Wraith Protocol Blog"
+      }
+    },
+    "/blog/tag/wave-6": {
+      "title": "Wave 6",
+      "description": "Wraith Protocol Wave 6 — milestones, shipped features, and team updates.",
+      "ogImage": {
+        "title": "Wave 6",
+        "subtitle": "Wraith Protocol Blog"
+      }
+    },
+    "/blog/tag/wave-7": {
+      "title": "Wave 7",
+      "description": "Wraith Protocol Wave 7 — milestones, shipped features, and team updates.",
+      "ogImage": {
+        "title": "Wave 7",
+        "subtitle": "Wraith Protocol Blog"
+      }
+    },
+    "/blog/author/lena-vogt": {
+      "title": "Lena Vogt",
+      "description": "Posts by Lena Vogt — cryptography researcher at Wraith Protocol focused on stealth address schemes and zero-knowledge payments.",
+      "ogImage": {
+        "title": "Lena Vogt",
+        "subtitle": "Wraith Protocol Blog"
+      }
     }
   },
   "caseStudies": {

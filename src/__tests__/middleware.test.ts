@@ -124,8 +124,8 @@ describe('middleware: non-indexable routes', () => {
     expect(response).toBeUndefined();
   });
 
-  it('bypasses bot requests for blog tag and author routes', async () => {
-    for (const path of ['/blog/tag/wave-7', '/blog/author/lena-vogt']) {
+  it('bypasses bot requests for blog tag and author routes with unknown slugs', async () => {
+    for (const path of ['/blog/tag/nonexistent-tag', '/blog/author/wraith-team']) {
       const { response } = await makeRequest(
         path,
         'TwitterBot/1.0',
@@ -704,5 +704,66 @@ describe('middleware: HTML escaping', () => {
     metaTags!.forEach((tag) => {
       expect(tag).not.toMatch(/<script/i);
     });
+  });
+});
+
+describe('middleware: blog archive routes', () => {
+  beforeEach(() => vi.clearAllMocks());
+
+  it('injects metadata for a known tag archive route', async () => {
+    const { response } = await makeRequest(
+      '/blog/tag/privacy',
+      'TwitterBot/1.0',
+      '<html lang="en"><head><title>X</title></head></html>',
+    );
+    expect(response).not.toBeUndefined();
+    const html = await response!.text();
+    expect(html).toContain('Privacy');
+    expect(html).toContain('https://usewraith.xyz/blog/tag/privacy');
+    expect(html).toContain('og/blog-tag-privacy.png');
+  });
+
+  it('injects metadata for a known author archive route', async () => {
+    const { response } = await makeRequest(
+      '/blog/author/lena-vogt',
+      'TwitterBot/1.0',
+      '<html lang="en"><head><title>X</title></head></html>',
+    );
+    expect(response).not.toBeUndefined();
+    const html = await response!.text();
+    expect(html).toContain('Lena Vogt');
+    expect(html).toContain('https://usewraith.xyz/blog/author/lena-vogt');
+    expect(html).toContain('og/blog-author-lena-vogt.png');
+  });
+
+  it('bypasses bot for unknown tag routes', async () => {
+    const { response } = await makeRequest(
+      '/blog/tag/nonexistent-tag',
+      'TwitterBot/1.0',
+      '<html lang="en"><head></head></html>',
+    );
+    expect(response).toBeUndefined();
+  });
+
+  it('bypasses bot for opted-out author routes', async () => {
+    const { response } = await makeRequest(
+      '/blog/author/wraith-team',
+      'TwitterBot/1.0',
+      '<html lang="en"><head></head></html>',
+    );
+    expect(response).toBeUndefined();
+  });
+
+  it('injects localized metadata for localized tag archive route', async () => {
+    const { response } = await makeRequest(
+      '/es/blog/tag/privacy',
+      'TwitterBot/1.0',
+      '<html lang="en"><head><title>X</title></head></html>',
+    );
+    expect(response).not.toBeUndefined();
+    const html = await response!.text();
+    expect(html).toContain('og/es-blog-tag-privacy.png');
+    expect(html).toContain('og:locale" content="es_ES');
+    expect(html).toContain('https://usewraith.xyz/es/blog/tag/privacy');
   });
 });

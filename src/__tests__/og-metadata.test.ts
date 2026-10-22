@@ -167,9 +167,20 @@ describe('og-metadata: dynamic routes', () => {
     expect(resolveRouteMetadata('/pt/case-studies/nonexistent')).toBeNull();
   });
 
-  it('does not treat blog tag or author routes as posts', () => {
-    expect(resolveRouteMetadata('/blog/tag/wave-7')).toBeNull();
-    expect(resolveRouteMetadata('/blog/author/lena-vogt')).toBeNull();
+  it('does not treat blog tag or author routes as blog posts (ogType is website, not article)', () => {
+    const tag = resolveRouteMetadata('/blog/tag/wave-7');
+    expect(tag).not.toBeNull();
+    expect(tag!.ogType).toBe('website');
+
+    const author = resolveRouteMetadata('/blog/author/lena-vogt');
+    expect(author).not.toBeNull();
+    expect(author!.ogType).toBe('website');
+  });
+
+  it('returns null for unknown tag and author routes', () => {
+    expect(resolveRouteMetadata('/blog/tag/nonexistent-tag')).toBeNull();
+    expect(resolveRouteMetadata('/blog/author/opted-out-author')).toBeNull();
+    expect(resolveRouteMetadata('/blog/author/wraith-team')).toBeNull();
   });
 });
 
@@ -553,9 +564,10 @@ describe('og-metadata: route indexability', () => {
     expect(isIndexableRoute('/pt/case-studies/nonexistent')).toBe(false);
   });
 
-  it('rejects blog tag and author routes', () => {
-    expect(isIndexableRoute('/blog/tag/wave-7')).toBe(false);
-    expect(isIndexableRoute('/blog/author/lena-vogt')).toBe(false);
+  it('rejects blog tag and author routes for unknown slugs', () => {
+    expect(isIndexableRoute('/blog/tag/nonexistent-tag')).toBe(false);
+    expect(isIndexableRoute('/blog/author/wraith-team')).toBe(false);
+    expect(isIndexableRoute('/blog/author/opted-out-author')).toBe(false);
   });
 
   it('identifies non-indexable routes', () => {
@@ -741,5 +753,199 @@ describe('og-metadata: localized dynamic content', () => {
         );
       }
     }
+  });
+});
+
+describe('og-metadata: blog tag archive routes', () => {
+  // Known tags derived from blog-manifest.json
+  const KNOWN_TAGS = [
+    'privacy',
+    'stealth-payments',
+    'cryptography',
+    'announcements',
+    'wave-7',
+    'wave-6',
+    'sdk',
+  ];
+
+  it('resolves metadata for every known tag slug', () => {
+    for (const tag of KNOWN_TAGS) {
+      const meta = resolveRouteMetadata(`/blog/tag/${tag}`);
+      expect(meta, `/blog/tag/${tag} must resolve`).not.toBeNull();
+      expect(meta!.ogType).toBe('website');
+      expect(meta!.title).toContain('Wraith Protocol');
+      expect(meta!.description).toBeTruthy();
+      expect(meta!.ogUrl).toBe(`https://usewraith.xyz/blog/tag/${tag}`);
+    }
+  });
+
+  it('resolves localized metadata for known tag routes', () => {
+    const enMeta = resolveRouteMetadata('/blog/tag/privacy');
+    const esMeta = resolveRouteMetadata('/es/blog/tag/privacy');
+    const ptMeta = resolveRouteMetadata('/pt/blog/tag/privacy');
+
+    expect(enMeta).not.toBeNull();
+    expect(esMeta).not.toBeNull();
+    expect(ptMeta).not.toBeNull();
+
+    expect(enMeta!.locale).toBe('en');
+    expect(esMeta!.locale).toBe('es');
+    expect(ptMeta!.locale).toBe('pt');
+
+    expect(esMeta!.ogUrl).toBe('https://usewraith.xyz/es/blog/tag/privacy');
+    expect(ptMeta!.ogUrl).toBe('https://usewraith.xyz/pt/blog/tag/privacy');
+
+    // Localized copy is different from English
+    expect(esMeta!.title).not.toBe(enMeta!.title);
+    expect(ptMeta!.title).not.toBe(enMeta!.title);
+    expect(esMeta!.description).not.toBe(enMeta!.description);
+    expect(ptMeta!.description).not.toBe(enMeta!.description);
+  });
+
+  it('returns null for unknown tag slugs', () => {
+    expect(resolveRouteMetadata('/blog/tag/nonexistent-tag')).toBeNull();
+    expect(resolveRouteMetadata('/es/blog/tag/nonexistent-tag')).toBeNull();
+  });
+
+  it('marks known tag routes as indexable', () => {
+    for (const tag of KNOWN_TAGS) {
+      expect(isIndexableRoute(`/blog/tag/${tag}`), `/blog/tag/${tag} must be indexable`).toBe(true);
+    }
+  });
+
+  it('marks unknown tag routes as non-indexable', () => {
+    expect(isIndexableRoute('/blog/tag/nonexistent-tag')).toBe(false);
+  });
+
+  it('marks localized known tag routes as indexable', () => {
+    expect(isIndexableRoute('/es/blog/tag/privacy')).toBe(true);
+    expect(isIndexableRoute('/pt/blog/tag/stealth-payments')).toBe(true);
+  });
+
+  it('generates OG image slugs for known tag routes', () => {
+    expect(ogImageSlugFor('/blog/tag/privacy', 'en')).toBe('blog-tag-privacy');
+    expect(ogImageSlugFor('/blog/tag/wave-7', 'en')).toBe('blog-tag-wave-7');
+    expect(ogImageSlugFor('/es/blog/tag/privacy', 'es')).toBe('es-blog-tag-privacy');
+    expect(ogImageSlugFor('/pt/blog/tag/stealth-payments', 'pt')).toBe(
+      'pt-blog-tag-stealth-payments',
+    );
+  });
+
+  it('returns null OG image slug for unknown tag routes', () => {
+    expect(ogImageSlugFor('/blog/tag/nonexistent-tag', 'en')).toBeNull();
+  });
+
+  it('includes tag archive jobs in listOgImageJobs', () => {
+    const jobs = listOgImageJobs();
+    for (const tag of KNOWN_TAGS) {
+      for (const locale of SUPPORTED_LOCALES) {
+        const job = jobs.find((j) => j.routePath === `/blog/tag/${tag}` && j.locale === locale);
+        expect(job, `/blog/tag/${tag} (${locale}) must have an OG image job`).toBeDefined();
+        expect(job!.file).toMatch(
+          locale === 'en' ? /^blog-tag-/ : new RegExp(`^${locale}-blog-tag-`),
+        );
+        expect(job!.title).toBeTruthy();
+        expect(job!.description).toBeTruthy();
+      }
+    }
+  });
+
+  it('tag archive jobs have localized copy distinct from English', () => {
+    const jobs = listOgImageJobs();
+    const byLocale = (tag: string, locale: Locale) =>
+      jobs.find((j) => j.routePath === `/blog/tag/${tag}` && j.locale === locale)!;
+
+    expect(byLocale('privacy', 'es').title).not.toBe(byLocale('privacy', 'en').title);
+    expect(byLocale('privacy', 'pt').title).not.toBe(byLocale('privacy', 'en').title);
+    expect(byLocale('privacy', 'es').description).not.toBe(byLocale('privacy', 'en').description);
+  });
+});
+
+describe('og-metadata: blog author archive routes', () => {
+  it('resolves metadata for a known opted-in author', () => {
+    const meta = resolveRouteMetadata('/blog/author/lena-vogt');
+    expect(meta).not.toBeNull();
+    expect(meta!.ogType).toBe('website');
+    expect(meta!.title).toContain('Wraith Protocol');
+    expect(meta!.title).toContain('Lena Vogt');
+    expect(meta!.description).toBeTruthy();
+    expect(meta!.ogUrl).toBe('https://usewraith.xyz/blog/author/lena-vogt');
+  });
+
+  it('resolves localized metadata for known author routes', () => {
+    const enMeta = resolveRouteMetadata('/blog/author/lena-vogt');
+    const esMeta = resolveRouteMetadata('/es/blog/author/lena-vogt');
+    const ptMeta = resolveRouteMetadata('/pt/blog/author/lena-vogt');
+
+    expect(esMeta).not.toBeNull();
+    expect(ptMeta).not.toBeNull();
+
+    expect(esMeta!.locale).toBe('es');
+    expect(ptMeta!.locale).toBe('pt');
+
+    expect(esMeta!.ogUrl).toBe('https://usewraith.xyz/es/blog/author/lena-vogt');
+    expect(ptMeta!.ogUrl).toBe('https://usewraith.xyz/pt/blog/author/lena-vogt');
+
+    expect(esMeta!.description).not.toBe(enMeta!.description);
+    expect(ptMeta!.description).not.toBe(enMeta!.description);
+  });
+
+  it('returns null for opted-out authors', () => {
+    // wraith-team has optIn: false
+    expect(resolveRouteMetadata('/blog/author/wraith-team')).toBeNull();
+  });
+
+  it('returns null for unknown author ids', () => {
+    expect(resolveRouteMetadata('/blog/author/nonexistent-author')).toBeNull();
+    expect(resolveRouteMetadata('/es/blog/author/nonexistent-author')).toBeNull();
+  });
+
+  it('marks known opted-in author routes as indexable', () => {
+    expect(isIndexableRoute('/blog/author/lena-vogt')).toBe(true);
+    expect(isIndexableRoute('/es/blog/author/lena-vogt')).toBe(true);
+    expect(isIndexableRoute('/pt/blog/author/lena-vogt')).toBe(true);
+  });
+
+  it('marks opted-out and unknown author routes as non-indexable', () => {
+    expect(isIndexableRoute('/blog/author/wraith-team')).toBe(false);
+    expect(isIndexableRoute('/blog/author/nonexistent-author')).toBe(false);
+  });
+
+  it('generates OG image slugs for known author routes', () => {
+    expect(ogImageSlugFor('/blog/author/lena-vogt', 'en')).toBe('blog-author-lena-vogt');
+    expect(ogImageSlugFor('/es/blog/author/lena-vogt', 'es')).toBe('es-blog-author-lena-vogt');
+    expect(ogImageSlugFor('/pt/blog/author/lena-vogt', 'pt')).toBe('pt-blog-author-lena-vogt');
+  });
+
+  it('returns null OG image slug for non-indexable author routes', () => {
+    expect(ogImageSlugFor('/blog/author/wraith-team', 'en')).toBeNull();
+    expect(ogImageSlugFor('/blog/author/nonexistent-author', 'en')).toBeNull();
+  });
+
+  it('includes author archive jobs in listOgImageJobs', () => {
+    const jobs = listOgImageJobs();
+    for (const locale of SUPPORTED_LOCALES) {
+      const job = jobs.find((j) => j.routePath === '/blog/author/lena-vogt' && j.locale === locale);
+      expect(job, `lena-vogt (${locale}) must have an OG image job`).toBeDefined();
+      expect(job!.file).toMatch(
+        locale === 'en' ? /^blog-author-/ : new RegExp(`^${locale}-blog-author-`),
+      );
+      expect(job!.title).toContain('Lena Vogt');
+    }
+  });
+
+  it('does not include opted-out author jobs in listOgImageJobs', () => {
+    const jobs = listOgImageJobs();
+    const wraith = jobs.filter((j) => j.routePath === '/blog/author/wraith-team');
+    expect(wraith).toHaveLength(0);
+  });
+
+  it('author archive jobs have localized copy distinct from English', () => {
+    const jobs = listOgImageJobs();
+    const byLocale = (locale: Locale) =>
+      jobs.find((j) => j.routePath === '/blog/author/lena-vogt' && j.locale === locale)!;
+
+    expect(byLocale('es').description).not.toBe(byLocale('en').description);
+    expect(byLocale('pt').description).not.toBe(byLocale('en').description);
   });
 });

@@ -5,6 +5,7 @@
     "excerpt": "A look at the cryptography behind stealth addresses and why every Wraith payment lands on a fresh one-time address that cannot be linked to the recipient.",
     "date": "2026-08-12",
     "author": "lena-vogt",
+    "tags": ["cryptography", "stealth-payments", "privacy"],
     "url": "https://usewraith.xyz/blog/stealth-addresses-explained"
   },
   {
@@ -13,6 +14,7 @@
     "excerpt": "Announcing the start of Wave 7 alongside a recap of Wave 6 milestones: EVM stealth transactions, SDK v1.4 release, Stellar ecosystem integrations, and TEE privacy enhancements.",
     "date": "2026-07-27",
     "author": "wraith-team",
+    "tags": ["announcements", "wave-7", "wave-6", "stealth-payments", "sdk"],
     "url": "https://usewraith.xyz/blog/wave-7-kickoff"
   },
   {
@@ -21,6 +23,7 @@
     "excerpt": "How Wraith makes private payments practical for everyday apps.",
     "date": "2026-07-20",
     "author": "Wraith Protocol Team",
+    "tags": ["privacy", "stealth-payments"],
     "url": "https://usewraith.xyz/blog/privacy-by-default"
   }
 ]
