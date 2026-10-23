@@ -254,7 +254,7 @@ export default function Security() {
             Security Audits
           </h2>
           <div className="rounded border border-outline-variant bg-surface-container p-6">
-            <div className="mb-6 grid gap-4 sm:grid-cols-2">
+            <dl className="mb-6 grid gap-4 sm:grid-cols-2">
               <div>
                 <dt className="font-mono text-xs font-semibold uppercase tracking-wider text-outline">
                   Last Completed
@@ -285,7 +285,7 @@ export default function Security() {
                 </dt>
                 <dd className="mt-1 font-body text-base text-on-surface">{audits.nextScheduled}</dd>
               </div>
-            </div>
+            </dl>
             <a
               href={audits.reports}
               {...newTab(audits.reports)}
@@ -306,7 +306,7 @@ export default function Security() {
               <span
                 className={`rounded px-3 py-1 font-mono text-xs font-semibold uppercase tracking-wider ${
                   bounty.status === 'active'
-                    ? 'bg-[#22c55e]/15 text-[#22c55e]'
+                    ? 'bg-[#22c55e]/15 text-[#166534]'
                     : 'bg-outline/15 text-outline'
                 }`}
               >

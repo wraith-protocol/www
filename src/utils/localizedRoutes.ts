@@ -1,17 +1,20 @@
 /**
+ * Helpers for locale-prefixed routes (/es/*, /pt/*).
+ *
+ * The canonical list of which routes have localized variants is owned by
+ * src/routes/inventory.ts — specifically the `localized` flag on each entry.
+ * This module re-exports a Set view of those paths for use in the router
+ * helpers (useLocalePath.ts) and in scripts/og.ts.
+ */
+import { localizedBasePaths } from '../routes/inventory';
+
+/**
  * Routes that exist under the locale prefixes (/es/*, /pt/*).
  *
- * Shared by the router helpers in src/hooks/useLocalePath.ts and by
- * scripts/og.ts, which must only emit hreflang alternates for these routes.
- * Keep it in sync with the locale-prefixed routes in App.tsx.
+ * Derived from the `localized: true` entries in src/routes/inventory.ts.
+ * Keep that file in sync with the locale-prefixed <Route> entries in App.tsx.
  */
-export const LOCALIZED_BASE_PATHS = new Set<string>([
-  '/',
-  '/stellar',
-  '/grants',
-  '/blog',
-  '/case-studies',
-]);
+export const LOCALIZED_BASE_PATHS: Set<string> = localizedBasePaths();
 
 /**
  * Checks if a given path has a localized version.

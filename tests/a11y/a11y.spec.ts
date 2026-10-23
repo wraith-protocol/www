@@ -1,23 +1,45 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import { readFileSync } from 'node:fs';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const pages = [
-  { path: '/', name: 'homepage' },
-  { path: '/faq', name: 'FAQ' },
-  { path: '/roadmap', name: 'roadmap' },
-  { path: '/privacy', name: 'privacy policy' },
-  { path: '/use-cases', name: 'use cases' },
-  { path: '/use-cases/calculator', name: 'payment cost calculator' },
-  { path: '/stellar', name: 'Stellar page' },
-  { path: '/case-studies', name: 'case studies list' },
-  { path: '/case-studies/payroll-processor', name: 'case study detail' },
-  { path: '/nonexistent-page', name: '404 not found' },
-];
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const rootDir = join(__dirname, '..', '..');
 
-for (const { path, name } of pages) {
+/**
+ * Load the a11y route list from the pre-generated routes snapshot.
+ * The snapshot is written by `scripts/gen-routes-snapshot.ts` as part of
+ * `pnpm build`, so it is always present when Playwright runs against a build.
+ */
+function loadA11yRoutes(): Array<{ path: string; label: string }> {
+  const snapshotPath = join(rootDir, 'scripts', 'routes-snapshot.json');
+  try {
+    const snapshot = JSON.parse(readFileSync(snapshotPath, 'utf8'));
+    if (Array.isArray(snapshot.a11yRoutes)) {
+      return snapshot.a11yRoutes;
+    }
+  } catch {
+    // fall through to inline fallback
+  }
+  // Inline fallback so the suite can still run without a build
+  return [
+    { path: '/', label: 'homepage' },
+    { path: '/faq', label: 'FAQ' },
+    { path: '/stellar', label: 'Stellar page' },
+    { path: '/nonexistent-page', label: '404 not found' },
+  ];
+}
+
+const pages = loadA11yRoutes();
+
+for (const { path, name } of pages.map((p) => ({ path: p.path, name: p.label }))) {
   test(`has zero critical/serious axe violations on ${name}`, async ({ page }) => {
     await page.goto(path);
     await page.waitForLoadState('domcontentloaded');
+    // Wait for the page <title> to be populated by Helmet before running axe,
+    // so document-title violations are not triggered by lazy-load timing.
+    await page.waitForFunction(() => document.title.length > 0, { timeout: 5_000 }).catch(() => {});
 
     const results = await new AxeBuilder({ page }).analyze();
     const critical = results.violations.filter(

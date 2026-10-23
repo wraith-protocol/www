@@ -1,0 +1,461 @@
+{
+  "staticPaths": [
+    "/",
+    "/faq",
+    "/privacy",
+    "/terms",
+    "/press",
+    "/newsletter",
+    "/use-cases",
+    "/use-cases/calculator",
+    "/roadmap",
+    "/case-studies",
+    "/stellar",
+    "/careers",
+    "/grants",
+    "/about",
+    "/governance",
+    "/contributors",
+    "/blog",
+    "/chains",
+    "/ecosystem",
+    "/security",
+    "/threat-model",
+    "/vitals",
+    "/status"
+  ],
+  "localizedBasePaths": ["/", "/case-studies", "/stellar", "/grants", "/blog"],
+  "smokeRoutes": [
+    {
+      "path": "/",
+      "label": "homepage"
+    },
+    {
+      "path": "/faq",
+      "label": "FAQ"
+    },
+    {
+      "path": "/use-cases",
+      "label": "use cases"
+    },
+    {
+      "path": "/stellar",
+      "label": "Stellar page"
+    }
+  ],
+  "a11yRoutes": [
+    {
+      "path": "/",
+      "label": "homepage"
+    },
+    {
+      "path": "/faq",
+      "label": "FAQ"
+    },
+    {
+      "path": "/privacy",
+      "label": "privacy policy"
+    },
+    {
+      "path": "/terms",
+      "label": "terms of service"
+    },
+    {
+      "path": "/press",
+      "label": "press"
+    },
+    {
+      "path": "/newsletter",
+      "label": "newsletter"
+    },
+    {
+      "path": "/use-cases",
+      "label": "use cases"
+    },
+    {
+      "path": "/use-cases/calculator",
+      "label": "payment cost calculator"
+    },
+    {
+      "path": "/roadmap",
+      "label": "roadmap"
+    },
+    {
+      "path": "/case-studies",
+      "label": "case studies list"
+    },
+    {
+      "path": "/stellar",
+      "label": "Stellar page"
+    },
+    {
+      "path": "/careers",
+      "label": "careers"
+    },
+    {
+      "path": "/grants",
+      "label": "grants"
+    },
+    {
+      "path": "/about",
+      "label": "about"
+    },
+    {
+      "path": "/governance",
+      "label": "governance"
+    },
+    {
+      "path": "/contributors",
+      "label": "contributors"
+    },
+    {
+      "path": "/blog",
+      "label": "blog listing"
+    },
+    {
+      "path": "/chains",
+      "label": "chains"
+    },
+    {
+      "path": "/ecosystem",
+      "label": "ecosystem"
+    },
+    {
+      "path": "/security",
+      "label": "security"
+    },
+    {
+      "path": "/threat-model",
+      "label": "threat model"
+    },
+    {
+      "path": "/vitals",
+      "label": "vitals"
+    },
+    {
+      "path": "/status",
+      "label": "status"
+    },
+    {
+      "path": "/blog/stealth-addresses-explained",
+      "label": "blog post detail"
+    },
+    {
+      "path": "/case-studies/payroll-processor",
+      "label": "case study detail"
+    },
+    {
+      "path": "/nonexistent-page",
+      "label": "404 not found"
+    }
+  ],
+  "lighthouseRoutes": [
+    {
+      "path": "/",
+      "label": "homepage"
+    },
+    {
+      "path": "/stellar",
+      "label": "Stellar page"
+    }
+  ],
+  "staticRoutes": [
+    {
+      "path": "/",
+      "label": "homepage",
+      "localized": true,
+      "policy": {
+        "smoke": true,
+        "a11y": true,
+        "lighthouse": true
+      }
+    },
+    {
+      "path": "/faq",
+      "label": "FAQ",
+      "localized": false,
+      "policy": {
+        "smoke": true,
+        "a11y": true,
+        "lighthouse": false
+      }
+    },
+    {
+      "path": "/privacy",
+      "label": "privacy policy",
+      "localized": false,
+      "policy": {
+        "smoke": false,
+        "a11y": true,
+        "lighthouse": false
+      }
+    },
+    {
+      "path": "/terms",
+      "label": "terms of service",
+      "localized": false,
+      "policy": {
+        "smoke": false,
+        "a11y": true,
+        "lighthouse": false
+      }
+    },
+    {
+      "path": "/press",
+      "label": "press",
+      "localized": false,
+      "policy": {
+        "smoke": false,
+        "a11y": true,
+        "lighthouse": false
+      }
+    },
+    {
+      "path": "/newsletter",
+      "label": "newsletter",
+      "localized": false,
+      "policy": {
+        "smoke": false,
+        "a11y": true,
+        "lighthouse": false
+      }
+    },
+    {
+      "path": "/use-cases",
+      "label": "use cases",
+      "localized": false,
+      "policy": {
+        "smoke": true,
+        "a11y": true,
+        "lighthouse": false
+      }
+    },
+    {
+      "path": "/use-cases/calculator",
+      "label": "payment cost calculator",
+      "localized": false,
+      "policy": {
+        "smoke": false,
+        "a11y": true,
+        "lighthouse": false
+      }
+    },
+    {
+      "path": "/roadmap",
+      "label": "roadmap",
+      "localized": false,
+      "policy": {
+        "smoke": false,
+        "a11y": true,
+        "lighthouse": false
+      }
+    },
+    {
+      "path": "/case-studies",
+      "label": "case studies list",
+      "localized": true,
+      "policy": {
+        "smoke": false,
+        "a11y": true,
+        "lighthouse": false
+      }
+    },
+    {
+      "path": "/stellar",
+      "label": "Stellar page",
+      "localized": true,
+      "policy": {
+        "smoke": true,
+        "a11y": true,
+        "lighthouse": true
+      }
+    },
+    {
+      "path": "/careers",
+      "label": "careers",
+      "localized": false,
+      "policy": {
+        "smoke": false,
+        "a11y": true,
+        "lighthouse": false
+      }
+    },
+    {
+      "path": "/grants",
+      "label": "grants",
+      "localized": true,
+      "policy": {
+        "smoke": false,
+        "a11y": true,
+        "lighthouse": false
+      }
+    },
+    {
+      "path": "/about",
+      "label": "about",
+      "localized": false,
+      "policy": {
+        "smoke": false,
+        "a11y": true,
+        "lighthouse": false
+      }
+    },
+    {
+      "path": "/governance",
+      "label": "governance",
+      "localized": false,
+      "policy": {
+        "smoke": false,
+        "a11y": true,
+        "lighthouse": false
+      }
+    },
+    {
+      "path": "/contributors",
+      "label": "contributors",
+      "localized": false,
+      "policy": {
+        "smoke": false,
+        "a11y": true,
+        "lighthouse": false
+      }
+    },
+    {
+      "path": "/blog",
+      "label": "blog listing",
+      "localized": true,
+      "policy": {
+        "smoke": false,
+        "a11y": true,
+        "lighthouse": false
+      }
+    },
+    {
+      "path": "/chains",
+      "label": "chains",
+      "localized": false,
+      "policy": {
+        "smoke": false,
+        "a11y": true,
+        "lighthouse": false
+      }
+    },
+    {
+      "path": "/ecosystem",
+      "label": "ecosystem",
+      "localized": false,
+      "policy": {
+        "smoke": false,
+        "a11y": true,
+        "lighthouse": false
+      }
+    },
+    {
+      "path": "/security",
+      "label": "security",
+      "localized": false,
+      "policy": {
+        "smoke": false,
+        "a11y": true,
+        "lighthouse": false
+      }
+    },
+    {
+      "path": "/threat-model",
+      "label": "threat model",
+      "localized": false,
+      "policy": {
+        "smoke": false,
+        "a11y": true,
+        "lighthouse": false
+      }
+    },
+    {
+      "path": "/vitals",
+      "label": "vitals",
+      "localized": false,
+      "policy": {
+        "smoke": false,
+        "a11y": true,
+        "lighthouse": false
+      }
+    },
+    {
+      "path": "/status",
+      "label": "status",
+      "localized": false,
+      "policy": {
+        "smoke": false,
+        "a11y": true,
+        "lighthouse": false
+      }
+    }
+  ],
+  "dynamicRouteFamilies": [
+    {
+      "pattern": "/blog/:slug",
+      "label": "blog post",
+      "localized": true,
+      "policy": {
+        "smoke": false,
+        "a11y": true,
+        "lighthouse": false
+      },
+      "samples": [
+        {
+          "path": "/blog/stealth-addresses-explained",
+          "label": "blog post detail"
+        }
+      ]
+    },
+    {
+      "pattern": "/blog/tag/:tagSlug",
+      "label": "blog tag archive",
+      "localized": true,
+      "policy": {
+        "smoke": false,
+        "a11y": false,
+        "lighthouse": false
+      },
+      "samples": []
+    },
+    {
+      "pattern": "/blog/author/:authorId",
+      "label": "blog author archive",
+      "localized": true,
+      "policy": {
+        "smoke": false,
+        "a11y": false,
+        "lighthouse": false
+      },
+      "samples": []
+    },
+    {
+      "pattern": "/case-studies/:slug",
+      "label": "case study detail",
+      "localized": true,
+      "policy": {
+        "smoke": false,
+        "a11y": true,
+        "lighthouse": false
+      },
+      "samples": [
+        {
+          "path": "/case-studies/payroll-processor",
+          "label": "case study detail"
+        }
+      ]
+    }
+  ],
+  "specialRoutes": [
+    {
+      "pattern": "*",
+      "label": "404 not found",
+      "policy": {
+        "smoke": false,
+        "a11y": true,
+        "lighthouse": false
+      }
+    }
+  ]
+}

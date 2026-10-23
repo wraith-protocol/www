@@ -10,26 +10,43 @@ const publicDir = join(rootDir, 'public');
 const siteUrl = 'https://usewraith.xyz';
 
 /**
- * Known static application routes
+ * Load the static route list from the pre-generated snapshot so this plain-JS
+ * script doesn't need to import TypeScript. The snapshot is written by
+ * `scripts/gen-routes-snapshot.ts` which runs before this script in the build.
  */
-const knownRoutes = [
-  '/',
-  '/faq',
-  '/privacy',
-  '/use-cases',
-  '/roadmap',
-  '/case-studies',
-  '/stellar',
-  '/careers',
-  '/press',
-];
+function loadStaticPaths() {
+  const snapshotPath = join(rootDir, 'scripts', 'routes-snapshot.json');
+  if (!existsSync(snapshotPath)) {
+    console.warn(
+      'routes-snapshot.json not found — run `tsx scripts/gen-routes-snapshot.ts` first. ' +
+        'Falling back to empty static path list.',
+    );
+    return [];
+  }
+  try {
+    const snapshot = JSON.parse(readFileSync(snapshotPath, 'utf8'));
+    return Array.isArray(snapshot.staticPaths) ? snapshot.staticPaths : [];
+  } catch (err) {
+    console.warn('Could not parse routes-snapshot.json:', err.message);
+    return [];
+  }
+}
 
 /**
  * Pages that have locale-prefixed alternates.
- * Must stay in sync with LOCALE_URL_PREFIX in src/utils/seo.ts and the
- * locale-prefixed <Route> entries in App.tsx.
+ * Read from the snapshot so this file stays in sync automatically.
  */
-const LOCALE_PREFIXED_PAGES = ['/', '/stellar', '/grants', '/blog', '/case-studies'];
+function loadLocalizedBasePaths() {
+  const snapshotPath = join(rootDir, 'scripts', 'routes-snapshot.json');
+  if (!existsSync(snapshotPath)) return ['/', '/stellar', '/grants', '/blog', '/case-studies'];
+  try {
+    const snapshot = JSON.parse(readFileSync(snapshotPath, 'utf8'));
+    return Array.isArray(snapshot.localizedBasePaths) ? snapshot.localizedBasePaths : [];
+  } catch {
+    return [];
+  }
+}
+
 const SUPPORTED_LOCALE_PREFIXES = ['/es', '/pt'];
 
 /**
@@ -125,13 +142,16 @@ function getBlogTagRoutes() {
 
 function generateSitemap() {
   try {
+    const knownRoutes = loadStaticPaths();
+    const localizedPages = loadLocalizedBasePaths();
+
     const csRoutes = getCaseStudyRoutes();
     const distRoutes = existsSync(distDir) ? getDistRoutes(distDir) : [];
     const tagRoutes = getBlogTagRoutes();
 
     // Build locale-prefixed alternates for pages that have translations.
     const localeRoutes = SUPPORTED_LOCALE_PREFIXES.flatMap((prefix) =>
-      LOCALE_PREFIXED_PAGES.map((page) => (page === '/' ? prefix : `${prefix}${page}`)),
+      localizedPages.map((page) => (page === '/' ? prefix : `${prefix}${page}`)),
     );
 
     const allRoutes = Array.from(

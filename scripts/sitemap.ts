@@ -2,6 +2,7 @@ import { writeFileSync, readFileSync, readdirSync, statSync, existsSync } from '
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { slugifyTag, parseTags } from './feed-utils.mjs';
+import { allStaticPaths } from '../src/routes/inventory.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const rootDir = join(__dirname, '..');
@@ -9,19 +10,11 @@ const distDir = join(rootDir, 'dist');
 const publicDir = join(rootDir, 'public');
 const siteUrl = 'https://usewraith.xyz';
 
-const knownRoutes = [
-  '/',
-  '/faq',
-  '/privacy',
-  '/use-cases',
-  '/use-cases/calculator',
-  '/roadmap',
-  '/case-studies',
-  '/stellar',
-  '/careers',
-  '/press',
-  '/terms',
-];
+/**
+ * Static application routes — driven from the single route inventory.
+ * Previously this was a hand-maintained list here; it is now derived.
+ */
+const knownRoutes: string[] = allStaticPaths();
 
 function getCaseStudyRoutes(): string[] {
   const routes: string[] = [];

@@ -16,6 +16,7 @@ import { readFileSync, readdirSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { isIsoDate } from '../src/utils/date.ts';
+import { assertAllAppRoutesHavePolicy } from './assert-route-coverage.ts';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, '..');
@@ -1165,6 +1166,22 @@ if (i18nCount === 0) {
   console.log('  ✅  src/i18n/ — all locales match en.json shape\n');
 } else {
   console.log(`  ❌  src/i18n/ — ${i18nCount} parity issue(s)\n`);
+}
+
+// ---------------------------------------------------------------------------
+// Route inventory coverage check
+// ---------------------------------------------------------------------------
+
+console.log('🔍 Checking route inventory coverage…\n');
+try {
+  assertAllAppRoutesHavePolicy();
+  console.log('  ✅  src/routes/inventory.ts — all App.tsx routes have a quality-check policy\n');
+} catch (err) {
+  failures.push({
+    file: 'src/routes/inventory.ts',
+    record: 'route-coverage',
+    message: err instanceof Error ? err.message : String(err),
+  });
 }
 
 // ---------------------------------------------------------------------------

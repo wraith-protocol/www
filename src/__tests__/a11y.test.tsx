@@ -3,22 +3,19 @@ import userEvent from '@testing-library/user-event';
 import { axe } from 'vitest-axe';
 import { describe, expect, it } from 'vitest';
 import App from '../App';
+import { a11yRoutes } from '../routes/inventory';
 
-const pages = [
-  { path: '/', name: 'homepage' },
-  { path: '/faq', name: 'FAQ' },
-  { path: '/roadmap', name: 'roadmap' },
-  { path: '/privacy', name: 'privacy policy' },
-  { path: '/use-cases', name: 'use cases' },
-  { path: '/use-cases/calculator', name: 'payment cost calculator' },
-  { path: '/stellar', name: 'Stellar page' },
-  { path: '/case-studies', name: 'case studies list' },
-  { path: '/case-studies/payroll-processor', name: 'case study detail' },
-  { path: '/nonexistent-page', name: '404 not found' },
-];
+/**
+ * Accessibility smoke suite.
+ *
+ * The route list is driven by src/routes/inventory.ts — every route flagged
+ * a11y: true is exercised here. Add new routes to the inventory; do not add
+ * them directly in this file.
+ */
+const pages = a11yRoutes();
 
 describe('page accessibility', () => {
-  for (const { path, name } of pages) {
+  for (const { path, label: name } of pages) {
     it(`has no axe violations on the ${name} page`, async () => {
       window.history.replaceState({}, '', path);
 

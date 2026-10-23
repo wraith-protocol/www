@@ -220,8 +220,8 @@ jobs:
             const mobileManifest = JSON.parse(fs.readFileSync('.lighthouseci-mobile/manifest.json', 'utf8'));
             const desktopManifest = JSON.parse(fs.readFileSync('.lighthouseci-desktop/manifest.json', 'utf8'));
 
-            const mobile = mobileManifest[0];
-            const desktop = desktopManifest[0];
+            const snap = JSON.parse(fs.readFileSync('scripts/routes-snapshot.json', 'utf8'));
+            const base = 'http://localhost:4173';
 
             // Thresholds must stay in sync with lhci-mobile.json / lhci-desktop.json.
             // Performance is not gated in CI — GitHub-hosted runner scores vary too

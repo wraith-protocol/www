@@ -18,7 +18,7 @@ function getRatingBadge(rating: MetricRating) {
     case 'good':
       return {
         label: 'GOOD',
-        colorClass: 'border-[#22c55e]/40 bg-[#22c55e]/15 text-[#22c55e]',
+        colorClass: 'border-[#22c55e]/40 bg-[#22c55e]/15 text-[#166534]',
         dotClass: 'bg-[#22c55e]',
       };
     case 'needs-improvement':
@@ -30,7 +30,7 @@ function getRatingBadge(rating: MetricRating) {
     case 'poor':
       return {
         label: 'POOR',
-        colorClass: 'border-[#ee7d77]/40 bg-[#ee7d77]/15 text-[#ee7d77]',
+        colorClass: 'border-[#ee7d77]/40 bg-[#ee7d77]/15 text-[#9b1c1c]',
         dotClass: 'bg-[#ee7d77]',
       };
   }
@@ -104,7 +104,7 @@ export default function Vitals() {
                 className={`inline-flex items-center gap-2 border px-3 py-1 font-mono text-[11px] uppercase tracking-[1px] ${
                   dntEnabled
                     ? 'border-[#c4c7c5]/50 bg-[#c4c7c5]/10 text-[#c4c7c5]'
-                    : 'border-[#22c55e]/40 bg-[#22c55e]/15 text-[#22c55e]'
+                    : 'border-[#22c55e]/40 bg-[#22c55e]/15 text-[#166534]'
                 }`}
               >
                 <span
@@ -424,7 +424,7 @@ export default function Vitals() {
                   </span>
                   <span className="font-body text-xs text-on-surface-variant">{tile.label}</span>
                   {tile.blocked && (
-                    <span className="font-mono text-[10px] uppercase tracking-[1px] text-[#ee7d77]">
+                    <span className="font-mono text-[10px] uppercase tracking-[1px] text-[#9b1c1c]">
                       Blocked
                     </span>
                   )}

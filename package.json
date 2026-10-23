@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsx scripts/validate-content.ts && node scripts/check-sdk-size.mjs && tsc -b && vite build && node scripts/check-chunk-budget.mjs && node scripts/inline-css.js && node scripts/gen-blog-manifest.mjs && tsx scripts/og.ts && tsx scripts/sitemap.ts && node scripts/gen-rss.mjs",
+    "build": "tsx scripts/validate-content.ts && node scripts/check-sdk-size.mjs && tsc -b && vite build && node scripts/check-chunk-budget.mjs && node scripts/inline-css.js && node scripts/gen-blog-manifest.mjs && tsx scripts/og.ts && tsx scripts/sitemap.ts && node scripts/gen-rss.mjs && tsx scripts/gen-routes-snapshot.ts",
     "check:chunk-budget": "node scripts/check-chunk-budget.mjs",
     "generate:sdk-size": "node scripts/check-sdk-size.mjs --write",
     "og:generate": "tsx scripts/og.ts",

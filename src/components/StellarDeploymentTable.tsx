@@ -43,16 +43,28 @@ export default function StellarDeploymentTable() {
         </div>
 
         <div className="border border-outline-variant overflow-x-auto">
-          <table className="w-full border-collapse font-body text-[13px]">
+          <table
+            className="w-full border-collapse font-body text-[13px]"
+            aria-label="Testnet contract addresses"
+          >
             <thead>
               <tr className="border-b border-outline-variant bg-surface-container">
-                <th className="py-3 px-4 text-left font-mono text-[10px] font-semibold tracking-[1.5px] text-outline uppercase">
+                <th
+                  scope="col"
+                  className="py-3 px-4 text-left font-mono text-[10px] font-semibold tracking-[1.5px] text-outline uppercase"
+                >
                   Contract
                 </th>
-                <th className="py-3 px-4 text-left font-mono text-[10px] font-semibold tracking-[1.5px] text-outline uppercase">
+                <th
+                  scope="col"
+                  className="py-3 px-4 text-left font-mono text-[10px] font-semibold tracking-[1.5px] text-outline uppercase"
+                >
                   Address
                 </th>
-                <th className="py-3 px-4 text-left font-mono text-[10px] font-semibold tracking-[1.5px] text-outline uppercase">
+                <th
+                  scope="col"
+                  className="py-3 px-4 text-left font-mono text-[10px] font-semibold tracking-[1.5px] text-outline uppercase"
+                >
                   Explorer
                 </th>
               </tr>
@@ -75,6 +87,7 @@ export default function StellarDeploymentTable() {
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={trackOutbound('explorer')}
+                      aria-label={`View ${c.name} on explorer (opens in new tab)`}
                       className="font-mono text-[11px] font-semibold tracking-[1px] text-tertiary hover:brightness-110 transition-[filter]"
                     >
                       View ↗
