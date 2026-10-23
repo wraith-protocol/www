@@ -77,4 +77,46 @@ describe('gen-rss script', () => {
     expect(Array.isArray(mdxPost?.tags)).toBe(true);
     expect(mdxPost?.tags).toContain('stealth-payments');
   });
+
+  it('lastBuildDate is derived from the most recent post, not the current time', () => {
+    const posts = [
+      {
+        slug: 'older',
+        title: 'Older Post',
+        excerpt: '',
+        publishedAt: '2026-05-01T00:00:00.000Z',
+        content: '',
+        author: 'Wraith Team',
+        url: 'https://usewraith.xyz/blog/older',
+      },
+      {
+        slug: 'newer',
+        title: 'Newer Post',
+        excerpt: '',
+        publishedAt: '2026-09-15T00:00:00.000Z',
+        content: '',
+        author: 'Wraith Team',
+        url: 'https://usewraith.xyz/blog/newer',
+      },
+    ];
+    // Posts are expected to be sorted newest-first by the caller (as getPosts does)
+    const sorted = [...posts].sort((a, b) => Date.parse(b.publishedAt) - Date.parse(a.publishedAt));
+    const xml = buildRssFeed(sorted, 'https://usewraith.xyz');
+
+    // Must contain the date of the newest post, not today's date
+    expect(xml).toContain('<lastBuildDate>Tue, 15 Sep 2026');
+    // Must NOT contain the current year in a way that would change on rebuild
+    const lastBuildMatch = xml.match(/<lastBuildDate>(.+?)<\/lastBuildDate>/);
+    expect(lastBuildMatch).not.toBeNull();
+    // The value must be stable: calling buildRssFeed again yields identical output
+    const xml2 = buildRssFeed(sorted, 'https://usewraith.xyz');
+    expect(xml).toBe(xml2);
+  });
+
+  it('produces byte-identical output when called twice with the same posts', () => {
+    const posts = getPosts();
+    const xml1 = buildRssFeed(posts, 'https://usewraith.xyz');
+    const xml2 = buildRssFeed(posts, 'https://usewraith.xyz');
+    expect(xml1).toBe(xml2);
+  });
 });

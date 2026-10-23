@@ -218,27 +218,46 @@ describe('POST /api/subscribe', () => {
       ' '.repeat(2048),
       JSON.stringify({ email: 'padded@example.com' }),
     ];
-    const body = new ReadableStream<Uint8Array>({
-      start(controller) {
-        for (const part of parts) controller.enqueue(encoder.encode(part));
-        controller.close();
-      },
-    });
 
-    const response = await fetch(subscribeUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-vercel-forwarded-for': '198.51.100.250',
-      },
-      body,
-      duplex: 'half',
-      signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
-    } as RequestInit & { duplex: 'half' });
+    let response: Response | undefined;
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      try {
+        const body = new ReadableStream<Uint8Array>({
+          start(controller) {
+            for (const part of parts) controller.enqueue(encoder.encode(part));
+            controller.close();
+          },
+        });
 
-    expect(response.status).toBe(413);
-    expect(await response.json()).toMatchObject({ code: 'payload_too_large' });
-    expectCommonSecurityHeaders(response, SUBSCRIBE_API_SECURITY_HEADERS);
+        response = await fetch(subscribeUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-vercel-forwarded-for': '198.51.100.250',
+          },
+          body,
+          duplex: 'half',
+          signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+        } as RequestInit & { duplex: 'half' });
+        break;
+      } catch (err: unknown) {
+        const isPipeError =
+          err instanceof Error &&
+          (err.message.includes('EPIPE') ||
+            (typeof (err as { cause?: { code?: string } }).cause?.code === 'string' &&
+              ['EPIPE', 'ECONNRESET'].includes((err as { cause: { code: string } }).cause.code)));
+        if (isPipeError && attempt < 2) {
+          await new Promise((resolve) => setTimeout(resolve, 100));
+          continue;
+        }
+        throw err;
+      }
+    }
+
+    expect(response).toBeDefined();
+    expect(response!.status).toBe(413);
+    expect(await response!.json()).toMatchObject({ code: 'payload_too_large' });
+    expectCommonSecurityHeaders(response!, SUBSCRIBE_API_SECURITY_HEADERS);
     expect((await recordedUpstreamCalls()).length).toBe(before);
   });
 

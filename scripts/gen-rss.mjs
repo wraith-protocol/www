@@ -160,7 +160,7 @@ export function buildRssFeed(posts, baseUrl = siteUrl, options = {}) {
     <link>${channelLink}</link>
     <description>Notes on stealth payments, private infrastructure, and the Wraith ecosystem.</description>
     <language>en-us</language>
-    <lastBuildDate>${toRfc822(new Date().toISOString())}</lastBuildDate>
+    <lastBuildDate>${posts.length > 0 ? toRfc822(posts[0].publishedAt) : 'Thu, 01 Jan 1970 00:00:00 GMT'}</lastBuildDate>
     <atom:link href="${baseUrl}${selfPath}" rel="self" type="application/rss+xml" />
 ${items ? `\n${items}\n` : ''}  </channel>
 </rss>`;

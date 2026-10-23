@@ -238,6 +238,10 @@ async function handleSubscribe(req: IncomingMessage, res: ServerResponse): Promi
   // passed through unread. Pre-buffering here would hide the limit from tests.
   const { default: subscribe } = await import('../api/subscribe.ts');
   await subscribe(req as Parameters<typeof subscribe>[0], res);
+  if (!req.complete) {
+    req.on('error', () => {});
+    req.resume();
+  }
 }
 
 // ─── /api/og ────────────────────────────────────────────────────────────────

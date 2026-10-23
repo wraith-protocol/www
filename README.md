@@ -25,7 +25,25 @@ The build pipeline performs the following steps:
 
 1. Compiles TypeScript and builds the client production assets via Vite.
 2. Runs the Open Graph image generator (`scripts/og.ts`) to pre-render cards for all routes and patches the output HTML files with page-specific titles, descriptions, and JSON-LD breadcrumb schemas.
-3. Runs the sitemap generator (`scripts/gen-sitemap.mjs`) to generate a fresh `sitemap.xml` covering all static and dynamic routes.
+3. Runs the sitemap generator (`scripts/sitemap.ts`) to generate a fresh `sitemap.xml` covering all static and dynamic routes.
+4. Runs the RSS feed generator (`scripts/gen-rss.mjs`) to generate `feed.xml` and per-tag feeds under `public/feed/tag/`.
+
+## Sitemap and RSS generation
+
+Both generators are **deterministic**: running them twice on the same source produces byte-identical output.
+
+**Sitemap** — `scripts/sitemap.ts` is the single entrypoint for both the build pipeline and manual generation:
+
+```bash
+pnpm generate:sitemap   # regenerate public/sitemap.xml
+pnpm check:sitemap      # fail if public/sitemap.xml is stale (used in CI)
+```
+
+`lastmod` dates are derived from content metadata (blog `date` frontmatter, case-study `integrationDate`) or the git commit that last touched each route's source files. Routes with no trustworthy date (tag archives, author pages) omit `<lastmod>` entirely rather than stamping today's date.
+
+`scripts/gen-sitemap.mjs` has been retired. All callers should use `scripts/sitemap.ts` via `tsx`.
+
+**RSS** — `scripts/gen-rss.mjs` generates `public/feed.xml` and per-tag feeds. The `<lastBuildDate>` is set to the publication date of the most-recent post, not the wall-clock time, so repeated builds on unchanged content produce the same file.
 
 ## Serverless routes
 
