@@ -25,6 +25,9 @@
     "scripts/gen-rss.d.ts",
     "scripts/feed-utils.d.ts",
     "scripts/sitemap.ts",
-    "tests/sitemap.test.ts"
+    "tests/sitemap.test.ts",
+    "scripts/jsdom.d.ts",
+    "scripts/check-html-csp.ts",
+    "tests/csp-gate.test.ts"
   ]
 }
