@@ -12,6 +12,17 @@ export const PAGE_CSP_DIRECTIVES = [
   'upgrade-insecure-requests',
 ] as const;
 
+/**
+ * Exact SHA-256 digests (`sha256-<base64>`) of the intentional executable inline
+ * `<script>` blocks present in final HTML output (the DNT/GPC-gated Plausible
+ * bootstrap and the pre-paint theme initializer). Enforced post-build by
+ * `scripts/check-html-csp.ts` so unexpected inline script injection is rejected.
+ */
+export const APPROVED_INLINE_SCRIPT_HASHES = [
+  'sha256-+TeKa+WdnswTcgse/99ToGB5BYtJQW/l5mxxF4OdETk=',
+  'sha256-7+0Xu2+GHdRGEueB+C91QAkQ//z60pC5lqjQBGVeegU=',
+] as const;
+
 export const PAGE_CONTENT_SECURITY_POLICY = PAGE_CSP_DIRECTIVES.join('; ');
 
 export const API_CONTENT_SECURITY_POLICY = "default-src 'none'; frame-ancestors 'none'";
