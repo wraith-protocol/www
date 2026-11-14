@@ -587,6 +587,8 @@
     "heading": "Real-world privacy solutions.",
     "description": "Teams and organizations using Wraith to enable private payments in production. From payroll processors to DAOs, see how stealth addresses solve real privacy challenges.",
     "totalStudies": "TOTAL STUDIES",
+    "studyCount_one": "{{count}} study",
+    "studyCount_other": "{{count}} studies",
     "study": "study",
     "studies": "studies",
     "filterByChain": "FILTER BY CHAIN",

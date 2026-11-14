@@ -282,7 +282,7 @@
       "developers": "DESARROLLADORES",
       "resources": "RECURSOS",
       "acknowledgments": "AGRADECIMIENTOS",
-      "trust": "TRUST"
+      "trust": "CONFIANZA"
     },
     "product": {
       "docs": "Docs",
@@ -587,6 +587,8 @@
     "heading": "Soluciones de privacidad en el mundo real.",
     "description": "Equipos y organizaciones usando Wraith para habilitar pagos privados en producción. Desde procesadores de nómina hasta DAOs, ve cómo las direcciones ocultas resuelven desafíos reales de privacidad.",
     "totalStudies": "ESTUDIOS TOTALES",
+    "studyCount_one": "{{count}} estudio",
+    "studyCount_other": "{{count}} estudios",
     "study": "estudio",
     "studies": "estudios",
     "filterByChain": "FILTRAR POR CADENA",
