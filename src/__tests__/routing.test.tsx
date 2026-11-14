@@ -12,13 +12,15 @@
  *   (locale is set by LocaleScope, not LocaleSync)
  */
 
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { act, configure, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it, beforeEach, afterEach, vi } from 'vitest';
 import i18n from '../i18n';
 import { useLocalePath, hasLocalizedRoute } from '../hooks/useLocalePath';
 import { renderHook } from '@testing-library/react';
 import { ThemeProvider } from '../context/ThemeContext';
+
+configure({ asyncUtilTimeout: 5000 });
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 

@@ -282,7 +282,7 @@
       "developers": "DESENVOLVEDORES",
       "resources": "RECURSOS",
       "acknowledgments": "AGRADECIMENTOS",
-      "trust": "TRUST"
+      "trust": "CONFIANÇA"
     },
     "product": {
       "docs": "Docs",
@@ -430,10 +430,10 @@
       "ogType": "website"
     },
     "/newsletter": {
-      "title": "Newsletter — Wraith Protocol",
+      "title": "Boletim — Wraith Protocol",
       "description": "Atualizações de mainnet, avisos de segurança e notícias de bolsas, sem rastreamento.",
       "ogImage": {
-        "title": "Newsletter",
+        "title": "Boletim",
         "subtitle": "Atualizações de mainnet, avisos de segurança e bolsas"
       },
       "ogType": "website"
@@ -587,6 +587,8 @@
     "heading": "Soluções de privacidade do mundo real.",
     "description": "Equipes e organizações usando Wraith para habilitar pagamentos privados em produção. De processadores de folha de pagamento a DAOs, veja como os endereços ocultos resolvem desafios reais de privacidade.",
     "totalStudies": "ESTUDOS TOTAIS",
+    "studyCount_one": "{{count}} estudo",
+    "studyCount_other": "{{count}} estudos",
     "study": "estudo",
     "studies": "estudos",
     "filterByChain": "FILTRAR POR REDE",
