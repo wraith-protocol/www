@@ -1,7 +1,7 @@
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
-import { slugifyTag, parseTags } from './feed-utils.mjs';
+import { slugifyTag, parseTags, isValidArchiveSlug } from './feed-utils.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -181,11 +181,17 @@ function writeTagFeeds(targetDir) {
   });
 
   for (const tag of tags) {
+    const tagSlug = slugifyTag(tag);
+    // Non-indexable (malformed or empty) tag archives never get a feed.
+    if (!isValidArchiveSlug(tagSlug)) continue;
+
     const tagPosts = posts.filter((post) => (post.tags || []).includes(tag));
+    if (tagPosts.length === 0) continue;
+
     const feedXml = buildRssFeed(tagPosts, siteUrl, { tag });
     const tagDir = join(targetDir, 'feed', 'tag');
     mkdirSync(tagDir, { recursive: true });
-    writeFileSync(join(tagDir, `${slugifyTag(tag)}.xml`), feedXml, 'utf8');
+    writeFileSync(join(tagDir, `${tagSlug}.xml`), feedXml, 'utf8');
   }
 
   return tags.size;

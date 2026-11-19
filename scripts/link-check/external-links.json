@@ -24,7 +24,11 @@
     { "host": "lobstr.co" },
     { "host": "reflector.network" },
     { "host": "soroswap.finance" },
-    { "host": "xbull.app" },
+    {
+      "host": "xbull.app",
+      "acceptError": ["EPROTO"],
+      "reason": "Cloudflare aborts the TLS handshake (SSL alert 80) for datacenter egress, so CI never receives an HTTP answer to judge; the page itself is served normally elsewhere."
+    },
     { "host": "plausible.io" },
     { "host": "fonts.google.com" },
     {

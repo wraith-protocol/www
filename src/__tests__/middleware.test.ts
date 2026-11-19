@@ -124,14 +124,39 @@ describe('middleware: non-indexable routes', () => {
     expect(response).toBeUndefined();
   });
 
-  it('bypasses bot requests for blog tag and author routes', async () => {
-    for (const path of ['/blog/tag/wave-7', '/blog/author/lena-vogt']) {
+  it('injects metadata for known blog tag and author archives', async () => {
+    for (const path of ['/blog/tag/stealth-payments', '/blog/author/lena-vogt']) {
+      const { response } = await makeRequest(
+        path,
+        'TwitterBot/1.0',
+        '<html lang="en"><head><title>X</title></head></html>',
+      );
+      expect(response, `${path} must be rewritten`).not.toBeUndefined();
+      const html = await response!.text();
+      expect(html).toContain('<meta name="robots" content="index, follow" />');
+      expect(html).toContain('<meta property="og:type" content="website" />');
+      expect(html).toContain(`<meta property="og:url" content="https://usewraith.xyz${path}" />`);
+    }
+  });
+
+  it('returns a deterministic 404/noindex for unknown or malformed archives', async () => {
+    for (const path of [
+      '/blog/tag/nonexistent-tag',
+      '/es/blog/tag/nonexistent-tag',
+      '/blog/author/wraith-team',
+      '/pt/blog/author/wraith-team',
+      '/blog/tag/Not-A-Tag',
+      '/blog/author/lena_vogt',
+    ]) {
       const { response } = await makeRequest(
         path,
         'TwitterBot/1.0',
         '<html lang="en"><head></head></html>',
       );
-      expect(response, `${path} must not be rewritten`).toBeUndefined();
+      expect(response, `${path} must be a 404`).not.toBeUndefined();
+      expect(response!.status).toBe(404);
+      expect(response!.headers.get('x-robots-tag')).toBe('noindex, nofollow');
+      expect(await response!.text()).toBe('Not Found');
     }
   });
 });

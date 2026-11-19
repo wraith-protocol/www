@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://usewraith.xyz</loc>
-    <lastmod>2026-10-22</lastmod>
+    <lastmod>2026-11-19</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -74,7 +74,7 @@
   </url>
   <url>
     <loc>https://usewraith.xyz/blog</loc>
-    <lastmod>2026-10-04</lastmod>
+    <lastmod>2026-11-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -204,7 +204,7 @@
   </url>
   <url>
     <loc>https://usewraith.xyz/es</loc>
-    <lastmod>2026-10-22</lastmod>
+    <lastmod>2026-11-19</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -222,7 +222,7 @@
   </url>
   <url>
     <loc>https://usewraith.xyz/es/blog</loc>
-    <lastmod>2026-10-04</lastmod>
+    <lastmod>2026-11-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -234,7 +234,7 @@
   </url>
   <url>
     <loc>https://usewraith.xyz/pt</loc>
-    <lastmod>2026-10-22</lastmod>
+    <lastmod>2026-11-19</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -252,13 +252,93 @@
   </url>
   <url>
     <loc>https://usewraith.xyz/pt/blog</loc>
-    <lastmod>2026-10-04</lastmod>
+    <lastmod>2026-11-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://usewraith.xyz/pt/case-studies</loc>
     <lastmod>2026-10-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://usewraith.xyz/es/blog/author/lena-vogt</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://usewraith.xyz/es/blog/tag/privacy</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://usewraith.xyz/es/blog/tag/stealth-payments</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://usewraith.xyz/es/blog/tag/cryptography</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://usewraith.xyz/es/blog/tag/announcements</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://usewraith.xyz/es/blog/tag/wave-7</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://usewraith.xyz/es/blog/tag/wave-6</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://usewraith.xyz/es/blog/tag/sdk</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://usewraith.xyz/pt/blog/author/lena-vogt</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://usewraith.xyz/pt/blog/tag/privacy</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://usewraith.xyz/pt/blog/tag/stealth-payments</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://usewraith.xyz/pt/blog/tag/cryptography</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://usewraith.xyz/pt/blog/tag/announcements</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://usewraith.xyz/pt/blog/tag/wave-7</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://usewraith.xyz/pt/blog/tag/wave-6</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://usewraith.xyz/pt/blog/tag/sdk</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>

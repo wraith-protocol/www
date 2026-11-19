@@ -167,9 +167,52 @@ describe('og-metadata: dynamic routes', () => {
     expect(resolveRouteMetadata('/pt/case-studies/nonexistent')).toBeNull();
   });
 
-  it('does not treat blog tag or author routes as posts', () => {
-    expect(resolveRouteMetadata('/blog/tag/wave-7')).toBeNull();
-    expect(resolveRouteMetadata('/blog/author/lena-vogt')).toBeNull();
+  it('resolves known tag and author archives from the archive policy', () => {
+    const tag = resolveRouteMetadata('/blog/tag/stealth-payments');
+    expect(tag).not.toBeNull();
+    expect(tag!.ogType).toBe('website');
+    expect(tag!.title).toBe('#stealth-payments — Wraith Protocol');
+    expect(tag!.description).toContain('stealth-payments');
+    expect(tag!.ogImage.title).toBe('#stealth-payments');
+    expect(tag!.ogUrl).toBe('https://usewraith.xyz/blog/tag/stealth-payments');
+    expect(tag!.robots).toBe('index, follow');
+
+    const author = resolveRouteMetadata('/blog/author/lena-vogt');
+    expect(author).not.toBeNull();
+    expect(author!.title).toContain('Lena Vogt');
+    expect(author!.ogUrl).toBe('https://usewraith.xyz/blog/author/lena-vogt');
+    expect(author!.ogImage.title).toBe('Lena Vogt');
+    expect(author!.robots).toBe('index, follow');
+  });
+
+  it('returns no metadata for unknown or malformed archives', () => {
+    const paths = [
+      '/blog/tag/nonexistent-tag',
+      '/blog/author/nobody',
+      '/blog/tag/Not-A-Tag',
+      '/blog/author/lena_vogt',
+      '/blog/tag/stealth%20payments',
+      '/blog/tag/stealth-payments/extra',
+    ];
+
+    for (const path of paths) {
+      expect(resolveRouteMetadata(path), `${path} must not resolve`).toBeNull();
+    }
+  });
+
+  it('localizes known archive metadata', () => {
+    const en = resolveRouteMetadata('/blog/tag/stealth-payments')!;
+    const es = resolveRouteMetadata('/es/blog/tag/stealth-payments')!;
+    const pt = resolveRouteMetadata('/pt/blog/author/lena-vogt')!;
+
+    expect(es.locale).toBe('es');
+    expect(es.ogUrl).toBe('https://usewraith.xyz/es/blog/tag/stealth-payments');
+    expect(es.description).not.toBe(en.description);
+    expect(es.robots).toBe('index, follow');
+
+    expect(pt.locale).toBe('pt');
+    expect(pt.ogUrl).toBe('https://usewraith.xyz/pt/blog/author/lena-vogt');
+    expect(pt.description).not.toBe(resolveRouteMetadata('/blog/author/lena-vogt')!.description);
   });
 });
 
@@ -553,9 +596,20 @@ describe('og-metadata: route indexability', () => {
     expect(isIndexableRoute('/pt/case-studies/nonexistent')).toBe(false);
   });
 
-  it('rejects blog tag and author routes', () => {
-    expect(isIndexableRoute('/blog/tag/wave-7')).toBe(false);
-    expect(isIndexableRoute('/blog/author/lena-vogt')).toBe(false);
+  it('indexes known archives and rejects unknown or malformed ones', () => {
+    expect(isIndexableRoute('/blog/tag/stealth-payments')).toBe(true);
+    expect(isIndexableRoute('/es/blog/tag/privacy')).toBe(true);
+    expect(isIndexableRoute('/blog/author/lena-vogt')).toBe(true);
+    expect(isIndexableRoute('/pt/blog/author/lena-vogt')).toBe(true);
+
+    expect(isIndexableRoute('/blog/tag/nonexistent-tag')).toBe(false);
+    expect(isIndexableRoute('/blog/author/wraith-team')).toBe(false);
+    expect(isIndexableRoute('/blog/tag/Not-A-Tag')).toBe(false);
+    expect(isIndexableRoute('/blog/author/lena_vogt')).toBe(false);
+
+    expect(ogImageSlugFor('/blog/tag/stealth-payments', 'en')).toBe('blog-tag-stealth-payments');
+    expect(ogImageSlugFor('/blog/author/lena-vogt', 'en')).toBe('blog-author-lena-vogt');
+    expect(ogImageSlugFor('/blog/tag/nonexistent-tag', 'en')).toBeNull();
   });
 
   it('identifies non-indexable routes', () => {

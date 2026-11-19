@@ -2,9 +2,11 @@ import {
   resolveRouteMetadata,
   isIndexableRoute,
   ogImageSlugFor,
+  stripLocalePrefix,
   CACHE_CONTROL,
   OG_LOCALE_TAGS,
 } from './src/utils/og-metadata';
+import { ARCHIVE_ROBOTS_NOINDEX, isArchivePath } from './src/utils/blog-archives';
 import { PAGE_SECURITY_HEADERS } from './src/utils/security-headers';
 
 export const config = {
@@ -46,6 +48,14 @@ export default async function middleware(request: Request) {
   }
 
   if (!isIndexableRoute(url.pathname)) {
+    const { pathname: cleanPath } = stripLocalePrefix(url.pathname);
+    if (isArchivePath(cleanPath)) {
+      const headers = new Headers(PAGE_SECURITY_HEADERS);
+      headers.set('content-type', 'text/plain; charset=UTF-8');
+      headers.set('x-robots-tag', ARCHIVE_ROBOTS_NOINDEX);
+      headers.set('cache-control', 'public, max-age=0, s-maxage=300');
+      return new Response('Not Found', { status: 404, headers });
+    }
     return;
   }
 
@@ -82,6 +92,7 @@ export default async function middleware(request: Request) {
       `<meta property="og:image:height" content="630" />`,
       `<meta property="og:url" content="${escapeHtmlAttr(metadata.ogUrl)}" />`,
       `<meta property="og:type" content="${metadata.ogType}" />`,
+      `<meta name="robots" content="${escapeHtmlAttr(metadata.robots)}" />`,
       `<meta name="twitter:card" content="summary_large_image" />`,
       `<meta name="twitter:title" content="${escapeHtmlAttr(title)}" />`,
       `<meta name="twitter:description" content="${escapeHtmlAttr(description)}" />`,
