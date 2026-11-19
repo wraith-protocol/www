@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { format, resolveConfig } from 'prettier';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, '..');
@@ -130,10 +131,24 @@ function loadBlogPostsJson() {
   }
 }
 
-function main() {
+/**
+ * Writes the manifest formatted the way prettier formats it, so a build does not
+ * leave the committed file failing `pnpm format:check`.
+ */
+async function writeManifest(entries) {
+  const config = (await resolveConfig(outputPath)) ?? {};
+  const json = await format(JSON.stringify(entries), {
+    ...config,
+    filepath: outputPath,
+    parser: 'json',
+  });
+  fs.writeFileSync(outputPath, json);
+}
+
+async function main() {
   if (!fs.existsSync(contentDir)) {
     console.log('No blog content directory found');
-    fs.writeFileSync(outputPath, JSON.stringify([], null, 2) + '\n');
+    await writeManifest([]);
     return;
   }
 
@@ -168,8 +183,8 @@ function main() {
 
   entries.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
-  fs.writeFileSync(outputPath, JSON.stringify(entries, null, 2) + '\n');
+  await writeManifest(entries);
   console.log(`Generated blog-manifest.json with ${entries.length} posts`);
 }
 
-main();
+await main();

@@ -212,9 +212,7 @@ describe('og-metadata: dynamic routes', () => {
 
     expect(pt.locale).toBe('pt');
     expect(pt.ogUrl).toBe('https://usewraith.xyz/pt/blog/author/lena-vogt');
-    expect(pt.description).not.toBe(
-      resolveRouteMetadata('/blog/author/lena-vogt')!.description,
-    );
+    expect(pt.description).not.toBe(resolveRouteMetadata('/blog/author/lena-vogt')!.description);
   });
 });
 

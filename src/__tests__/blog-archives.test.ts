@@ -141,8 +141,6 @@ describe('blog archive metadata policy', () => {
     expect(archiveImagePath('tag', 'stealth-payments', 'es')).toBe(
       '/og/es-blog-tag-stealth-payments.png',
     );
-    expect(archiveImagePath('author', 'lena-vogt', 'pt')).toBe(
-      '/og/pt-blog-author-lena-vogt.png',
-    );
+    expect(archiveImagePath('author', 'lena-vogt', 'pt')).toBe('/og/pt-blog-author-lena-vogt.png');
   });
 });

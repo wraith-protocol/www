@@ -20,11 +20,7 @@ import { join, dirname, resolve } from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
 import { execFileSync } from 'child_process';
 import { parseTags } from './feed-utils.mjs';
-import {
-  isIndexableAuthorId,
-  isValidArchiveSlug,
-  slugifyTag,
-} from '../src/utils/blog-archives.ts';
+import { isIndexableAuthorId, isValidArchiveSlug, slugifyTag } from '../src/utils/blog-archives.ts';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const rootDir = join(__dirname, '..');
