@@ -94,6 +94,26 @@ describe('checkExternalLink', () => {
     expect(result).toMatchObject({ ok: true, attempts: 2 });
   });
 
+  it('reports an accepted error as unverifiable instead of broken', async () => {
+    const request = vi.fn().mockRejectedValue(
+      Object.assign(new Error('write EPROTO tlsv1 alert internal error'), {
+        code: 'EPROTO',
+      }),
+    );
+    const approved = {
+      host: 'xbull.app',
+      acceptError: ['EPROTO'],
+      reason: 'TLS abort from CI egress',
+    };
+    const result = await checkExternalLink('https://xbull.app/', approved, policy, {}, request);
+    expect(result).toMatchObject({
+      ok: true,
+      unverified: true,
+      errorCode: 'EPROTO',
+      attempts: 1,
+    });
+  });
+
   it('accepts documented statuses for a host', async () => {
     const request = vi.fn().mockResolvedValue(response(403));
     const approved = { host: 'www.npmjs.com', acceptStatus: [403], reason: 'bot challenge' };
@@ -120,12 +140,18 @@ describe('approved hosts', () => {
     expect(findApprovedHost('evilexample.org', hosts)).toBeUndefined();
   });
 
-  it('requires a reason for acceptStatus and skipRequest', () => {
+  it('requires a reason for acceptStatus, acceptError and skipRequest', () => {
     expect(() => validateApprovedHosts([{ host: 'a.com', acceptStatus: [403] }])).toThrow(
       /without a reason/,
     );
     expect(() => validateApprovedHosts([{ host: 'a.com', skipRequest: true }])).toThrow(
       /without a reason/,
+    );
+    expect(() => validateApprovedHosts([{ host: 'a.com', acceptError: ['EPROTO'] }])).toThrow(
+      /without a reason/,
+    );
+    expect(() => validateApprovedHosts([{ host: 'a.com', acceptError: [], reason: 'x' }])).toThrow(
+      /non-empty array of error codes/,
     );
     expect(() => validateApprovedHosts([{ host: 'A.com' }])).toThrow(/lowercase hostname/);
   });

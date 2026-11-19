@@ -12,6 +12,12 @@ export interface ApprovedHost {
   /** Statuses that still count as reachable, e.g. a bot challenge. */
   acceptStatus?: number[];
   /**
+   * Error codes that mean the host refused the request instead of answering it,
+   * such as a TLS handshake abort from an egress network it blocks. Links that
+   * fail this way are reported as unverifiable, not as broken.
+   */
+  acceptError?: string[];
+  /**
    * Approve links to the host without requesting them, for sites whose answer
    * to an automated client says nothing about the link (login walls, bot blocks).
    */
@@ -27,6 +33,9 @@ export interface ExternalLinkResult {
   finalUrl?: string;
   attempts: number;
   error?: string;
+  errorCode?: string;
+  /** True when the host refused to answer and an accepted error covered it. */
+  unverified?: boolean;
 }
 
 const TRANSIENT_STATUSES = new Set([408, 425, 429, 500, 502, 503, 504]);
@@ -38,9 +47,23 @@ export function validateApprovedHosts(entries: unknown): ApprovedHost[] {
     if (typeof value?.host !== 'string' || !/^(\*\.)?[a-z0-9.-]+$/.test(value.host)) {
       throw new Error(`approvedHosts[${index}].host must be a lowercase hostname`);
     }
-    if ((value.acceptStatus !== undefined || value.skipRequest) && !value.reason) {
+    if (value.acceptError !== undefined) {
+      if (
+        !Array.isArray(value.acceptError) ||
+        value.acceptError.length === 0 ||
+        value.acceptError.some((code) => typeof code !== 'string' || code === '')
+      ) {
+        throw new Error(
+          `approvedHosts[${index}].acceptError must be a non-empty array of error codes`,
+        );
+      }
+    }
+    if (
+      (value.acceptStatus !== undefined || value.acceptError !== undefined || value.skipRequest) &&
+      !value.reason
+    ) {
       throw new Error(
-        `approvedHosts[${index}] (${value.host}) sets acceptStatus or skipRequest without a reason`,
+        `approvedHosts[${index}] (${value.host}) sets acceptStatus, acceptError or skipRequest without a reason`,
       );
     }
     return value;
@@ -89,6 +112,7 @@ export async function checkExternalLink(
   request: typeof safeRequest = safeRequest,
 ): Promise<ExternalLinkResult> {
   const accepted = new Set(approved.acceptStatus ?? []);
+  const acceptedErrors = new Set(approved.acceptError ?? []);
   const isOk = (status: number) => (status >= 200 && status < 300) || accepted.has(status);
 
   const { value, attempts } = await retry<ExternalLinkResult>(async () => {
@@ -114,12 +138,17 @@ export async function checkExternalLink(
       }
       return { done: true, value: result };
     } catch (error) {
+      const code = (error as NodeJS.ErrnoException).code;
       const result: ExternalLinkResult = {
         url,
         ok: false,
         attempts: 0,
         error: (error as Error).message,
+        errorCode: code,
       };
+      if (code !== undefined && acceptedErrors.has(code)) {
+        return { done: true, value: { ...result, ok: true, unverified: true } };
+      }
       return isTransientError(error)
         ? { done: false, value: result }
         : { done: true, value: result };
