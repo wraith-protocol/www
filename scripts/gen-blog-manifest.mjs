@@ -107,6 +107,7 @@ function processMdxFile(filePath, filename) {
     excerpt: data.excerpt || extractFirstParagraph(content),
     date: data.date || data.publishedAt || '2026-01-01',
     author: data.author || 'Wraith Team',
+    tags: Array.isArray(data.tags) ? data.tags : [],
     url: `https://usewraith.xyz/blog/${slug}`,
   };
 }
@@ -121,6 +122,7 @@ function loadBlogPostsJson() {
       excerpt: post.excerpt,
       date: post.publishedAt || '2026-01-01',
       author: post.author || 'Wraith Team',
+      tags: Array.isArray(post.tags) ? post.tags : [],
       url: `https://usewraith.xyz/blog/${post.slug}`,
     }));
   } catch {

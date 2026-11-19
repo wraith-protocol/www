@@ -6,6 +6,12 @@ function slugifyTag(tag) {
     .replace(/^-+|-+$/g, '');
 }
 
+const ARCHIVE_SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
+function isValidArchiveSlug(slug) {
+  return typeof slug === 'string' && ARCHIVE_SLUG_PATTERN.test(slug);
+}
+
 function parseTags(raw) {
   if (Array.isArray(raw)) {
     return raw.map((t) => String(t).trim()).filter(Boolean);
@@ -30,4 +36,4 @@ function parseTags(raw) {
     .filter(Boolean);
 }
 
-export { slugifyTag, parseTags };
+export { slugifyTag, parseTags, isValidArchiveSlug };

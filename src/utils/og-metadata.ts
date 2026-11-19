@@ -3,6 +3,21 @@ import esStrings from '../i18n/es.json';
 import ptStrings from '../i18n/pt.json';
 import blogManifest from '../data/blog-manifest.json';
 import caseStudiesData from '../data/case-studies.json';
+import authorsData from '../data/authors.json';
+import authorsOptOutData from '../data/authors-optout.json';
+import {
+  ARCHIVE_ROBOTS_INDEX,
+  archiveDescription,
+  archiveImageKey,
+  archiveOgImage,
+  archiveTitle,
+  findTagForSlug,
+  isArchivePath,
+  isIndexableAuthorId,
+  isIndexableTagSlug,
+  parseArchivePath,
+  slugifyTag,
+} from './blog-archives';
 
 export type Locale = 'en' | 'es' | 'pt';
 export const SUPPORTED_LOCALES: Locale[] = ['en', 'es', 'pt'];
@@ -48,6 +63,7 @@ export interface RouteMetadata {
   ogUrl: string;
   ogType: 'website' | 'article';
   locale: Locale;
+  robots: string;
 }
 
 export interface OgImageJob {
@@ -114,7 +130,17 @@ const blogManifestData =
     slug: string;
     title: string;
     excerpt: string;
+    tags?: string[];
   }>) || [];
+
+const authors = (authorsData ?? {}) as Record<string, { name: string; optIn?: boolean }>;
+const authorOptOut = (authorsOptOutData ?? []) as string[];
+
+// Every tag that appears on a published post. This is the source of truth for
+// tag archive indexability in metadata, OG jobs, middleware and the sitemap.
+const knownTags = Array.from(
+  new Set(blogManifestData.flatMap((post) => (Array.isArray(post.tags) ? post.tags : []))),
+).sort();
 
 const caseStudyEntries = ((caseStudiesData as { entries?: unknown[] }).entries || []) as Array<{
   slug: string;
@@ -193,6 +219,44 @@ export function resolveRouteMetadata(pathname: string): RouteMetadata | null {
     ? cleanPath
     : cleanPath.split('/').slice(0, 2).join('/') || '/';
 
+  // Archive routes are resolved from a single policy before the generic blog
+  // post branch, which would otherwise treat "tag/x" as a post slug.
+  const archive = parseArchivePath(cleanPath);
+  if (archive) {
+    if (archive.kind === 'tag') {
+      const tag = findTagForSlug(archive.slug, knownTags);
+      if (!tag) return null;
+      const description = archiveDescription('tag', tag, locale);
+      return {
+        title: archiveTitle('tag', tag, locale),
+        description,
+        ogTitle: archiveTitle('tag', tag, locale),
+        ogDescription: description,
+        ogImage: archiveOgImage('tag', tag, locale),
+        ogUrl: canonicalUrlFor(locale, archive.routePath),
+        ogType: 'website',
+        locale,
+        robots: ARCHIVE_ROBOTS_INDEX,
+      };
+    }
+
+    if (!isIndexableAuthorId(archive.slug, authors, authorOptOut)) return null;
+    const author = authors[archive.slug];
+    if (!author) return null;
+    const description = archiveDescription('author', author.name, locale);
+    return {
+      title: archiveTitle('author', author.name, locale),
+      description,
+      ogTitle: archiveTitle('author', author.name, locale),
+      ogDescription: description,
+      ogImage: archiveOgImage('author', author.name, locale),
+      ogUrl: canonicalUrlFor(locale, archive.routePath),
+      ogType: 'website',
+      locale,
+      robots: ARCHIVE_ROBOTS_INDEX,
+    };
+  }
+
   let title: string;
   let description: string;
   let ogImage: OgImageConfig;
@@ -248,6 +312,7 @@ export function resolveRouteMetadata(pathname: string): RouteMetadata | null {
     ogUrl,
     ogType,
     locale,
+    robots: ARCHIVE_ROBOTS_INDEX,
   };
 }
 
@@ -258,9 +323,18 @@ export function isIndexableRoute(pathname: string): boolean {
     return true;
   }
 
+  // Archive indexability is decided once, here and in the app: known archives
+  // are indexable, unknown or malformed ones are not.
+  const archive = parseArchivePath(cleanPath);
+  if (archive) {
+    return archive.kind === 'tag'
+      ? isIndexableTagSlug(archive.slug, knownTags)
+      : isIndexableAuthorId(archive.slug, authors, authorOptOut);
+  }
+  if (isArchivePath(cleanPath)) return false;
+
   // Dynamic slugs are only indexable when the post or case study exists —
-  // everything else 404s in the app (this also rejects `/blog/tag/*` and
-  // `/blog/author/*`, which are not posts).
+  // everything else 404s in the app.
   const blogSlug = blogSlugFrom(cleanPath);
   if (blogSlug) {
     return isKnownBlogSlug(blogSlug);
@@ -279,6 +353,11 @@ export function ogImageSlugFor(pathname: string, locale: Locale): string | null 
 
   if (!isIndexableRoute(pathname)) {
     return null;
+  }
+
+  const archive = parseArchivePath(cleanPath);
+  if (archive) {
+    return localePrefixedSlug(locale, archiveImageKey(archive.kind, archive.slug));
   }
 
   const blogSlug = blogSlugFrom(cleanPath);
@@ -340,6 +419,43 @@ export function listOgImageJobs(): OgImageJob[] {
         subtitle: config.ogImage.subtitle || config.description,
         description: config.description,
         chainBadge: config.ogImage.chainBadge,
+      });
+    }
+  }
+
+  const seenTagSlugs = new Set<string>();
+  for (const tag of knownTags) {
+    const tagSlug = slugifyTag(tag);
+    if (!tagSlug || seenTagSlugs.has(tagSlug)) continue;
+    seenTagSlugs.add(tagSlug);
+
+    const key = archiveImageKey('tag', tagSlug);
+    for (const locale of SUPPORTED_LOCALES) {
+      jobs.push({
+        slug: key,
+        routePath: `/blog/tag/${tagSlug}`,
+        locale,
+        file: `${localePrefixedSlug(locale, key)}.png`,
+        title: `#${tag}`,
+        subtitle: archiveDescription('tag', tag, locale),
+        description: archiveDescription('tag', tag, locale),
+      });
+    }
+  }
+
+  for (const [id, author] of Object.entries(authors)) {
+    if (!isIndexableAuthorId(id, authors, authorOptOut)) continue;
+
+    const key = archiveImageKey('author', id);
+    for (const locale of SUPPORTED_LOCALES) {
+      jobs.push({
+        slug: key,
+        routePath: `/blog/author/${id}`,
+        locale,
+        file: `${localePrefixedSlug(locale, key)}.png`,
+        title: author.name,
+        subtitle: archiveDescription('author', author.name, locale),
+        description: archiveDescription('author', author.name, locale),
       });
     }
   }

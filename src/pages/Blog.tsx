@@ -20,6 +20,13 @@ import { track } from '../utils/track';
 import { usePageSeo } from '../utils/seo';
 import { useLocalizedPath } from '../hooks/useLocalePath';
 import { localizedDynamicUrl, hreflangAlternatesDynamic } from '../utils/seo';
+import {
+  ARCHIVE_ROBOTS_INDEX,
+  ARCHIVE_ROBOTS_NOINDEX,
+  archiveDescription,
+  archiveImagePath,
+  archiveTitle,
+} from '../utils/blog-archives';
 
 function AuthorByline({ post, lp }: { post: BlogPost; lp: (path: string) => string }) {
   if (!post.author) return null;
@@ -65,6 +72,7 @@ function BlogList() {
       />
       <Helmet>
         <title>{seo.title}</title>
+        <meta name="robots" content={ARCHIVE_ROBOTS_INDEX} />
         <meta name="description" content={seo.description} />
         <link rel="canonical" href={seo.canonical} />
         {seo.alternates.map((alt) => (
@@ -185,6 +193,7 @@ function BlogPostDetail({ slug }: { slug: string }) {
       <div className="mx-auto flex max-w-4xl flex-col gap-4 px-6 py-12 md:px-12">
         <Helmet>
           <title>Post Not Found – Wraith Protocol</title>
+          <meta name="robots" content={ARCHIVE_ROBOTS_NOINDEX} />
         </Helmet>
         <h1 className="font-heading text-[28px] font-bold text-on-surface">Post Not Found</h1>
         <p className="text-on-surface-variant">The requested blog post could not be found.</p>
@@ -225,6 +234,7 @@ function BlogPostDetail({ slug }: { slug: string }) {
       />
       <Helmet>
         <title>{post.title} – Wraith Protocol</title>
+        <meta name="robots" content={ARCHIVE_ROBOTS_INDEX} />
         {post.excerpt && <meta name="description" content={post.excerpt} />}
         <link rel="canonical" href={postUrl} />
         {alternates.map((alt) => (
@@ -310,7 +320,7 @@ function BlogAuthor({ id }: { id: string }) {
       <div className="mx-auto flex max-w-4xl flex-col gap-4 px-6 py-12 md:px-12">
         <Helmet>
           <title>Author Not Found – Wraith Protocol</title>
-          <meta name="robots" content="noindex" />
+          <meta name="robots" content={ARCHIVE_ROBOTS_NOINDEX} />
         </Helmet>
         <h1 className="font-heading text-[28px] font-bold text-on-surface">Author Not Found</h1>
         <p className="text-on-surface-variant">
@@ -333,6 +343,9 @@ function BlogAuthor({ id }: { id: string }) {
   const dynamicPath = `/author/${id}`;
   const authorUrl = localizedDynamicUrl('blog', locale, dynamicPath);
   const alternates = hreflangAlternatesDynamic('blog', dynamicPath);
+  const authorTitle = archiveTitle('author', author.name, locale);
+  const authorDescription = archiveDescription('author', author.name, locale);
+  const authorImageUrl = `${SITE_URL}${archiveImagePath('author', id, locale)}`;
 
   return (
     <div className="mx-auto flex max-w-4xl flex-col gap-8 px-6 py-12 md:px-12">
@@ -349,15 +362,18 @@ function BlogAuthor({ id }: { id: string }) {
         }}
       />
       <Helmet>
-        <title>{author.name} – Wraith Protocol Blog</title>
-        <meta
-          name="description"
-          content={`Posts by ${author.name} on Wraith Protocol's privacy-preserving payments blog.`}
-        />
+        <title>{authorTitle}</title>
+        <meta name="description" content={authorDescription} />
+        <meta name="robots" content={ARCHIVE_ROBOTS_INDEX} />
         <link rel="canonical" href={authorUrl} />
         {alternates.map((alt) => (
           <link key={alt.hrefLang} rel="alternate" hrefLang={alt.hrefLang} href={alt.href} />
         ))}
+        <meta property="og:title" content={authorTitle} />
+        <meta property="og:description" content={authorDescription} />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={authorUrl} />
+        <meta property="og:image" content={authorImageUrl} />
       </Helmet>
 
       <div className="flex flex-col gap-6 border border-outline-variant-30 p-6">
@@ -481,6 +497,7 @@ function TagArchive({ tagSlug }: { tagSlug: string }) {
       <div className="mx-auto flex max-w-4xl flex-col gap-4 px-6 py-12 md:px-12">
         <Helmet>
           <title>Tag Not Found – Wraith Protocol</title>
+          <meta name="robots" content={ARCHIVE_ROBOTS_NOINDEX} />
         </Helmet>
         <h1 className="font-heading text-[28px] font-bold text-on-surface">Tag Not Found</h1>
         <p className="text-on-surface-variant">No posts were found for this tag.</p>
@@ -493,22 +510,29 @@ function TagArchive({ tagSlug }: { tagSlug: string }) {
 
   const posts = getPostsByTag(tag);
 
-  const dynamicPath = `/tag/${tagSlug}`;
+  const canonicalSlug = slugifyTag(tag);
+  const dynamicPath = `/tag/${canonicalSlug}`;
   const tagUrl = localizedDynamicUrl('blog', locale, dynamicPath);
   const alternates = hreflangAlternatesDynamic('blog', dynamicPath);
+  const tagTitle = archiveTitle('tag', tag, locale);
+  const tagDescription = archiveDescription('tag', tag, locale);
+  const tagImageUrl = `${SITE_URL}${archiveImagePath('tag', canonicalSlug, locale)}`;
 
   return (
     <div className="mx-auto flex max-w-4xl flex-col gap-8 px-6 py-12 md:px-12">
       <Helmet>
-        <title>#{tag} – Wraith Protocol Blog</title>
-        <meta
-          name="description"
-          content={`Blog posts tagged ${tag} from Wraith Protocol on private payments and stealth infrastructure.`}
-        />
+        <title>{tagTitle}</title>
+        <meta name="description" content={tagDescription} />
+        <meta name="robots" content={ARCHIVE_ROBOTS_INDEX} />
         <link rel="canonical" href={tagUrl} />
         {alternates.map((alt) => (
           <link key={alt.hrefLang} rel="alternate" hrefLang={alt.hrefLang} href={alt.href} />
         ))}
+        <meta property="og:title" content={tagTitle} />
+        <meta property="og:description" content={tagDescription} />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={tagUrl} />
+        <meta property="og:image" content={tagImageUrl} />
         <link
           rel="alternate"
           type="application/rss+xml"

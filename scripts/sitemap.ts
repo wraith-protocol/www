@@ -19,7 +19,12 @@ import { writeFileSync, readFileSync, readdirSync, statSync, existsSync } from '
 import { join, dirname, resolve } from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
 import { execFileSync } from 'child_process';
-import { slugifyTag, parseTags } from './feed-utils.mjs';
+import { parseTags } from './feed-utils.mjs';
+import {
+  isIndexableAuthorId,
+  isValidArchiveSlug,
+  slugifyTag,
+} from '../src/utils/blog-archives.ts';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const rootDir = join(__dirname, '..');
@@ -247,7 +252,7 @@ function getAuthorRoutes(): RouteEntry[] {
       ? JSON.parse(readFileSync(optOutPath, 'utf8'))
       : [];
     return Object.entries(authors)
-      .filter(([id, author]) => !optOut.includes(id) && author.optIn)
+      .filter(([id]) => isIndexableAuthorId(id, authors, optOut))
       .map(([id]) => ({
         route: `/blog/author/${id}`,
         // no meaningful date for an author aggregate page
@@ -335,8 +340,17 @@ function getBlogTagRoutes(): RouteEntry[] {
     }
   }
 
-  return Array.from(tags).map((tag) => ({
-    route: `/blog/tag/${slugifyTag(tag)}`,
+  // Canonicalize and deduplicate by slug; malformed or empty slugs are not
+  // indexable and must never reach the sitemap.
+  const sluggedTags = new Map<string, string>();
+  for (const tag of tags) {
+    const slug = slugifyTag(tag);
+    if (!isValidArchiveSlug(slug)) continue;
+    if (!sluggedTags.has(slug)) sluggedTags.set(slug, tag);
+  }
+
+  return Array.from(sluggedTags.keys()).map((slug) => ({
+    route: `/blog/tag/${slug}`,
     // tag archive pages have no single meaningful date
     lastmod: undefined,
     changefreq: 'weekly',
@@ -414,6 +428,15 @@ export function collectRoutes(): RouteEntry[] {
   const authorRoutes = getAuthorRoutes();
   const blogRoutes = getBlogRoutes();
   const tagRoutes = getBlogTagRoutes();
+  const archiveRoutes = [...authorRoutes, ...tagRoutes];
+  const localizedArchiveRoutes: RouteEntry[] = SUPPORTED_LOCALE_PREFIXES.flatMap((prefix) =>
+    archiveRoutes.map((entry) => ({
+      route: `${prefix}${entry.route}`,
+      lastmod: entry.lastmod,
+      changefreq: entry.changefreq,
+      priority: entry.priority,
+    })),
+  );
   const distRoutes = existsSync(distDir) ? getDistRoutes(distDir) : [];
 
   // Deduplicate by route, keeping the first occurrence (structured data wins
@@ -427,6 +450,7 @@ export function collectRoutes(): RouteEntry[] {
     ...blogRoutes,
     ...tagRoutes,
     ...localeRoutes,
+    ...localizedArchiveRoutes,
     ...distRoutes,
   ]) {
     if (

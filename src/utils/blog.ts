@@ -2,6 +2,9 @@ import type { ComponentType } from 'react';
 import GithubSlugger from 'github-slugger';
 import authorsData from '../data/authors.json';
 import authorsOptOutData from '../data/authors-optout.json';
+import { slugifyTag } from './blog-archives';
+
+export { slugifyTag } from './blog-archives';
 
 export interface BlogPostFrontmatter {
   title: string;
@@ -177,14 +180,6 @@ export function getAllTags(): string[] {
     post.tags.forEach((tag) => tagSet.add(tag));
   });
   return Array.from(tagSet).sort();
-}
-
-export function slugifyTag(tag: string): string {
-  return String(tag)
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
 }
 
 export function getTagFromSlug(slug: string): string | undefined {
