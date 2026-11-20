@@ -194,6 +194,81 @@ export function decodePngRgba(buffer: Uint8Array): DecodedPng {
   return { width, height, rgba };
 }
 
+function regionArea(region: PageRegionBox): number {
+  return Math.max(1, region.right - region.left) * Math.max(1, region.bottom - region.top);
+}
+
+function strictlyEncloses(outer: PageRegionBox, inner: PageRegionBox): boolean {
+  if (outer.name === inner.name) return false;
+  const encloses =
+    outer.left <= inner.left + 2 &&
+    outer.top <= inner.top + 2 &&
+    outer.right >= inner.right - 2 &&
+    outer.bottom >= inner.bottom - 2;
+  return encloses && regionArea(outer) > regionArea(inner) * 1.1;
+}
+
+function isGenericAutoName(name: string): boolean {
+  return /^(header|section|article|table|footer)-\d+$/.test(name);
+}
+
+function pruneEnclosingContainers(candidates: readonly PageRegionBox[]): PageRegionBox[] {
+  return candidates.filter(
+    (candidate) =>
+      !candidates.some(
+        (other) =>
+          !(isGenericAutoName(other.name) && !isGenericAutoName(candidate.name)) &&
+          strictlyEncloses(candidate, other),
+      ),
+  );
+}
+
+function selectChangedRegions(
+  regions: readonly PageRegionBox[],
+  minX: number,
+  minY: number,
+  maxX: number,
+  maxY: number,
+  dimensionMismatch: boolean,
+): PageRegionBox[] {
+  const overlapping = regions.filter(
+    (region) =>
+      region.bottom >= minY && region.top <= maxY && region.right >= minX && region.left <= maxX,
+  );
+  if (overlapping.length === 0) return [];
+
+  if (dimensionMismatch) {
+    // When document height/width shifts, every section below `minY` moves
+    // downstream. Attribute the regression to the most specific region covering
+    // the shift origin (`minY`) rather than blaming shifted sections below it.
+    const originCovering = overlapping.filter(
+      (region) => region.top <= minY + 4 && region.bottom >= minY,
+    );
+    if (originCovering.length > 0) {
+      const specificOrigin = pruneEnclosingContainers(originCovering);
+      return [...specificOrigin].sort((a, b) => regionArea(a) - regionArea(b)).slice(0, 2);
+    }
+  }
+
+  const specific = pruneEnclosingContainers(overlapping);
+  return [...specific]
+    .sort((a, b) => {
+      const interA =
+        Math.max(0, Math.min(a.right, maxX + 1) - Math.max(a.left, minX)) *
+        Math.max(0, Math.min(a.bottom, maxY + 1) - Math.max(a.top, minY));
+      const interB =
+        Math.max(0, Math.min(b.right, maxX + 1) - Math.max(b.left, minX)) *
+        Math.max(0, Math.min(b.bottom, maxY + 1) - Math.max(b.top, minY));
+      const coverageA = interA / regionArea(a);
+      const coverageB = interB / regionArea(b);
+      if (Math.abs(coverageB - coverageA) > 0.05) {
+        return coverageB - coverageA;
+      }
+      return regionArea(a) - regionArea(b);
+    })
+    .slice(0, 3);
+}
+
 export function computeChangedRegionAttribution(
   expectedPng: Uint8Array,
   actualPng: Uint8Array,
@@ -265,16 +340,11 @@ export function computeChangedRegionAttribution(
     };
   }
 
-  const overlapping = regions.filter(
-    (region) =>
-      region.bottom >= minY && region.top <= maxY && region.right >= minX && region.left <= maxX,
-  );
+  const attributed = selectChangedRegions(regions, minX, minY, maxX, maxY, dimensionMismatch);
 
   const regionNames =
-    overlapping.length > 0
-      ? Array.from(new Set(overlapping.map((r) => r.name)))
-          .slice(0, 3)
-          .join(', ')
+    attributed.length > 0
+      ? Array.from(new Set(attributed.map((r) => r.name))).join(', ')
       : `viewport-band(y=${minY}..${maxY})`;
 
   const sizeSuffix = dimensionMismatch
@@ -288,6 +358,15 @@ export function computeChangedRegionAttribution(
     dimensionMismatch,
     boundingBox: { minX, minY, maxX, maxY },
   };
+}
+
+function hasSameBounds(a: PageRegionBox, b: PageRegionBox): boolean {
+  return (
+    Math.abs(a.left - b.left) <= 2 &&
+    Math.abs(a.top - b.top) <= 2 &&
+    Math.abs(a.right - b.right) <= 2 &&
+    Math.abs(a.bottom - b.bottom) <= 2
+  );
 }
 
 export async function capturePageRegions(
@@ -311,13 +390,6 @@ export async function capturePageRegions(
   }
 
   const autoRegions = await page.evaluate(() => {
-    const slugify = (raw: string) =>
-      raw
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/^-+|-+$/g, '')
-        .slice(0, 36);
-
     const nodes = Array.from(
       document.querySelectorAll<HTMLElement>(
         'header, main > section, main article, main table, footer',
@@ -328,15 +400,19 @@ export async function capturePageRegions(
       .map((el, index) => {
         const rect = el.getBoundingClientRect();
         if (rect.width <= 0 || rect.height <= 0) return null;
-        const heading = el.querySelector('h1, h2, h3')?.textContent?.trim();
-        const aria = el.getAttribute('aria-label')?.trim();
-        const id = el.id?.trim();
+        const heading = el.querySelector('h1, h2, h3')?.textContent?.trim() ?? '';
+        const aria = el.getAttribute('aria-label')?.trim() ?? '';
+        const id = el.id?.trim() ?? '';
         const tag = el.tagName.toLowerCase();
-        const label =
-          id ||
-          (aria ? slugify(aria) : '') ||
-          (heading ? slugify(heading) : '') ||
-          `${tag}-${index + 1}`;
+        const rawLabel = aria || heading;
+        const normalized = rawLabel
+          ? rawLabel
+              .toLowerCase()
+              .replace(/[^a-z0-9]+/g, '-')
+              .replace(/^-+|-+$/g, '')
+              .slice(0, 36)
+          : '';
+        const label = id || normalized || `${tag}-${index + 1}`;
         return {
           name: label,
           left: Math.round(rect.left + window.scrollX),
@@ -350,10 +426,10 @@ export async function capturePageRegions(
 
   const existingNames = new Set(collected.map((r) => r.name));
   for (const region of autoRegions) {
-    if (!existingNames.has(region.name)) {
-      collected.push(region);
-      existingNames.add(region.name);
-    }
+    if (existingNames.has(region.name)) continue;
+    if (collected.some((existing) => hasSameBounds(existing, region))) continue;
+    collected.push(region);
+    existingNames.add(region.name);
   }
 
   return collected;

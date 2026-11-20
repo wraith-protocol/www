@@ -49,13 +49,12 @@ jobs:
 
       - name: Ensure Playwright reports are not tracked
         run: |
-          if git ls-files --error-unmatch 'playwright-report/**' >/dev/null 2>&1 || \
-             git ls-files --error-unmatch 'test-results/**' >/dev/null 2>&1 || \
-             git ls-files --error-unmatch 'blob-report/**' >/dev/null 2>&1; then
-            echo "::error::Generated Playwright runtime reports must not be committed."
+          tracked_reports=$(git ls-files ':(glob)**/playwright-report/**' ':(glob)**/test-results/**' ':(glob)**/blob-report/**' || true)
+          if [ -n "$tracked_reports" ]; then
+            echo "::error::Generated Playwright runtime reports must not be committed: $tracked_reports"
             exit 1
           fi
-          unapproved_snapshots=$(git ls-files '*__screenshots__/*' '*-snapshots/*' | grep -v '^tests/visual/__screenshots__/' || true)
+          unapproved_snapshots=$(git ls-files ':(glob)**/__screenshots__/**' ':(glob)**/*-snapshots/**' | grep -v '^tests/visual/__screenshots__/' || true)
           if [ -n "$unapproved_snapshots" ]; then
             echo "::error::Visual baselines must live inside tests/visual/__screenshots__/: $unapproved_snapshots"
             exit 1
@@ -191,7 +190,12 @@ jobs:
       - name: Ensure visual suite wrote no runtime files in workspace
         if: always()
         run: |
-          outside_changes=$(git status --porcelain --untracked-files=all | awk '{print $2}' | grep -v '^tests/visual/__screenshots__/' || true)
+          ignored_runtime_dirs=$(find . -path './node_modules' -prune -o \( -name 'playwright-report' -o -name 'test-results' -o -name 'blob-report' \) -print)
+          if [ -n "$ignored_runtime_dirs" ]; then
+            echo "::error::Visual suite created Playwright runtime directories inside repository: $ignored_runtime_dirs"
+            exit 1
+          fi
+          outside_changes=$(git status --porcelain --untracked-files=all | sed 's/^...//' | grep -v '^tests/visual/__screenshots__/' || true)
           if [ -n "$outside_changes" ]; then
             echo "::error::Visual suite created runtime files outside approved baseline directory: $outside_changes"
             exit 1

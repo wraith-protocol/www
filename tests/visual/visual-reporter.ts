@@ -28,15 +28,16 @@ export function buildVisualMarkdownSummary(records: readonly VisualCheckReportRe
 }
 
 export default class VisualRegressionReporter implements Reporter {
-  private readonly records: VisualCheckReportRecord[] = [];
+  private readonly recordsByTestKey = new Map<string, VisualCheckReportRecord>();
 
   onTestEnd(test: TestCase, result: TestResult): void {
+    const key = test.id || `${test.titlePath().join(' > ')}`;
     const annotation = result.annotations.find((item) => item.type === VISUAL_ANNOTATION_TYPE);
     if (annotation?.description) {
       try {
         const parsed = JSON.parse(annotation.description) as VisualCheckReportRecord;
-        this.records.push(parsed);
-        if (parsed.status === 'failed') {
+        this.recordsByTestKey.set(key, parsed);
+        if (parsed.status === 'failed' && result.retry >= test.retries) {
           process.stderr.write(`[visual-diff] ${formatVisualReportLine(parsed)}\n`);
         }
         return;
@@ -46,7 +47,7 @@ export default class VisualRegressionReporter implements Reporter {
     }
 
     if (result.status !== 'passed' && result.status !== 'skipped') {
-      this.records.push({
+      this.recordsByTestKey.set(key, {
         route: test.title,
         routeId: 'unknown',
         layoutFamily: 'unknown',
@@ -60,12 +61,17 @@ export default class VisualRegressionReporter implements Reporter {
     }
   }
 
-  onEnd(_result: FullResult): void {
-    if (this.records.length === 0) return;
+  getRecords(): VisualCheckReportRecord[] {
+    return Array.from(this.recordsByTestKey.values());
+  }
 
-    const failed = this.records.filter((r) => r.status === 'failed');
+  onEnd(_result: FullResult): void {
+    const records = this.getRecords();
+    if (records.length === 0) return;
+
+    const failed = records.filter((r) => r.status === 'failed');
     process.stdout.write(
-      `\n[visual-summary] ${this.records.length - failed.length}/${this.records.length} passed (${failed.length} failed)\n`,
+      `\n[visual-summary] ${records.length - failed.length}/${records.length} passed (${failed.length} failed)\n`,
     );
 
     for (const item of failed) {
@@ -82,11 +88,11 @@ export default class VisualRegressionReporter implements Reporter {
       mkdirSync(dirname(externalReportPath), { recursive: true });
       const payload = {
         generatedAt: '2026-01-15T12:00:00.000Z',
-        total: this.records.length,
-        passed: this.records.length - failed.length,
+        total: records.length,
+        passed: records.length - failed.length,
         failed: failed.length,
-        checks: this.records,
-        markdown: buildVisualMarkdownSummary(this.records),
+        checks: records,
+        markdown: buildVisualMarkdownSummary(records),
       };
       writeFileSync(externalReportPath, JSON.stringify(payload, null, 2), 'utf8');
     }

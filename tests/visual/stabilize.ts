@@ -311,6 +311,12 @@ export async function resolveAndValidateNarrowMasks(
   for (const rule of rules) {
     const locator = page.locator(rule.selector);
     const count = await locator.count();
+    if (!rule.optional) {
+      expect(
+        count,
+        `Required narrow mask "${rule.description}" (${rule.selector}) matched 0 elements; update selector or mark optional if environment-gated.`,
+      ).toBeGreaterThan(0);
+    }
     for (let i = 0; i < count; i += 1) {
       const item = locator.nth(i);
       const box = await item.boundingBox();

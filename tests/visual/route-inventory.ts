@@ -42,6 +42,11 @@ export type LayoutFamily =
   | 'standalone-form'
   | 'team-governance'
   | 'leaderboard-grid'
+  | 'brand-press-kit'
+  | 'partner-ecosystem-grid'
+  | 'milestone-timeline'
+  | 'privacy-comparison-legal'
+  | 'security-disclosures'
   | 'minimal-standalone'
   | 'standard-layout-page'
   | 'error-fallback';
@@ -49,6 +54,7 @@ export type LayoutFamily =
 export interface NarrowMaskRule {
   readonly description: string;
   readonly selector: string;
+  readonly optional?: boolean;
 }
 
 export interface NamedRegionHint {
@@ -146,6 +152,39 @@ export function resolveVisualLocales(i18nDir?: string): readonly [string, string
   return ['en', resolveLongestTranslatedLocale(i18nDir)] as const;
 }
 
+/**
+ * Determines whether Playwright CLI arguments (`process.argv.slice(2)`) target
+ * only the visual regression suite, ignoring binary/workspace directory paths
+ * in `process.argv[0..1]`.
+ */
+export function isVisualCliInvocation(cliArgs: readonly string[]): boolean {
+  const normalized = cliArgs.map((arg) => arg.replace(/\\/g, '/').toLowerCase());
+  const mentionsVisual = normalized.some(
+    (arg) =>
+      arg.includes('playwright.visual.config') ||
+      arg.includes('tests/visual') ||
+      arg.includes('routes.visual.spec') ||
+      arg === 'visual-chromium' ||
+      arg.includes('=visual-chromium'),
+  );
+  if (!mentionsVisual) {
+    return false;
+  }
+  const mentionsOtherSuites = normalized.some(
+    (arg) =>
+      arg.includes('tests/a11y') ||
+      arg.includes('a11y.spec') ||
+      arg === 'a11y-chromium' ||
+      arg.includes('=a11y-chromium') ||
+      arg === 'e2e' ||
+      arg.startsWith('e2e/') ||
+      arg.includes('/e2e/') ||
+      arg === 'e2e-chromium' ||
+      arg.includes('=e2e-chromium'),
+  );
+  return !mentionsOtherSuites;
+}
+
 export const APP_ROUTE_INVENTORY: readonly RouteVisualEntry[] = [
   {
     id: 'home',
@@ -178,7 +217,8 @@ export const APP_ROUTE_INVENTORY: readonly RouteVisualEntry[] = [
         name: 'stellar-metrics',
         selector: 'section:has(h2:has-text("Stellar testnet activity."))',
       },
-      { name: 'compare-table', selector: 'section#compare' },
+      { name: 'compare-table', selector: 'section#compare table' },
+      { name: 'compare-section', selector: 'section#compare' },
       { name: 'footer', selector: 'footer' },
     ],
   },
@@ -375,13 +415,15 @@ export const APP_ROUTE_INVENTORY: readonly RouteVisualEntry[] = [
     localized: hasLocalizedRoute('/status'),
     narrowMasks: [
       {
-        description: 'Live status poll timestamp and component latency counters',
+        description:
+          'Live status poll timestamp and component latency counters when VITE_STATUS_API_URL is configured',
         selector: 'main span:has-text("Updated "), main span:has-text("Latency:")',
+        optional: true,
       },
     ],
     regionHints: [
       { name: 'header', selector: 'header' },
-      { name: 'status-overview', selector: 'main' },
+      { name: 'status-overview', selector: 'main > div' },
       { name: 'footer', selector: 'footer' },
     ],
   },
@@ -395,7 +437,7 @@ export const APP_ROUTE_INVENTORY: readonly RouteVisualEntry[] = [
     narrowMasks: [],
     regionHints: [
       { name: 'header', selector: 'header' },
-      { name: 'newsletter-signup-form', selector: 'main' },
+      { name: 'newsletter-signup-form', selector: 'main form' },
       { name: 'footer', selector: 'footer' },
     ],
   },
@@ -423,7 +465,7 @@ export const APP_ROUTE_INVENTORY: readonly RouteVisualEntry[] = [
     narrowMasks: [],
     regionHints: [
       { name: 'header', selector: 'header' },
-      { name: 'contributors-leaderboard', selector: 'main' },
+      { name: 'contributors-leaderboard', selector: 'main div.grid' },
       { name: 'footer', selector: 'footer' },
     ],
   },
@@ -459,100 +501,135 @@ export const APP_ROUTE_INVENTORY: readonly RouteVisualEntry[] = [
     id: 'privacy',
     appRoutePattern: '/privacy',
     samplePath: '/privacy',
-    layoutFamily: 'minimal-standalone',
-    baseline: false,
-    baselineRepresentativeId: 'faq',
-    localized: false,
+    layoutFamily: 'privacy-comparison-legal',
+    baseline: true,
+    localized: hasLocalizedRoute('/privacy'),
     narrowMasks: [],
-    regionHints: [],
+    regionHints: [
+      { name: 'header', selector: 'header' },
+      { name: 'privacy-comparison', selector: 'main section:nth-of-type(1)' },
+      { name: 'privacy-policy-sections', selector: 'main' },
+    ],
   },
   {
     id: 'terms',
     appRoutePattern: '/terms',
     samplePath: '/terms',
     layoutFamily: 'minimal-standalone',
-    baseline: false,
-    baselineRepresentativeId: 'faq',
-    localized: false,
+    baseline: true,
+    localized: hasLocalizedRoute('/terms'),
     narrowMasks: [],
-    regionHints: [],
+    regionHints: [
+      { name: 'header', selector: 'header' },
+      { name: 'terms-sections', selector: 'main' },
+    ],
   },
   {
     id: 'press',
     appRoutePattern: '/press',
     samplePath: '/press',
-    layoutFamily: 'minimal-standalone',
-    baseline: false,
-    baselineRepresentativeId: 'faq',
-    localized: false,
+    layoutFamily: 'brand-press-kit',
+    baseline: true,
+    localized: hasLocalizedRoute('/press'),
     narrowMasks: [],
-    regionHints: [],
+    regionHints: [
+      { name: 'header', selector: 'header' },
+      { name: 'press-descriptions', selector: 'main section:nth-of-type(1)' },
+      { name: 'press-logos', selector: 'main section:nth-of-type(2)' },
+      { name: 'press-brand-colors', selector: 'main section:nth-of-type(3)' },
+    ],
   },
   {
     id: 'use-cases',
     appRoutePattern: '/use-cases',
     samplePath: '/use-cases',
-    layoutFamily: 'minimal-standalone',
-    baseline: false,
-    baselineRepresentativeId: 'calculator',
-    localized: false,
+    layoutFamily: 'interactive-tool',
+    baseline: true,
+    localized: hasLocalizedRoute('/use-cases'),
     narrowMasks: [],
-    regionHints: [],
+    regionHints: [
+      { name: 'header', selector: 'header' },
+      { name: 'use-cases-hero', selector: 'main > section:nth-of-type(1)' },
+      { name: 'use-cases-personas', selector: 'main > section:nth-of-type(2)' },
+      { name: 'use-cases-calculator', selector: 'main > section:nth-of-type(3)' },
+      { name: 'footer', selector: 'footer' },
+    ],
   },
   {
     id: 'roadmap',
     appRoutePattern: '/roadmap',
     samplePath: '/roadmap',
-    layoutFamily: 'minimal-standalone',
-    baseline: false,
-    baselineRepresentativeId: 'faq',
-    localized: false,
+    layoutFamily: 'milestone-timeline',
+    baseline: true,
+    localized: hasLocalizedRoute('/roadmap'),
     narrowMasks: [],
-    regionHints: [],
+    regionHints: [
+      { name: 'header', selector: 'header' },
+      { name: 'roadmap-hero', selector: 'main > section:nth-of-type(1)' },
+      { name: 'roadmap-milestones', selector: 'main > section:nth-of-type(2)' },
+      { name: 'footer', selector: 'footer' },
+    ],
   },
   {
     id: 'ecosystem',
     appRoutePattern: '/ecosystem',
     samplePath: '/ecosystem',
-    layoutFamily: 'standard-layout-page',
-    baseline: false,
-    baselineRepresentativeId: 'stellar',
-    localized: false,
+    layoutFamily: 'partner-ecosystem-grid',
+    baseline: true,
+    localized: hasLocalizedRoute('/ecosystem'),
     narrowMasks: [],
-    regionHints: [],
+    regionHints: [
+      { name: 'header', selector: 'header' },
+      { name: 'ecosystem-hero', selector: 'main section:nth-of-type(1)' },
+      { name: 'ecosystem-partners-grid', selector: 'main section:nth-of-type(2)' },
+      { name: 'footer', selector: 'footer' },
+    ],
   },
   {
     id: 'security',
     appRoutePattern: '/security',
     samplePath: '/security',
-    layoutFamily: 'standard-layout-page',
-    baseline: false,
-    baselineRepresentativeId: 'governance',
-    localized: false,
+    layoutFamily: 'security-disclosures',
+    baseline: true,
+    localized: hasLocalizedRoute('/security'),
     narrowMasks: [],
-    regionHints: [],
+    regionHints: [
+      { name: 'header', selector: 'header' },
+      { name: 'security-bug-bounty', selector: 'section#bug-bounty' },
+      { name: 'security-disclosures', selector: 'main' },
+      { name: 'footer', selector: 'footer' },
+    ],
   },
   {
     id: 'careers',
     appRoutePattern: '/careers',
     samplePath: '/careers',
     layoutFamily: 'standard-layout-page',
-    baseline: false,
-    baselineRepresentativeId: 'governance',
-    localized: false,
+    baseline: true,
+    localized: hasLocalizedRoute('/careers'),
     narrowMasks: [],
-    regionHints: [],
+    regionHints: [
+      { name: 'header', selector: 'header' },
+      { name: 'careers-hero', selector: 'main section:nth-of-type(1)' },
+      { name: 'careers-bounties', selector: 'main section:nth-of-type(2)' },
+      { name: 'careers-signup', selector: 'main form' },
+      { name: 'footer', selector: 'footer' },
+    ],
   },
   {
     id: 'about',
     appRoutePattern: '/about',
     samplePath: '/about',
-    layoutFamily: 'standard-layout-page',
-    baseline: false,
-    baselineRepresentativeId: 'governance',
-    localized: false,
+    layoutFamily: 'team-governance',
+    baseline: true,
+    localized: hasLocalizedRoute('/about'),
     narrowMasks: [],
-    regionHints: [],
+    regionHints: [
+      { name: 'header', selector: 'header' },
+      { name: 'about-core-team', selector: 'main section:nth-of-type(3)' },
+      { name: 'about-advisors', selector: 'main section:nth-of-type(4)' },
+      { name: 'footer', selector: 'footer' },
+    ],
   },
 ] as const;
 
