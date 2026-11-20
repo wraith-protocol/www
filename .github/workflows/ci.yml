@@ -49,8 +49,15 @@ jobs:
 
       - name: Ensure Playwright reports are not tracked
         run: |
-          if git ls-files --error-unmatch 'playwright-report/**' >/dev/null 2>&1; then
-            echo "::error::Generated Playwright reports must not be committed."
+          if git ls-files --error-unmatch 'playwright-report/**' >/dev/null 2>&1 || \
+             git ls-files --error-unmatch 'test-results/**' >/dev/null 2>&1 || \
+             git ls-files --error-unmatch 'blob-report/**' >/dev/null 2>&1; then
+            echo "::error::Generated Playwright runtime reports must not be committed."
+            exit 1
+          fi
+          unapproved_snapshots=$(git ls-files '*__screenshots__/*' '*-snapshots/*' | grep -v '^tests/visual/__screenshots__/' || true)
+          if [ -n "$unapproved_snapshots" ]; then
+            echo "::error::Visual baselines must live inside tests/visual/__screenshots__/: $unapproved_snapshots"
             exit 1
           fi
 
@@ -153,6 +160,51 @@ jobs:
         with:
           name: playwright-report
           path: playwright-report/
+          if-no-files-found: ignore
+          retention-days: 14
+
+  playwright-visual:
+    name: Playwright Visual Gate
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright visual regression suite
+        env:
+          PLAYWRIGHT_VISUAL_OUTPUT_DIR: ${{ runner.temp }}/playwright-visual-results
+          PLAYWRIGHT_VISUAL_REPORT_FILE: ${{ runner.temp }}/playwright-visual-report/visual-report.json
+        run: pnpm test:visual
+
+      - name: Ensure visual suite wrote no runtime files in workspace
+        if: always()
+        run: |
+          outside_changes=$(git status --porcelain --untracked-files=all | awk '{print $2}' | grep -v '^tests/visual/__screenshots__/' || true)
+          if [ -n "$outside_changes" ]; then
+            echo "::error::Visual suite created runtime files outside approved baseline directory: $outside_changes"
+            exit 1
+          fi
+
+      - name: Upload visual regression failure artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-visual-diff
+          path: |
+            ${{ runner.temp }}/playwright-visual-report/
+            ${{ runner.temp }}/playwright-visual-results/
           if-no-files-found: ignore
           retention-days: 14
 
