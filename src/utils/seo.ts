@@ -86,7 +86,8 @@ export function canonicalForRoute(id: string): string {
  * Used for `x-default` hreflang and for pages that don't have locale variants.
  */
 export function canonicalUrl(page: SeoPageKey): string {
-  return canonicalForRoute(page);
+  const path = PAGE_PATHS[page];
+  return path === '/' ? SITE_ORIGIN : `${SITE_ORIGIN}${path}`;
 }
 
 /**

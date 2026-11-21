@@ -24,7 +24,11 @@
     { "host": "lobstr.co" },
     { "host": "reflector.network" },
     { "host": "soroswap.finance" },
-    { "host": "xbull.app" },
+    {
+      "host": "xbull.app",
+      "skipRequest": true,
+      "reason": "The origin rejects automated TLS handshakes with a tlsv1 internal-error alert, so a request cannot tell a live link from a broken one."
+    },
     { "host": "plausible.io" },
     { "host": "fonts.google.com" },
     {
