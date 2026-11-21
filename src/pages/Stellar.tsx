@@ -1,7 +1,8 @@
-import { lazy, Suspense } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
+import RouteBoundary from '../components/RouteBoundary';
 import { useInView } from '../hooks/useInView';
+import { lazyWithRecovery } from '../utils/lazyWithRecovery';
 import { track } from '../utils/track';
 import { usePageSeo } from '../utils/seo';
 
@@ -10,9 +11,11 @@ import { usePageSeo } from '../utils/seo';
 // StellarDeploymentTable pulls in @wraith-protocol/sdk/chains/stellar at
 // runtime; StellarCodePreview and EcosystemPartners are large JSX chunks.
 
-const StellarDeploymentTable = lazy(() => import('../components/StellarDeploymentTable'));
-const StellarCodePreview = lazy(() => import('../components/StellarCodePreview'));
-const EcosystemPartners = lazy(() => import('../components/EcosystemPartners'));
+const StellarDeploymentTable = lazyWithRecovery(
+  () => import('../components/StellarDeploymentTable'),
+);
+const StellarCodePreview = lazyWithRecovery(() => import('../components/StellarCodePreview'));
+const EcosystemPartners = lazyWithRecovery(() => import('../components/EcosystemPartners'));
 
 // ─── How it works steps ───────────────────────────────────────────────────────
 
@@ -254,7 +257,7 @@ export default function Stellar() {
       </section>
 
       {/* ── Deployment table, code preview, CTAs, partners — loaded lazily ── */}
-      <Suspense fallback={null}>
+      <RouteBoundary variant="section" minHeightClass="min-h-[520px]">
         <StellarDeploymentTable />
         <StellarCodePreview />
 
@@ -333,7 +336,7 @@ export default function Stellar() {
 
         {/* ── Ecosystem partners ────────────────────────────────────────────── */}
         <EcosystemPartners />
-      </Suspense>
+      </RouteBoundary>
     </>
   );
 }
