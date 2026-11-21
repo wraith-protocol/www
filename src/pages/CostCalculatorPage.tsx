@@ -2,6 +2,7 @@ import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import CostCalculator from '../components/CostCalculator';
 import Footer from '../components/Footer';
+import { canonicalForRoute } from '../utils/seo';
 
 export default function CostCalculatorPage() {
   return (
@@ -12,7 +13,7 @@ export default function CostCalculatorPage() {
           name="description"
           content="Estimate monthly stealth-payment network fees and modelled overhead across Wraith-supported chains."
         />
-        <link rel="canonical" href="https://usewraith.xyz/use-cases/calculator" />
+        <link rel="canonical" href={canonicalForRoute('use-cases-calculator')} />
       </Helmet>
 
       <a href="#main-content" className="skip-link">

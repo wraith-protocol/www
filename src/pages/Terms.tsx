@@ -1,8 +1,9 @@
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { trackOutbound } from '../utils/track';
+import { canonicalForRoute } from '../utils/seo';
 
-const CANONICAL = 'https://usewraith.xyz/terms';
+const CANONICAL = canonicalForRoute('terms');
 const LAST_UPDATED = '2026-10-17';
 
 const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (

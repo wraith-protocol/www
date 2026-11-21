@@ -8,6 +8,7 @@ import {
   PAGE_SECURITY_HEADERS,
   SUBSCRIBE_API_SECURITY_HEADERS,
 } from '../../src/utils/security-headers';
+import { SPA_FALLBACK_PROBE_PATH, getSmokePages } from '../../src/routes/inventory';
 
 /**
  * Preview smoke tests for the serverless routes.
@@ -455,7 +456,7 @@ describe('serverless failure responses', () => {
   });
 
   it('still serves the built site', async () => {
-    for (const path of ['/', '/stellar']) {
+    for (const path of getSmokePages()) {
       const response = await get(`${preview.baseUrl}${path}`);
       expect(response.status).toBe(200);
       expect(response.headers.get('content-type')).toContain('text/html');
@@ -486,7 +487,8 @@ describe('production security headers across pages, feeds, assets, and API route
   });
 
   it('serves HTML pages and SPA fallback routes with PAGE_SECURITY_HEADERS and JSON-LD intact', async () => {
-    for (const route of ['/', '/stellar', '/blog/wave-7-kickoff', '/spa-client-route']) {
+    const probeRoutes = Array.from(new Set([...getSmokePages(), SPA_FALLBACK_PROBE_PATH]));
+    for (const route of probeRoutes) {
       const response = await get(`${targetBaseUrl}${route}`);
       expect(response.status).toBe(200);
       expect(response.headers.get('content-type')).toContain('text/html');

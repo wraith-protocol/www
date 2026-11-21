@@ -15,11 +15,18 @@
  *   public/sitemap.xml is stale.
  */
 
-import { writeFileSync, readFileSync, readdirSync, statSync, existsSync } from 'fs';
+import { writeFileSync, readFileSync, readdirSync, existsSync } from 'fs';
 import { join, dirname, resolve } from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
 import { execFileSync } from 'child_process';
-import { slugifyTag, parseTags } from './feed-utils.mjs';
+import {
+  SUPPORTED_LOCALE_PREFIXES,
+  getRouteById,
+  getSitemapLocalizedStaticRoutes,
+  getSitemapStaticRoutes,
+  resolveRoutePath,
+  withLocalePrefix,
+} from '../src/routes/inventory';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const rootDir = join(__dirname, '..');
@@ -89,123 +96,34 @@ export function toDateString(value: string | undefined): string | undefined {
 // ─── Route collectors ────────────────────────────────────────────────────────
 
 /**
- * Static routes whose lastmod is derived from the git history of the files
- * that back them.  The list of source files for each entry is used for the
- * git lookup and must stay up-to-date when new pages are added.
+ * Static routes selected from the route inventory. Only routes whose policy
+ * enables `sitemap` are emitted; source files drive the git lastmod lookup.
  */
 const STATIC_ROUTES: Array<{
   route: string;
-  sources: string[];
+  sources: readonly string[];
   changefreq: string;
   priority: string;
-}> = [
-  {
-    route: '/',
-    sources: ['src/pages', 'src/components/Hero.tsx'],
-    changefreq: 'daily',
-    priority: '1.0',
-  },
-  {
-    route: '/faq',
-    sources: ['src/data/faq.json', 'src/pages/Faq.tsx'],
-    changefreq: 'weekly',
-    priority: '0.8',
-  },
-  { route: '/privacy', sources: ['src/pages/Privacy.tsx'], changefreq: 'weekly', priority: '0.8' },
-  {
-    route: '/use-cases',
-    sources: ['src/pages/UseCases.tsx'],
-    changefreq: 'weekly',
-    priority: '0.8',
-  },
-  {
-    route: '/use-cases/calculator',
-    sources: ['src/pages/CostCalculatorPage.tsx', 'src/components/CostCalculator.tsx'],
-    changefreq: 'weekly',
-    priority: '0.8',
-  },
-  {
-    route: '/roadmap',
-    sources: ['src/data/roadmap.json', 'src/pages/Roadmap.tsx'],
-    changefreq: 'weekly',
-    priority: '0.8',
-  },
-  {
-    route: '/case-studies',
-    sources: ['src/data/case-studies.json', 'src/pages/CaseStudies.tsx'],
-    changefreq: 'weekly',
-    priority: '0.8',
-  },
-  {
-    route: '/stellar',
-    sources: ['src/pages/Stellar.tsx'],
-    changefreq: 'weekly',
-    priority: '0.8',
-  },
-  { route: '/careers', sources: ['src/pages/Careers.tsx'], changefreq: 'weekly', priority: '0.8' },
-  { route: '/press', sources: ['src/pages/Press.tsx'], changefreq: 'weekly', priority: '0.8' },
-  { route: '/terms', sources: ['src/pages/Terms.tsx'], changefreq: 'weekly', priority: '0.8' },
-  { route: '/about', sources: ['src/pages/About.tsx'], changefreq: 'weekly', priority: '0.8' },
-  {
-    route: '/blog',
-    sources: ['src/pages/Blog.tsx', 'src/content/blog'],
-    changefreq: 'weekly',
-    priority: '0.8',
-  },
-  {
-    route: '/chains',
-    sources: ['src/data/chains.json', 'src/pages/Chains.tsx'],
-    changefreq: 'weekly',
-    priority: '0.8',
-  },
-  {
-    route: '/contributors',
-    sources: ['src/pages/Contributors.tsx'],
-    changefreq: 'weekly',
-    priority: '0.8',
-  },
-  {
-    route: '/ecosystem',
-    sources: ['src/data/ecosystem.json', 'src/pages/Ecosystem.tsx'],
-    changefreq: 'weekly',
-    priority: '0.8',
-  },
-  {
-    route: '/governance',
-    sources: ['src/pages/Governance.tsx'],
-    changefreq: 'weekly',
-    priority: '0.8',
-  },
-  { route: '/grants', sources: ['src/pages/Grants.tsx'], changefreq: 'weekly', priority: '0.8' },
-  {
-    route: '/newsletter',
-    sources: ['src/pages/Newsletter.tsx'],
-    changefreq: 'weekly',
-    priority: '0.8',
-  },
-  {
-    route: '/security',
-    sources: ['src/data/security.json', 'src/pages/Security.tsx'],
-    changefreq: 'weekly',
-    priority: '0.8',
-  },
-  { route: '/status', sources: ['src/pages/Status.tsx'], changefreq: 'weekly', priority: '0.8' },
-  {
-    route: '/threat-model',
-    sources: ['src/data/threat-model.json', 'src/pages/ThreatModel.tsx'],
-    changefreq: 'weekly',
-    priority: '0.8',
-  },
-  { route: '/vitals', sources: ['src/pages/Vitals.tsx'], changefreq: 'weekly', priority: '0.8' },
-];
+}> = getSitemapStaticRoutes().map((route) => ({
+  route: route.path,
+  sources: route.sources,
+  changefreq: route.changefreq,
+  priority: route.priority,
+}));
 
-/**
- * Pages that have locale-prefixed alternates.
- * Must stay in sync with LOCALE_URL_PREFIX in src/utils/seo.ts and the
- * locale-prefixed <Route> entries in App.tsx.
- */
-const LOCALE_PREFIXED_PAGES = ['/', '/stellar', '/grants', '/blog', '/case-studies'];
-const SUPPORTED_LOCALE_PREFIXES = ['/es', '/pt'];
+/** Locale-prefixed alternates, selected from the inventory's `localized` policy. */
+const LOCALE_PREFIXED_PAGES = getSitemapLocalizedStaticRoutes().map((route) => route.path);
+
+function dynamicRoute(id: string) {
+  const route = getRouteById(id);
+  if (!route || route.kind !== 'dynamic') {
+    throw new Error(`Route inventory has no dynamic route for "${id}"`);
+  }
+  return route;
+}
+
+const CASE_STUDY_ROUTE = dynamicRoute('case-study');
+const BLOG_POST_ROUTE = dynamicRoute('blog-post');
 
 export interface RouteEntry {
   route: string;
@@ -223,37 +141,12 @@ export function getCaseStudyRoutes(): RouteEntry[] {
     return data.entries
       .filter((e: { slug?: string }) => e.slug)
       .map((e: { slug: string; integrationDate?: string }) => ({
-        route: `/case-studies/${e.slug}`,
+        route: resolveRoutePath(CASE_STUDY_ROUTE, { slug: e.slug }),
         // prefer the structured integrationDate field; fall back to the git
         // date of the data file itself
         lastmod: toDateString(e.integrationDate) ?? gitLastModified('src/data/case-studies.json'),
         changefreq: 'weekly',
         priority: '0.7',
-      }));
-  } catch {
-    return [];
-  }
-}
-
-function getAuthorRoutes(): RouteEntry[] {
-  const authorsPath = join(rootDir, 'src', 'data', 'authors.json');
-  const optOutPath = join(rootDir, 'src', 'data', 'authors-optout.json');
-  if (!existsSync(authorsPath)) return [];
-  try {
-    const authors: Record<string, { optIn?: boolean }> = JSON.parse(
-      readFileSync(authorsPath, 'utf8'),
-    );
-    const optOut: string[] = existsSync(optOutPath)
-      ? JSON.parse(readFileSync(optOutPath, 'utf8'))
-      : [];
-    return Object.entries(authors)
-      .filter(([id, author]) => !optOut.includes(id) && author.optIn)
-      .map(([id]) => ({
-        route: `/blog/author/${id}`,
-        // no meaningful date for an author aggregate page
-        lastmod: undefined,
-        changefreq: 'weekly',
-        priority: '0.8',
       }));
   } catch {
     return [];
@@ -271,7 +164,12 @@ export function getBlogRoutes(): RouteEntry[] {
       // Prefer the frontmatter date field (content date), fall back to git
       const lastmod =
         toDateString(fm.date ?? fm.publishedAt) ?? gitLastModified(`src/content/blog/${file}`);
-      entries.push({ route: `/blog/${slug}`, lastmod, changefreq: 'weekly', priority: '0.8' });
+      entries.push({
+        route: resolveRoutePath(BLOG_POST_ROUTE, { slug }),
+        lastmod,
+        changefreq: 'weekly',
+        priority: '0.8',
+      });
     }
   }
 
@@ -285,7 +183,7 @@ export function getBlogRoutes(): RouteEntry[] {
       const existing = new Set(entries.map((e) => e.route));
       for (const post of posts) {
         if (!post.slug) continue;
-        const route = `/blog/${post.slug}`;
+        const route = resolveRoutePath(BLOG_POST_ROUTE, { slug: post.slug });
         if (existing.has(route)) continue;
         entries.push({
           route,
@@ -301,67 +199,6 @@ export function getBlogRoutes(): RouteEntry[] {
     }
   }
 
-  return entries;
-}
-
-function getBlogTagRoutes(): RouteEntry[] {
-  const tags = new Set<string>();
-  const blogDir = join(rootDir, 'src', 'content', 'blog');
-
-  if (existsSync(blogDir)) {
-    for (const file of readdirSync(blogDir).filter((f) => /\.mdx?$/.test(f))) {
-      const raw = readFileSync(join(blogDir, file), 'utf8');
-      const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---/);
-      if (match) {
-        const tagsLine = match[1].split('\n').find((l) => l.trim().startsWith('tags:'));
-        if (tagsLine) {
-          parseTags(tagsLine.slice(tagsLine.indexOf(':') + 1).trim()).forEach((t: string) =>
-            tags.add(t),
-          );
-        }
-      }
-    }
-  }
-
-  const manifestPath = join(rootDir, 'src', 'data', 'blog-posts.json');
-  if (existsSync(manifestPath)) {
-    try {
-      const data: Array<{ tags?: string[] }> = JSON.parse(readFileSync(manifestPath, 'utf8'));
-      for (const post of data) {
-        if (Array.isArray(post.tags)) post.tags.forEach((t) => tags.add(t));
-      }
-    } catch {
-      // ignore
-    }
-  }
-
-  return Array.from(tags).map((tag) => ({
-    route: `/blog/tag/${slugifyTag(tag)}`,
-    // tag archive pages have no single meaningful date
-    lastmod: undefined,
-    changefreq: 'weekly',
-    priority: '0.8',
-  }));
-}
-
-/**
- * Discover routes from the built dist/ directory that are not already known.
- * These get no lastmod since we can't map them back to source.
- */
-function getDistRoutes(dir: string, base = ''): RouteEntry[] {
-  const entries: RouteEntry[] = [];
-  if (!existsSync(dir)) return entries;
-  const files = readdirSync(dir);
-  if (files.includes('index.html') && base) {
-    entries.push({ route: base, lastmod: undefined, changefreq: 'weekly', priority: '0.8' });
-  }
-  for (const file of files) {
-    if (file === 'og' || file === '404' || file.startsWith('.')) continue;
-    const fullPath = join(dir, file);
-    if (statSync(fullPath).isDirectory()) {
-      entries.push(...getDistRoutes(fullPath, `${base}/${file}`));
-    }
-  }
   return entries;
 }
 
@@ -399,8 +236,8 @@ export function collectRoutes(): RouteEntry[] {
 
   const localeRoutes: RouteEntry[] = SUPPORTED_LOCALE_PREFIXES.flatMap((prefix) =>
     LOCALE_PREFIXED_PAGES.map((page) => {
-      const route = page === '/' ? prefix : `${prefix}${page}`;
-      const isRoot = route === prefix;
+      const route = withLocalePrefix(prefix, page);
+      const isRoot = route === `/${prefix}`;
       return {
         route,
         lastmod: gitLastModified(...(STATIC_ROUTES.find((r) => r.route === page)?.sources ?? [])),
@@ -411,24 +248,12 @@ export function collectRoutes(): RouteEntry[] {
   );
 
   const csRoutes = getCaseStudyRoutes();
-  const authorRoutes = getAuthorRoutes();
   const blogRoutes = getBlogRoutes();
-  const tagRoutes = getBlogTagRoutes();
-  const distRoutes = existsSync(distDir) ? getDistRoutes(distDir) : [];
 
-  // Deduplicate by route, keeping the first occurrence (structured data wins
-  // over dist discovery).
+  // Deduplicate by route, keeping the first occurrence.
   const seen = new Set<string>();
   const allRoutes: RouteEntry[] = [];
-  for (const entry of [
-    ...staticEntries,
-    ...csRoutes,
-    ...authorRoutes,
-    ...blogRoutes,
-    ...tagRoutes,
-    ...localeRoutes,
-    ...distRoutes,
-  ]) {
+  for (const entry of [...staticEntries, ...csRoutes, ...blogRoutes, ...localeRoutes]) {
     if (
       !entry.route ||
       entry.route === '/404' ||
