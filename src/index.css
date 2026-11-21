@@ -294,4 +294,8 @@ button:focus-visible,
     transform: translateY(0);
     transition: none;
   }
+
+  .route-skeleton-shimmer {
+    animation: none;
+  }
 }

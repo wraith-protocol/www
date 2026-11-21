@@ -1,54 +1,56 @@
-import { lazy, Suspense, useEffect } from 'react';
+import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import Features from './components/Features';
 import Layout from './components/Layout';
+import RouteBoundary from './components/RouteBoundary';
 import TrustStrip from './components/TrustStrip';
 import PartnerStrip from './components/PartnerStrip';
 import { ThemeProvider } from './context/ThemeContext';
 import { usePageSeo } from './utils/seo';
+import { lazyWithRecovery } from './utils/lazyWithRecovery';
 import { changeLocale, type Locale } from './i18n';
 import { useScrollToHash } from './hooks/useScrollToHash';
 
 // Lazy load below-the-fold homepage components
-const StealthAnimation = lazy(() => import('./components/StealthAnimation'));
-const Architecture = lazy(() => import('./components/Architecture'));
-const ForDevelopers = lazy(() => import('./components/ForDevelopers'));
-const Chains = lazy(() => import('./components/Chains'));
-const StellarMetrics = lazy(() => import('./components/StellarMetrics'));
-const Compare = lazy(() => import('./components/Compare'));
-const Showcase = lazy(() => import('./components/Showcase'));
-const CaseStudiesStrip = lazy(() => import('./components/CaseStudiesStrip'));
-const EcosystemPartners = lazy(() => import('./components/EcosystemPartners'));
-const CtaStrip = lazy(() => import('./components/CtaStrip'));
-const Footer = lazy(() => import('./components/Footer'));
+const StealthAnimation = lazyWithRecovery(() => import('./components/StealthAnimation'));
+const Architecture = lazyWithRecovery(() => import('./components/Architecture'));
+const ForDevelopers = lazyWithRecovery(() => import('./components/ForDevelopers'));
+const Chains = lazyWithRecovery(() => import('./components/Chains'));
+const StellarMetrics = lazyWithRecovery(() => import('./components/StellarMetrics'));
+const Compare = lazyWithRecovery(() => import('./components/Compare'));
+const Showcase = lazyWithRecovery(() => import('./components/Showcase'));
+const CaseStudiesStrip = lazyWithRecovery(() => import('./components/CaseStudiesStrip'));
+const EcosystemPartners = lazyWithRecovery(() => import('./components/EcosystemPartners'));
+const CtaStrip = lazyWithRecovery(() => import('./components/CtaStrip'));
+const Footer = lazyWithRecovery(() => import('./components/Footer'));
 
 // Lazy load pages
-const Faq = lazy(() => import('./pages/Faq'));
-const Privacy = lazy(() => import('./pages/Privacy'));
-const Terms = lazy(() => import('./pages/Terms'));
-const Press = lazy(() => import('./pages/Press'));
-const Newsletter = lazy(() => import('./pages/Newsletter'));
-const UseCases = lazy(() => import('./pages/UseCases'));
-const CostCalculatorPage = lazy(() => import('./pages/CostCalculatorPage'));
-const Stellar = lazy(() => import('./pages/Stellar'));
-const Roadmap = lazy(() => import('./pages/Roadmap'));
-const Grants = lazy(() => import('./pages/Grants'));
-const CaseStudies = lazy(() => import('./pages/CaseStudies'));
-const Careers = lazy(() => import('./pages/Careers'));
-const About = lazy(() => import('./pages/About'));
-const Governance = lazy(() => import('./pages/Governance'));
-const Vitals = lazy(() => import('./pages/Vitals'));
-const Security = lazy(() => import('./pages/Security'));
-const ThreatModel = lazy(() => import('./pages/ThreatModel'));
-const Status = lazy(() => import('./pages/Status'));
-const NotFound = lazy(() => import('./pages/NotFound'));
-const Contributors = lazy(() => import('./pages/Contributors'));
-const Blog = lazy(() => import('./pages/Blog'));
-const Ecosystem = lazy(() => import('./pages/Ecosystem'));
-const ChainsPage = lazy(() => import('./pages/Chains'));
+const Faq = lazyWithRecovery(() => import('./pages/Faq'));
+const Privacy = lazyWithRecovery(() => import('./pages/Privacy'));
+const Terms = lazyWithRecovery(() => import('./pages/Terms'));
+const Press = lazyWithRecovery(() => import('./pages/Press'));
+const Newsletter = lazyWithRecovery(() => import('./pages/Newsletter'));
+const UseCases = lazyWithRecovery(() => import('./pages/UseCases'));
+const CostCalculatorPage = lazyWithRecovery(() => import('./pages/CostCalculatorPage'));
+const Stellar = lazyWithRecovery(() => import('./pages/Stellar'));
+const Roadmap = lazyWithRecovery(() => import('./pages/Roadmap'));
+const Grants = lazyWithRecovery(() => import('./pages/Grants'));
+const CaseStudies = lazyWithRecovery(() => import('./pages/CaseStudies'));
+const Careers = lazyWithRecovery(() => import('./pages/Careers'));
+const About = lazyWithRecovery(() => import('./pages/About'));
+const Governance = lazyWithRecovery(() => import('./pages/Governance'));
+const Vitals = lazyWithRecovery(() => import('./pages/Vitals'));
+const Security = lazyWithRecovery(() => import('./pages/Security'));
+const ThreatModel = lazyWithRecovery(() => import('./pages/ThreatModel'));
+const Status = lazyWithRecovery(() => import('./pages/Status'));
+const NotFound = lazyWithRecovery(() => import('./pages/NotFound'));
+const Contributors = lazyWithRecovery(() => import('./pages/Contributors'));
+const Blog = lazyWithRecovery(() => import('./pages/Blog'));
+const Ecosystem = lazyWithRecovery(() => import('./pages/Ecosystem'));
+const ChainsPage = lazyWithRecovery(() => import('./pages/Chains'));
 
 /**
  * Sets the active locale based on the URL prefix, then renders `children`.
@@ -104,7 +106,7 @@ function Home() {
         <Hero />
         <TrustStrip />
         <Features />
-        <Suspense fallback={null}>
+        <RouteBoundary variant="section" minHeightClass="min-h-[480px]">
           <StealthAnimation />
           <Architecture />
           <ForDevelopers />
@@ -115,12 +117,12 @@ function Home() {
           <CaseStudiesStrip />
           <EcosystemPartners />
           <CtaStrip />
-        </Suspense>
+        </RouteBoundary>
         <PartnerStrip />
       </main>
-      <Suspense fallback={null}>
+      <RouteBoundary variant="footer">
         <Footer />
-      </Suspense>
+      </RouteBoundary>
     </div>
   );
 }
@@ -130,7 +132,7 @@ export default function App() {
     <ThemeProvider>
       <BrowserRouter>
         <LocaleSync />
-        <Suspense fallback={null}>
+        <RouteBoundary variant="page">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/faq" element={<Faq />} />
@@ -370,7 +372,7 @@ export default function App() {
               </>
             ))}
           </Routes>
-        </Suspense>
+        </RouteBoundary>
       </BrowserRouter>
     </ThemeProvider>
   );

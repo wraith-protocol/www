@@ -653,5 +653,29 @@
       "successShort": "Check your inbox",
       "errorShort": "Try again"
     }
+  },
+  "routeBoundary": {
+    "skipToContent": "Skip to content",
+    "loadingLabel": "Loading",
+    "loadingPage": "Loading page…",
+    "loadingSection": "Loading section…",
+    "loadingFooter": "Loading footer…",
+    "eyebrowOffline": "OFFLINE",
+    "eyebrowUpdate": "UPDATE REQUIRED",
+    "eyebrowRecovery": "RECOVERY",
+    "headingOffline": "You appear to be offline",
+    "headingChunk": "Unable to load the latest page version",
+    "headingGeneric": "This page could not be loaded",
+    "headingSection": "This section could not be loaded",
+    "bodyOffline": "Your device lost its network connection before this view could finish loading. Reconnect and try again.",
+    "bodyChunk": "A newer deployment may have replaced cached files, or the download was interrupted. Retry or reload to fetch the latest build.",
+    "bodyGeneric": "An unexpected error interrupted rendering. You can try again, reload the page, or return to the homepage.",
+    "connectionRestored": "Connection restored. You can try loading again.",
+    "retryLimitReached": "Retry limit reached. Reload the page to fetch the latest version.",
+    "reloadLimitReached": "A recent reload did not resolve this issue. Check your connection or return home.",
+    "offlineReloadBlocked": "Reconnect to the internet before reloading this page.",
+    "retryButton": "Try again",
+    "reloadButton": "Reload page",
+    "homeLink": "Return home"
   }
 }
