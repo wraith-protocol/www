@@ -59,7 +59,7 @@ describe('build validation gates', () => {
 
     expect(packageSource.match(/"build"\s*:/g)).toHaveLength(1);
     expect(packageJson.scripts.build).toMatch(
-      /^tsx scripts\/validate-content\.ts && node scripts\/check-sdk-size\.mjs &&/,
+      /^tsx scripts\/validate-content\.ts && tsx scripts\/validate-routes\.ts && node scripts\/check-sdk-size\.mjs &&/,
     );
   });
 

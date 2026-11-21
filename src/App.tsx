@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect } from 'react';
+import { lazy, Suspense, useEffect, type ComponentType } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import Header from './components/Header';
@@ -11,6 +11,14 @@ import { ThemeProvider } from './context/ThemeContext';
 import { usePageSeo } from './utils/seo';
 import { changeLocale, type Locale } from './i18n';
 import { useScrollToHash } from './hooks/useScrollToHash';
+import {
+  APP_ROUTES,
+  SUPPORTED_LOCALE_PREFIXES,
+  getLocalizedRoutes,
+  withLocalePrefix,
+  type AppRouteDefinition,
+  type RouteComponent,
+} from './routes/inventory';
 
 // Lazy load below-the-fold homepage components
 const StealthAnimation = lazy(() => import('./components/StealthAnimation'));
@@ -125,6 +133,48 @@ function Home() {
   );
 }
 
+/**
+ * Every route component is registered here, keyed by the inventory's component
+ * id. A route cannot be rendered unless the inventory declares its policy.
+ */
+const ROUTE_COMPONENTS: Record<RouteComponent, ComponentType> = {
+  home: Home,
+  faq: Faq,
+  privacy: Privacy,
+  terms: Terms,
+  press: Press,
+  newsletter: Newsletter,
+  useCases: UseCases,
+  costCalculator: CostCalculatorPage,
+  roadmap: Roadmap,
+  caseStudies: CaseStudies,
+  ecosystem: Ecosystem,
+  vitals: Vitals,
+  security: Security,
+  threatModel: ThreatModel,
+  status: Status,
+  stellar: Stellar,
+  careers: Careers,
+  grants: Grants,
+  about: About,
+  governance: Governance,
+  contributors: Contributors,
+  blog: Blog,
+  chains: ChainsPage,
+  notFound: NotFound,
+};
+
+function RouteElement({ route }: { route: AppRouteDefinition }) {
+  const Page = ROUTE_COMPONENTS[route.component];
+  return route.shell === 'layout' ? (
+    <Layout>
+      <Page />
+    </Layout>
+  ) : (
+    <Page />
+  );
+}
+
 export default function App() {
   return (
     <ThemeProvider>
@@ -132,243 +182,25 @@ export default function App() {
         <LocaleSync />
         <Suspense fallback={null}>
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/faq" element={<Faq />} />
-            <Route path="/privacy" element={<Privacy />} />
-            <Route path="/terms" element={<Terms />} />
-            <Route path="/press" element={<Press />} />
-            <Route path="/newsletter" element={<Newsletter />} />
-            <Route path="/use-cases" element={<UseCases />} />
-            <Route path="/use-cases/calculator" element={<CostCalculatorPage />} />
-            <Route path="/roadmap" element={<Roadmap />} />
-            <Route path="/case-studies" element={<CaseStudies />} />
-            <Route path="/case-studies/:slug" element={<CaseStudies />} />
-            <Route
-              path="/ecosystem"
-              element={
-                <Layout>
-                  <Ecosystem />
-                </Layout>
-              }
-            />
-            <Route path="/vitals" element={<Vitals />} />
-            <Route
-              path="/security"
-              element={
-                <Layout>
-                  <Security />
-                </Layout>
-              }
-            />
-            <Route
-              path="/threat-model"
-              element={
-                <Layout>
-                  <ThreatModel />
-                </Layout>
-              }
-            />
-            {/* Status page route */}
-            <Route
-              path="/status"
-              element={
-                <Layout>
-                  <Status />
-                </Layout>
-              }
-            />
-            {/* Wrap Stellar with Layout */}
-            <Route
-              path="/stellar"
-              element={
-                <Layout>
-                  <Stellar />
-                </Layout>
-              }
-            />
-            <Route
-              path="/careers"
-              element={
-                <Layout>
-                  <Careers />
-                </Layout>
-              }
-            />
-            <Route
-              path="/grants"
-              element={
-                <Layout>
-                  <Grants />
-                </Layout>
-              }
-            />
-            <Route
-              path="/about"
-              element={
-                <Layout>
-                  <About />
-                </Layout>
-              }
-            />
-            <Route
-              path="/governance"
-              element={
-                <Layout>
-                  <Governance />
-                </Layout>
-              }
-            />
-            <Route
-              path="/contributors"
-              element={
-                <Layout>
-                  <Contributors />
-                </Layout>
-              }
-            />
-            <Route
-              path="/blog"
-              element={
-                <Layout>
-                  <Blog />
-                </Layout>
-              }
-            />
-            <Route
-              path="/blog/tag/:tagSlug"
-              element={
-                <Layout>
-                  <Blog />
-                </Layout>
-              }
-            />
-            <Route
-              path="/blog/:slug"
-              element={
-                <Layout>
-                  <Blog />
-                </Layout>
-              }
-            />
-            <Route
-              path="/blog/author/:authorId"
-              element={
-                <Layout>
-                  <Blog />
-                </Layout>
-              }
-            />
-            <Route
-              path="/chains"
-              element={
-                <Layout>
-                  <ChainsPage />
-                </Layout>
-              }
-            />
-            <Route path="*" element={<NotFound />} />
-
-            {/* ── Locale-prefixed routes (/es/*, /pt/*) ────────────────────
-                These are the distinct, crawlable URLs referenced by hreflang
-                alternates. Each route activates the matching locale then
-                renders the same page component as its English counterpart.    */}
-            {(['es', 'pt'] as const).map((locale) => (
-              <>
-                <Route
-                  key={`${locale}-home`}
-                  path={`/${locale}`}
-                  element={
-                    <LocaleScope locale={locale}>
-                      <Home />
-                    </LocaleScope>
-                  }
-                />
-                <Route
-                  key={`${locale}-stellar`}
-                  path={`/${locale}/stellar`}
-                  element={
-                    <LocaleScope locale={locale}>
-                      <Layout>
-                        <Stellar />
-                      </Layout>
-                    </LocaleScope>
-                  }
-                />
-                <Route
-                  key={`${locale}-grants`}
-                  path={`/${locale}/grants`}
-                  element={
-                    <LocaleScope locale={locale}>
-                      <Layout>
-                        <Grants />
-                      </Layout>
-                    </LocaleScope>
-                  }
-                />
-                <Route
-                  key={`${locale}-blog`}
-                  path={`/${locale}/blog`}
-                  element={
-                    <LocaleScope locale={locale}>
-                      <Layout>
-                        <Blog />
-                      </Layout>
-                    </LocaleScope>
-                  }
-                />
-                <Route
-                  key={`${locale}-blog-slug`}
-                  path={`/${locale}/blog/:slug`}
-                  element={
-                    <LocaleScope locale={locale}>
-                      <Layout>
-                        <Blog />
-                      </Layout>
-                    </LocaleScope>
-                  }
-                />
-                <Route
-                  key={`${locale}-blog-author`}
-                  path={`/${locale}/blog/author/:authorId`}
-                  element={
-                    <LocaleScope locale={locale}>
-                      <Layout>
-                        <Blog />
-                      </Layout>
-                    </LocaleScope>
-                  }
-                />
-                <Route
-                  key={`${locale}-blog-tag`}
-                  path={`/${locale}/blog/tag/:tagSlug`}
-                  element={
-                    <LocaleScope locale={locale}>
-                      <Layout>
-                        <Blog />
-                      </Layout>
-                    </LocaleScope>
-                  }
-                />
-                <Route
-                  key={`${locale}-case-studies`}
-                  path={`/${locale}/case-studies`}
-                  element={
-                    <LocaleScope locale={locale}>
-                      <CaseStudies />
-                    </LocaleScope>
-                  }
-                />
-                <Route
-                  key={`${locale}-case-studies-slug`}
-                  path={`/${locale}/case-studies/:slug`}
-                  element={
-                    <LocaleScope locale={locale}>
-                      <CaseStudies />
-                    </LocaleScope>
-                  }
-                />
-              </>
+            {APP_ROUTES.map((route) => (
+              <Route key={route.id} path={route.path} element={<RouteElement route={route} />} />
             ))}
+
+            {/* Locale-prefixed variants generated from the same inventory. Each
+                route activates the matching locale before rendering its page. */}
+            {getLocalizedRoutes().flatMap((route) =>
+              SUPPORTED_LOCALE_PREFIXES.map((locale) => (
+                <Route
+                  key={`${locale}-${route.id}`}
+                  path={withLocalePrefix(locale, route.path)}
+                  element={
+                    <LocaleScope locale={locale}>
+                      <RouteElement route={route} />
+                    </LocaleScope>
+                  }
+                />
+              )),
+            )}
           </Routes>
         </Suspense>
       </BrowserRouter>

@@ -8,19 +8,28 @@
 
 import { useTranslation } from 'react-i18next';
 import { SUPPORTED_LOCALES, type Locale } from '../i18n';
+import { getRouteById } from '../routes/inventory';
 
 export const SITE_ORIGIN = 'https://usewraith.xyz';
 
 /** Pages that have dedicated i18n SEO metadata and locale-prefixed URL variants. */
 export type SeoPageKey = 'home' | 'stellar' | 'grants' | 'blog' | 'caseStudies';
 
-/** The canonical base path for each page (no locale prefix — English is the canonical). */
+/** The canonical base path for each page, read from the route inventory. */
+function canonicalPath(id: string): string {
+  const route = getRouteById(id);
+  if (!route || route.kind === 'redirect') {
+    throw new Error(`Route inventory has no renderable route for "${id}"`);
+  }
+  return route.path;
+}
+
 const PAGE_PATHS: Record<SeoPageKey, string> = {
-  home: '/',
-  stellar: '/stellar',
-  grants: '/grants',
-  blog: '/blog',
-  caseStudies: '/case-studies',
+  home: canonicalPath('home'),
+  stellar: canonicalPath('stellar'),
+  grants: canonicalPath('grants'),
+  blog: canonicalPath('blog'),
+  caseStudies: canonicalPath('case-studies'),
 };
 
 /**
@@ -58,6 +67,18 @@ export interface PageSeoMeta {
   canonical: string;
   /** Full set of hreflang alternates including `x-default`. */
   alternates: HreflangAlternate[];
+}
+
+/**
+ * Returns the canonical URL for an inventory route id in the default (English)
+ * locale. Pages without dedicated SEO translations use this directly.
+ */
+export function canonicalForRoute(id: string): string {
+  const route = getRouteById(id);
+  if (!route || route.kind === 'redirect') {
+    throw new Error(`Route inventory has no canonical page for "${id}"`);
+  }
+  return route.path === '/' ? SITE_ORIGIN : `${SITE_ORIGIN}${route.path}`;
 }
 
 /**

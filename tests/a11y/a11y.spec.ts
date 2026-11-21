@@ -1,18 +1,8 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import { getAccessibilityTargets } from '../../src/routes/inventory';
 
-const pages = [
-  { path: '/', name: 'homepage' },
-  { path: '/faq', name: 'FAQ' },
-  { path: '/roadmap', name: 'roadmap' },
-  { path: '/privacy', name: 'privacy policy' },
-  { path: '/use-cases', name: 'use cases' },
-  { path: '/use-cases/calculator', name: 'payment cost calculator' },
-  { path: '/stellar', name: 'Stellar page' },
-  { path: '/case-studies', name: 'case studies list' },
-  { path: '/case-studies/payroll-processor', name: 'case study detail' },
-  { path: '/nonexistent-page', name: '404 not found' },
-];
+const pages = getAccessibilityTargets();
 
 for (const { path, name } of pages) {
   test(`has zero critical/serious axe violations on ${name}`, async ({ page }) => {
