@@ -58,8 +58,9 @@ describe('build validation gates', () => {
     const packageJson = JSON.parse(packageSource) as { scripts: { build: string } };
 
     expect(packageSource.match(/"build"\s*:/g)).toHaveLength(1);
+    // The manifest must be generated first, because content validation checks the artifact.
     expect(packageJson.scripts.build).toMatch(
-      /^tsx scripts\/validate-content\.ts && node scripts\/check-sdk-size\.mjs &&/,
+      /^node scripts\/gen-blog-manifest\.mjs && tsx scripts\/validate-content\.ts && node scripts\/check-sdk-size\.mjs &&/,
     );
   });
 
