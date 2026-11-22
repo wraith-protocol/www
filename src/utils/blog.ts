@@ -1,7 +1,16 @@
 import type { ComponentType } from 'react';
 import GithubSlugger from 'github-slugger';
-import authorsData from '../data/authors.json';
-import authorsOptOutData from '../data/authors-optout.json';
+import {
+  getAuthorById,
+  resolveAuthor,
+  slugifyTag,
+  type Author,
+  type AuthorLinks,
+  type AuthorProfile,
+} from './blog-taxonomy';
+
+export { getAuthorById, resolveAuthor, slugifyTag };
+export type { Author, AuthorLinks, AuthorProfile };
 
 export interface BlogPostFrontmatter {
   title: string;
@@ -17,22 +26,6 @@ export interface TocItem {
   level: number;
 }
 
-export interface AuthorLinks {
-  website?: string;
-  github?: string;
-  twitter?: string;
-  email?: string;
-}
-
-export interface Author {
-  name: string;
-  bio: string;
-  avatar?: string;
-  links?: AuthorLinks;
-  optIn: boolean;
-}
-
-export type AuthorProfile = Author & { id: string };
 export interface BlogPost {
   slug: string;
   title: string;
@@ -51,43 +44,6 @@ export interface BlogPost {
 interface MDXModule {
   default: ComponentType;
   frontmatter: BlogPostFrontmatter;
-}
-
-const COLLAPSED_NAME = 'Wraith Team';
-
-const authors = (authorsData ?? {}) as Record<string, Author>;
-const optOutList = (authorsOptOutData ?? []) as string[];
-
-/**
- * Returns the public author profile for an id, or undefined if the author
- * opted out (or is unknown). Opted-out and unknown ids never get a page.
- */
-export function getAuthorById(id: string): AuthorProfile | undefined {
-  const author = authors[id];
-  if (!author) return undefined;
-  if (optOutList.includes(id) || !author.optIn) return undefined;
-  return { ...author, id };
-}
-
-/**
- * Resolves a raw frontmatter author id into a display name and an optional
- * page link id. Opted-out authors collapse to "Wraith Team" with no link;
- * unknown ids fall back to the raw string with no link (graceful, no crash).
- */
-export function resolveAuthor(authorId: string): { name: string; linkId: string | null } {
-  if (optOutList.includes(authorId)) {
-    return { name: COLLAPSED_NAME, linkId: null };
-  }
-
-  const author = authors[authorId];
-  if (author && author.optIn) {
-    return { name: author.name, linkId: authorId };
-  }
-  if (author && !author.optIn) {
-    return { name: COLLAPSED_NAME, linkId: null };
-  }
-
-  return { name: authorId, linkId: null };
 }
 
 const modules = import.meta.glob<MDXModule>('/src/content/blog/*.mdx', { eager: true });
@@ -177,14 +133,6 @@ export function getAllTags(): string[] {
     post.tags.forEach((tag) => tagSet.add(tag));
   });
   return Array.from(tagSet).sort();
-}
-
-export function slugifyTag(tag: string): string {
-  return String(tag)
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
 }
 
 export function getTagFromSlug(slug: string): string | undefined {

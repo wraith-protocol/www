@@ -140,6 +140,31 @@ The footer badge reads those values at build time and will automatically reflect
 - Trigger a manual incident or synthetic failure in the provider to verify the badge flips to yellow/red.
 - Confirm the badge links back to the public incident history and subscribe flow.
 
+## Open Graph images
+
+`pnpm build` renders one 1200×630 card per route and locale into `dist/og/` (`scripts/og.ts`).
+The matrix comes from `listOgImageJobs()` in `src/utils/og-metadata.ts` and covers core routes,
+blog posts, case studies, blog tag archives and public author archives in every locale.
+
+Every run starts from an empty `dist/og/`, and the build fails if any image breaks a rule:
+
+| Issue                                 | Caught when                                                                     |
+| ------------------------------------- | ------------------------------------------------------------------------------- |
+| `malformed-image`                     | the PNG fails to decode (signature, chunk CRC, IHDR, image data)                |
+| `wrong-dimensions`                    | the image is not 1200×630                                                       |
+| `blank-image`                         | under 0.5% of pixels differ from the `surface` background                       |
+| `unsafe-text-bounds`                  | a word or painted pixel lands in the 64px/80px safe-area margin                 |
+| `clipped-text`                        | the title, subtitle, byline or tags are not fully rendered                      |
+| `missing-font` / `missing-glyphs`     | a font file is missing or unreadable, or a character has no glyph               |
+| `unsafe-filename`                     | a file name is not lowercase kebab-case or its locale prefix is wrong           |
+| `duplicate-file` / `duplicate-output` | two jobs share a file, or two files are byte-identical                          |
+| `metadata-mismatch`                   | the card disagrees with what `resolveRouteMetadata` serves for its route/locale |
+| `missing-metadata`                    | a post lost its author/tags, or an archive lost its tag/author                  |
+
+Run the checks without a full build with `pnpm vitest run tests/og`. Layout baselines live in
+`tests/og/__baselines__/`, one per card family (not one per image). After an intentional
+template change, refresh them with `pnpm vitest run tests/og -u` and review the diff.
+
 ## Commit conventions
 
 Commits follow [Conventional Commits](https://www.conventionalcommits.org/)

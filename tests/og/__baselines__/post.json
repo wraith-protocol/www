@@ -1,0 +1,44 @@
+{
+  "file": "pt-blog-wave-7-kickoff.png",
+  "kind": "post",
+  "locale": "pt",
+  "titleFontSize": 76,
+  "lines": [
+    {
+      "y": 89,
+      "x": 132,
+      "right": 311,
+      "text": "WRAITH PROTOCOL"
+    },
+    {
+      "y": 91,
+      "x": 89,
+      "right": 109,
+      "text": "W"
+    },
+    {
+      "y": 379,
+      "x": 80,
+      "right": 657,
+      "text": "Início da onda 7"
+    },
+    {
+      "y": 443,
+      "x": 80,
+      "right": 647,
+      "text": "Transações stealth, SDK v1.4, Stellar e TEE"
+    },
+    {
+      "y": 491,
+      "x": 80,
+      "right": 820,
+      "text": "Por Wraith Team · #announcements #wave-7 #wave-6 #stealth-payments #sdk"
+    },
+    {
+      "y": 562,
+      "x": 80,
+      "right": 186,
+      "text": "usewraith.xyz"
+    }
+  ]
+}
