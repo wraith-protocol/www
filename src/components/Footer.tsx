@@ -1,8 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { trackOutbound } from '../utils/track';
 import { useLocalizedPath } from '../hooks/useLocalePath';
+import { useSafePoll } from '../hooks/useSafePoll';
+import { isRecord, requestJson, SafeClientError } from '../utils/safeClient';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -23,17 +25,25 @@ const acknowledgments = [
 // The status host is not provisioned yet, so the on-site status page is the default.
 const statusPageUrl = import.meta.env.VITE_STATUS_PAGE_URL || '/status';
 const statusPageIsExternal = /^https?:\/\//.test(statusPageUrl);
-const statusApiUrl = import.meta.env.VITE_STATUS_API_URL || '';
 
-function normalizeStatus(payload: unknown): StatusState {
-  if (payload && typeof payload === 'object') {
-    const p = payload as { label?: string; tone?: string };
-    const label = typeof p.label === 'string' ? p.label : 'Status unavailable';
-    const tone: StatusTone =
-      p.tone === 'green' || p.tone === 'yellow' || p.tone === 'red' ? p.tone : 'neutral';
-    return { label, tone };
+function getStatusApiUrl(): string {
+  return import.meta.env.VITE_STATUS_API_URL || '';
+}
+
+/** Validates the footer status payload; anything else is malformed. */
+function validateFooterStatus(payload: unknown): StatusState {
+  if (!isRecord(payload)) throw new SafeClientError('malformed');
+  const { label, tone } = payload;
+  if (label !== undefined && typeof label !== 'string') {
+    throw new SafeClientError('malformed');
   }
-  return { label: 'Status unavailable', tone: 'neutral' };
+  if (tone !== undefined && tone !== 'green' && tone !== 'yellow' && tone !== 'red') {
+    throw new SafeClientError('malformed');
+  }
+  return {
+    label: typeof label === 'string' && label.length > 0 ? label : 'Status unavailable',
+    tone: tone === 'green' || tone === 'yellow' || tone === 'red' ? tone : 'neutral',
+  };
 }
 
 // ─── Newsletter widget ────────────────────────────────────────────────────────
@@ -161,45 +171,33 @@ export default function Footer() {
     tone: 'neutral',
   });
 
+  const loadStatus = useCallback(async (signal?: AbortSignal) => {
+    const statusApiUrl = getStatusApiUrl();
+    if (!statusApiUrl) return;
+    try {
+      const { data } = await requestJson(statusApiUrl, validateFooterStatus, {
+        signal,
+        cacheTtlMs: 60_000,
+      });
+      setStatus(data);
+    } catch (err) {
+      if (err instanceof SafeClientError && err.kind === 'aborted') return;
+      setStatus({ label: 'Status unavailable', tone: 'neutral' });
+    }
+  }, []);
+
+  // Shared client + visibility-aware polling: one deduped request serves the
+  // footer badge and the status page, and background tabs never poll.
+  useSafePoll(loadStatus, {
+    intervalMs: 60_000,
+    enabled: Boolean(getStatusApiUrl()),
+  });
+
   useEffect(() => {
-    if (!statusApiUrl) {
+    if (!getStatusApiUrl()) {
       // No status API configured — show a stable default rather than polling.
       setStatus({ label: 'All systems normal', tone: 'green' });
-      return;
     }
-    let isMounted = true;
-
-    const refreshStatus = async () => {
-      try {
-        const response = await fetch(statusApiUrl, {
-          headers: { Accept: 'application/json' },
-        });
-
-        if (!response.ok) {
-          throw new Error('Status endpoint unavailable');
-        }
-
-        const payload = await response.json();
-
-        if (isMounted) {
-          setStatus(normalizeStatus(payload));
-        }
-      } catch {
-        if (isMounted) {
-          setStatus({ label: 'Status unavailable', tone: 'neutral' });
-        }
-      }
-    };
-
-    void refreshStatus();
-    const intervalId = window.setInterval(() => {
-      void refreshStatus();
-    }, 60000);
-
-    return () => {
-      isMounted = false;
-      window.clearInterval(intervalId);
-    };
   }, []);
 
   const _toneClasses: Record<StatusTone, string> = {

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useInView } from '../hooks/useInView';
 import { trackOutbound } from '../utils/track';
+import { isRecord, requestJson, SafeClientError } from '../utils/safeClient';
 import trustData from '../data/trust.json';
 
 type AuditStatus = 'verified' | 'scheduled';
@@ -22,7 +23,20 @@ const statusText: Record<AuditStatus, string> = {
   scheduled: 'Scheduled',
 };
 
-const uptimeApiUrl = import.meta.env.VITE_UPTIME_API_URL || '';
+function getUptimeApiUrl(): string {
+  return import.meta.env.VITE_UPTIME_API_URL || '';
+}
+
+/** Validates the uptime payload; a number or numeric string from 0 to 100. */
+function validateUptimeResponse(payload: unknown): number {
+  if (!isRecord(payload)) throw new SafeClientError('malformed');
+  const raw = payload.uptimePercent;
+  const percent = typeof raw === 'string' ? Number(raw) : raw;
+  if (typeof percent !== 'number' || !Number.isFinite(percent) || percent < 0 || percent > 100) {
+    throw new SafeClientError('malformed');
+  }
+  return percent;
+}
 
 function initials(label: string): string {
   return label
@@ -43,23 +57,20 @@ export default function TrustStrip() {
   const [uptimeLoaded, setUptimeLoaded] = useState(false);
 
   useEffect(() => {
+    const uptimeApiUrl = getUptimeApiUrl();
     if (!uptimeApiUrl) return;
-    let cancelled = false;
+    const controller = new AbortController();
 
     async function loadUptime() {
       try {
-        const res = await fetch(uptimeApiUrl, { headers: { Accept: 'application/json' } });
-        if (!res.ok) throw new Error('Uptime endpoint unavailable');
-        const payload: unknown = await res.json();
-        const percent =
-          payload && typeof payload === 'object' && 'uptimePercent' in payload
-            ? String((payload as { uptimePercent: unknown }).uptimePercent)
-            : null;
-        if (!cancelled && percent) {
-          setUptimePercent(percent);
-          setUptimeLoaded(true);
-        }
-      } catch {
+        const { data: percent } = await requestJson(uptimeApiUrl, validateUptimeResponse, {
+          signal: controller.signal,
+          cacheTtlMs: 60_000,
+        });
+        setUptimePercent(String(percent));
+        setUptimeLoaded(true);
+      } catch (err) {
+        if (err instanceof SafeClientError && err.kind === 'aborted') return;
         // Keep the static fallback from trust.json — no visible change, no layout shift.
       }
     }
@@ -67,7 +78,7 @@ export default function TrustStrip() {
     void loadUptime();
 
     return () => {
-      cancelled = true;
+      controller.abort();
     };
   }, []);
 
