@@ -21,6 +21,12 @@ function source(slug: string, body = VALID, file = `src/content/blog/${slug}.mdx
   return { slug, sourceFile: file, source: body };
 }
 
+function firstEntry(entries: ReturnType<typeof buildBlogManifest>) {
+  const [entry] = entries;
+  if (!entry) throw new Error('expected the manifest to contain at least one entry');
+  return entry;
+}
+
 describe('parseFrontmatter: structured YAML', () => {
   it('parses flow arrays, including quoted items with commas', () => {
     const { data } = parseFrontmatter(`---
@@ -249,11 +255,12 @@ body`),
 
 describe('buildBlogManifest: validation', () => {
   it('builds a normalized, deterministic manifest entry', () => {
-    const [entry] = buildBlogManifest(
-      [
-        source(
-          'valid-post',
-          `---
+    const entry = firstEntry(
+      buildBlogManifest(
+        [
+          source(
+            'valid-post',
+            `---
 title: 'Valid post'
 date: 2026-07-20
 author: 'lena-vogt'
@@ -264,11 +271,12 @@ draft: false
 ---
 
 Body copy.`,
-        ),
-      ],
-      {
-        authors: { 'lena-vogt': { name: 'Lena Vogt', optIn: true } },
-      },
+          ),
+        ],
+        {
+          authors: { 'lena-vogt': { name: 'Lena Vogt', optIn: true } },
+        },
+      ),
     );
 
     expect(entry.slug).toBe('valid-post');
@@ -320,7 +328,7 @@ body`,
   });
 
   it('defaults locale to en and draft to false', () => {
-    const [entry] = buildBlogManifest([source('defaults')]);
+    const entry = firstEntry(buildBlogManifest([source('defaults')]));
     expect(entry.locale).toBe('en');
     expect(entry.draft).toBe(false);
   });
@@ -419,18 +427,20 @@ body`,
   });
 
   it('accepts ISO timestamps and normalizes them to a date', () => {
-    const [entry] = buildBlogManifest([
-      source(
-        'timestamp',
-        `---
+    const entry = firstEntry(
+      buildBlogManifest([
+        source(
+          'timestamp',
+          `---
 title: 'Timestamp'
 publishedAt: '2026-07-20T12:34:56.000Z'
 author: 'a'
 tags: ['x']
 ---
 body`,
-      ),
-    ]);
+        ),
+      ]),
+    );
     expect(entry.date).toBe('2026-07-20');
   });
 
@@ -445,11 +455,16 @@ title: 'Unterminated
 tags: ['privacy']
 ---
 body`;
+    const unterminated = `---
+title: 'Open quote
+---
+body`;
 
     try {
       buildBlogManifest([
         source('missing-fields', missingFields),
         source('malformed-block', malformed),
+        source('unterminated-quote', unterminated),
       ]);
       throw new Error('expected buildBlogManifest to throw');
     } catch (error) {
@@ -457,7 +472,12 @@ body`;
       const messages = (error as InstanceType<typeof BlogManifestError>).messages.join('\n');
       expect(messages).toContain('src/content/blog/missing-fields.mdx: required field "date"');
       expect(messages).toContain('src/content/blog/missing-fields.mdx: required field "tags"');
-      expect(messages).toContain('src/content/blog/malformed-block.mdx: unterminated quoted value');
+      expect(messages).toContain(
+        'src/content/blog/malformed-block.mdx: unexpected text after quoted value',
+      );
+      expect(messages).toContain(
+        'src/content/blog/unterminated-quote.mdx: unterminated quoted value',
+      );
     }
   });
 
@@ -488,10 +508,11 @@ body`;
 
 describe('deriveExcerpt', () => {
   it('falls back to the first body paragraph when excerpt is absent', () => {
-    const [entry] = buildBlogManifest([
-      source(
-        'no-excerpt',
-        `---
+    const entry = firstEntry(
+      buildBlogManifest([
+        source(
+          'no-excerpt',
+          `---
 title: 'No excerpt'
 date: '2026-07-20'
 author: 'a'
@@ -503,8 +524,9 @@ tags: ['x']
 The **first** paragraph is used as the excerpt.
 
 Second paragraph.`,
-      ),
-    ]);
+        ),
+      ]),
+    );
     expect(entry.excerpt).toBe('The first paragraph is used as the excerpt.');
   });
 
