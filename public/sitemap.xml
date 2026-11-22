@@ -150,12 +150,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://usewraith.xyz/blog/privacy-by-default</loc>
-    <lastmod>2026-07-20</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://usewraith.xyz/blog/stealth-addresses-explained</loc>
     <lastmod>2026-08-12</lastmod>
     <changefreq>weekly</changefreq>
@@ -168,7 +162,13 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://usewraith.xyz/blog/tag/privacy</loc>
+    <loc>https://usewraith.xyz/blog/privacy-by-default</loc>
+    <lastmod>2026-07-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://usewraith.xyz/blog/tag/cryptography</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -178,7 +178,7 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://usewraith.xyz/blog/tag/cryptography</loc>
+    <loc>https://usewraith.xyz/blog/tag/privacy</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>

@@ -109,12 +109,17 @@ const LOCALE_OG_STRINGS: Record<
   pt: ptStrings.og,
 };
 
+// Drafts are excluded: the app 404s them, so they must not be indexable or
+// receive OG images. The manifest is the single blog source for this module.
 const blogManifestData =
-  (blogManifest as Array<{
-    slug: string;
-    title: string;
-    excerpt: string;
-  }>) || [];
+  (
+    blogManifest as Array<{
+      slug: string;
+      title: string;
+      excerpt: string;
+      draft?: boolean;
+    }>
+  )?.filter((post) => !post.draft) || [];
 
 const caseStudyEntries = ((caseStudiesData as { entries?: unknown[] }).entries || []) as Array<{
   slug: string;

@@ -605,28 +605,6 @@ function validateRoadmap(file: string): void {
   });
 }
 
-// ── blog-posts.json ────────────────────────────────────────────────────────
-
-function validateBlogPosts(file: string): void {
-  const raw = loadJson(file);
-  if (!isArray(raw)) {
-    failures.push({ file: relPath(file), record: '<root>', message: 'must be an array' });
-    return;
-  }
-  checkNoDuplicates(relPath(file), raw as Record<string, unknown>[], 'slug');
-
-  (raw as unknown[]).forEach((post, i) => {
-    if (!isObject(post)) return;
-    const ctx: Ctx = { file: relPath(file), record: `posts[${i}] slug="${post['slug']}"` };
-    requireNonEmpty(ctx, post, 'slug');
-    requireNonEmpty(ctx, post, 'title');
-    requireNonEmpty(ctx, post, 'excerpt');
-    requireIsoDate(ctx, post, 'publishedAt');
-    requireNonEmpty(ctx, post, 'author');
-    requireUrl(ctx, post, 'url');
-  });
-}
-
 // ── vitals fixtures (TypeScript source, not JSON — skip structural check) ──
 // vitalsData.ts and vitalsFixtures.ts are TypeScript modules whose shape is
 // enforced by the compiler; no separate JSON validation needed.
@@ -840,9 +818,26 @@ function validateBlogManifest(file: string): void {
     requireNonEmpty(ctx, post, 'slug');
     requireNonEmpty(ctx, post, 'title');
     requireNonEmpty(ctx, post, 'excerpt');
+    requireNonEmpty(ctx, post, 'content');
     requireIsoDate(ctx, post, 'date');
     requireNonEmpty(ctx, post, 'author');
+    requireNonEmpty(ctx, post, 'authorName');
+    requireNonEmpty(ctx, post, 'sourceFile');
     requireUrl(ctx, post, 'url');
+    requireArray(ctx, post, 'tags');
+    requireOneOf(ctx, post, 'locale', ['en', 'es', 'pt'] as const);
+    requireBoolean(ctx, post, 'draft');
+
+    if (isArray(post['tags'])) {
+      for (const tag of post['tags'] as unknown[]) {
+        if (!isNonEmptyString(tag)) {
+          fail(ctx, `field "tags" entries must be non-empty strings`);
+        }
+      }
+    }
+    if (post['authorId'] !== null && post['authorId'] !== undefined) {
+      requireNonEmpty(ctx, post, 'authorId');
+    }
   });
 }
 
@@ -1105,7 +1100,6 @@ const SCHEMA_MAP: Record<string, (f: string) => void> = {
   'wave.json': validateWave,
   'ecosystem.json': validateEcosystem,
   'roadmap.json': validateRoadmap,
-  'blog-posts.json': validateBlogPosts,
   'trust.json': validateTrust,
   'showcase.json': validateShowcase,
   'incidents.json': validateIncidents,

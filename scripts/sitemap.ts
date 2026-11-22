@@ -19,7 +19,7 @@ import { writeFileSync, readFileSync, readdirSync, statSync, existsSync } from '
 import { join, dirname, resolve } from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
 import { execFileSync } from 'child_process';
-import { slugifyTag, parseTags } from './feed-utils.mjs';
+import { slugifyTag } from './feed-utils.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const rootDir = join(__dirname, '..');
@@ -45,32 +45,6 @@ export function gitLastModified(...repoPaths: string[]): string | undefined {
     return result || undefined;
   } catch {
     return undefined;
-  }
-}
-
-/**
- * Parse the first YAML frontmatter block from a Markdown/MDX file and return
- * a map of key → raw string value.
- */
-export function parseFrontmatterDates(filePath: string): Record<string, string> {
-  try {
-    const raw = readFileSync(filePath, 'utf8');
-    const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---/);
-    if (!match) return {};
-    const result: Record<string, string> = {};
-    for (const line of match[1].split('\n')) {
-      const colon = line.indexOf(':');
-      if (colon < 1) continue;
-      const key = line.slice(0, colon).trim();
-      let val = line
-        .slice(colon + 1)
-        .trim()
-        .replace(/^['"]|['"]$/g, '');
-      result[key] = val;
-    }
-    return result;
-  } catch {
-    return {};
   }
 }
 
@@ -260,79 +234,46 @@ function getAuthorRoutes(): RouteEntry[] {
   }
 }
 
+interface BlogManifestPost {
+  slug: string;
+  date: string;
+  tags: string[];
+  draft: boolean;
+  sourceFile: string;
+}
+
+/**
+ * Read the published posts from the generated blog manifest. Frontmatter is
+ * parsed and validated once by scripts/gen-blog-manifest.mjs; sitemap routes,
+ * dates and tag archives all come from that single artifact.
+ */
+export function readBlogManifest(): BlogManifestPost[] {
+  const manifestPath = join(rootDir, 'src', 'data', 'blog-manifest.json');
+  if (!existsSync(manifestPath)) return [];
+  try {
+    const data = JSON.parse(readFileSync(manifestPath, 'utf8'));
+    if (!Array.isArray(data)) return [];
+    return data.filter((post: BlogManifestPost) => Boolean(post?.slug) && !post.draft);
+  } catch {
+    return [];
+  }
+}
+
 export function getBlogRoutes(): RouteEntry[] {
-  const blogDir = join(rootDir, 'src', 'content', 'blog');
-  const entries: RouteEntry[] = [];
-
-  if (existsSync(blogDir)) {
-    for (const file of readdirSync(blogDir).filter((f) => /\.mdx?$/.test(f))) {
-      const slug = file.replace(/\.mdx?$/, '');
-      const fm = parseFrontmatterDates(join(blogDir, file));
-      // Prefer the frontmatter date field (content date), fall back to git
-      const lastmod =
-        toDateString(fm.date ?? fm.publishedAt) ?? gitLastModified(`src/content/blog/${file}`);
-      entries.push({ route: `/blog/${slug}`, lastmod, changefreq: 'weekly', priority: '0.8' });
-    }
-  }
-
-  // JSON-manifest posts (no MDX source on disk)
-  const manifestPath = join(rootDir, 'src', 'data', 'blog-posts.json');
-  if (existsSync(manifestPath)) {
-    try {
-      const posts: Array<{ slug?: string; publishedAt?: string; date?: string }> = JSON.parse(
-        readFileSync(manifestPath, 'utf8'),
-      );
-      const existing = new Set(entries.map((e) => e.route));
-      for (const post of posts) {
-        if (!post.slug) continue;
-        const route = `/blog/${post.slug}`;
-        if (existing.has(route)) continue;
-        entries.push({
-          route,
-          lastmod:
-            toDateString(post.publishedAt ?? post.date) ??
-            gitLastModified('src/data/blog-posts.json'),
-          changefreq: 'weekly',
-          priority: '0.8',
-        });
-      }
-    } catch {
-      // ignore
-    }
-  }
-
-  return entries;
+  return readBlogManifest().map((post) => ({
+    route: `/blog/${post.slug}`,
+    lastmod:
+      toDateString(post.date) ?? gitLastModified(post.sourceFile ?? 'src/data/blog-manifest.json'),
+    changefreq: 'weekly',
+    priority: '0.8',
+  }));
 }
 
 function getBlogTagRoutes(): RouteEntry[] {
   const tags = new Set<string>();
-  const blogDir = join(rootDir, 'src', 'content', 'blog');
 
-  if (existsSync(blogDir)) {
-    for (const file of readdirSync(blogDir).filter((f) => /\.mdx?$/.test(f))) {
-      const raw = readFileSync(join(blogDir, file), 'utf8');
-      const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---/);
-      if (match) {
-        const tagsLine = match[1].split('\n').find((l) => l.trim().startsWith('tags:'));
-        if (tagsLine) {
-          parseTags(tagsLine.slice(tagsLine.indexOf(':') + 1).trim()).forEach((t: string) =>
-            tags.add(t),
-          );
-        }
-      }
-    }
-  }
-
-  const manifestPath = join(rootDir, 'src', 'data', 'blog-posts.json');
-  if (existsSync(manifestPath)) {
-    try {
-      const data: Array<{ tags?: string[] }> = JSON.parse(readFileSync(manifestPath, 'utf8'));
-      for (const post of data) {
-        if (Array.isArray(post.tags)) post.tags.forEach((t) => tags.add(t));
-      }
-    } catch {
-      // ignore
-    }
+  for (const post of readBlogManifest()) {
+    if (Array.isArray(post.tags)) post.tags.forEach((tag) => tags.add(tag));
   }
 
   return Array.from(tags).map((tag) => ({
