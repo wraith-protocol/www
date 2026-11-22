@@ -24,7 +24,11 @@
     { "host": "lobstr.co" },
     { "host": "reflector.network" },
     { "host": "soroswap.finance" },
-    { "host": "xbull.app" },
+    {
+      "host": "xbull.app",
+      "skipRequest": true,
+      "reason": "The host's TLS endpoint rejects automated handshakes (OpenSSL `tlsv1 alert internal error`, SSL alert 80) even though plain HTTP redirects to it, so a request cannot tell whether the link resolves."
+    },
     { "host": "plausible.io" },
     { "host": "fonts.google.com" },
     {
