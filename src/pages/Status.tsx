@@ -1,7 +1,7 @@
 import { useStatus } from '../hooks/useStatus';
 
 export default function Status() {
-  const { data, loading, error, refetch, lastUpdated } = useStatus();
+  const { data, loading, error, stale, refetch, lastUpdated } = useStatus();
 
   const getStatusBadge = (status: 'operational' | 'degraded' | 'outage') => {
     switch (status) {
@@ -42,6 +42,11 @@ export default function Status() {
               Updated {new Date(lastUpdated).toLocaleTimeString()}
             </span>
           )}
+          {stale && data ? (
+            <span className="text-xs text-amber-600 dark:text-amber-400">
+              Showing last known values. Live status is temporarily unavailable.
+            </span>
+          ) : null}
           <button
             onClick={() => refetch()}
             className="p-2 rounded-lg border border-surface-border hover:bg-surface-hover transition-colors"

@@ -1,4 +1,5 @@
 import { getDeployment } from '@wraith-protocol/sdk/chains/stellar';
+import { requestJson, SafeClientError } from './safeClient';
 
 /**
  * Stellar Soroban RPC metrics for the announcer contract.
@@ -111,10 +112,6 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
 }
 
-function isAbortError(value: unknown): boolean {
-  return isRecord(value) && value.name === 'AbortError';
-}
-
 function toStellarRpcError(cause: unknown): StellarRpcError {
   if (cause instanceof StellarRpcError) return cause;
   return new StellarRpcError('network', 'Unexpected Soroban RPC failure', { cause });
@@ -175,80 +172,87 @@ function parseJsonRpcPayload(payload: unknown, method: string): unknown {
   return envelope.result;
 }
 
-/** A single RPC round-trip with a hard timeout and external-abort forwarding. */
+/** The shared client validates the envelope shape; JSON-RPC errors are parsed after. */
+function validateJsonRpcEnvelope(payload: unknown): unknown {
+  if (!isRecord(payload)) {
+    throw new SafeClientError('malformed');
+  }
+  return payload;
+}
+
+/** Maps a shared-client failure onto the RPC error kinds this module reports. */
+function mapSafeClientError(cause: unknown, method: string): StellarRpcError {
+  if (cause instanceof StellarRpcError) return cause;
+  if (cause instanceof SafeClientError) {
+    switch (cause.kind) {
+      case 'aborted':
+        return new StellarRpcError('aborted', `Soroban RPC request cancelled (${method})`, {
+          cause,
+        });
+      case 'timeout':
+        return new StellarRpcError(
+          'timeout',
+          `Soroban RPC request timed out after ${STELLAR_RPC_TIMEOUT_MS}ms (${method})`,
+          { cause },
+        );
+      case 'rate-limit':
+        return new StellarRpcError('rate-limit', `Soroban RPC rate-limited the request (${method})`, {
+          status: cause.status,
+          cause,
+        });
+      case 'http':
+        return new StellarRpcError(
+          'http',
+          `Soroban RPC responded with HTTP ${cause.status ?? 'unknown'} (${method})`,
+          { status: cause.status, cause },
+        );
+      case 'malformed':
+        return new StellarRpcError(
+          'malformed',
+          `Soroban RPC returned a malformed response (${method})`,
+          { cause },
+        );
+      case 'offline':
+      case 'network':
+        return new StellarRpcError('network', `Could not reach the Soroban RPC (${method})`, {
+          cause,
+        });
+    }
+  }
+  return toStellarRpcError(cause);
+}
+
+/**
+ * A single RPC round-trip with a hard timeout and external-abort forwarding.
+ *
+ * The transport (timeout, abort, rate-limit, retries) comes from the shared
+ * client; retries stay disabled here because `rpcRequest` below owns the
+ * bounded retry budget.
+ */
 async function rpcRequestOnce(
   method: string,
   params: unknown,
   signal?: AbortSignal,
 ): Promise<Record<string, unknown>> {
-  const controller = new AbortController();
-  let timedOut = false;
-
-  const timer = setTimeout(() => {
-    timedOut = true;
-    controller.abort();
-  }, STELLAR_RPC_TIMEOUT_MS);
-
-  const forwardAbort = () => controller.abort();
-
-  if (signal?.aborted) {
-    clearTimeout(timer);
-    throw new StellarRpcError('aborted', `Soroban RPC request cancelled (${method})`);
-  }
-
-  signal?.addEventListener('abort', forwardAbort, { once: true });
-
-  let response: Response;
-  try {
-    response = await fetch(rpcUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        jsonrpc: '2.0',
-        id: (requestId += 1),
-        method,
-        ...(params === undefined ? {} : { params }),
-      }),
-      signal: controller.signal,
-    });
-  } catch (cause) {
-    if (signal?.aborted) {
-      throw new StellarRpcError('aborted', `Soroban RPC request cancelled (${method})`, { cause });
-    }
-    if (timedOut || isAbortError(cause)) {
-      throw new StellarRpcError(
-        'timeout',
-        `Soroban RPC request timed out after ${STELLAR_RPC_TIMEOUT_MS}ms (${method})`,
-        { cause },
-      );
-    }
-    throw new StellarRpcError('network', `Could not reach the Soroban RPC (${method})`, { cause });
-  } finally {
-    clearTimeout(timer);
-    signal?.removeEventListener('abort', forwardAbort);
-  }
-
-  if (response.status === 429) {
-    throw new StellarRpcError('rate-limit', `Soroban RPC rate-limited the request (${method})`, {
-      status: 429,
-    });
-  }
-
-  if (!response.ok) {
-    throw new StellarRpcError(
-      'http',
-      `Soroban RPC responded with HTTP ${response.status} (${method})`,
-      { status: response.status },
-    );
-  }
-
   let payload: unknown;
   try {
-    payload = await response.json();
+    payload = (
+      await requestJson(rpcUrl, validateJsonRpcEnvelope, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: {
+          jsonrpc: '2.0',
+          id: (requestId += 1),
+          method,
+          ...(params === undefined ? {} : { params }),
+        },
+        timeoutMs: STELLAR_RPC_TIMEOUT_MS,
+        maxAttempts: 1,
+        signal,
+      })
+    ).data;
   } catch (cause) {
-    throw new StellarRpcError('malformed', `Soroban RPC returned invalid JSON (${method})`, {
-      cause,
-    });
+    throw mapSafeClientError(cause, method);
   }
 
   return parseJsonRpcPayload(payload, method) as Record<string, unknown>;

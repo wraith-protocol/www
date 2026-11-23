@@ -1,7 +1,7 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import incidentsData from '../data/incidents.json';
-
-const statusApiUrl = import.meta.env.VITE_STATUS_API_URL || '';
+import { isRecord, requestJson, SafeClientError, safeErrorMessage } from '../utils/safeClient';
+import { useSafePoll } from './useSafePoll';
 
 export type ComponentStatus = {
   id: string;
@@ -28,78 +28,129 @@ export type StatusData = {
   lastUpdated: string;
 };
 
+const STATUS_POLL_INTERVAL_MS = 60_000;
+const STATUS_CACHE_TTL_MS = 60_000;
+
+function getStatusApiUrl(): string {
+  return import.meta.env.VITE_STATUS_API_URL || '';
+}
+
+function validateComponent(value: unknown): ComponentStatus {
+  if (!isRecord(value)) throw new SafeClientError('malformed');
+
+  const { id, name, status } = value;
+  if (typeof id !== 'string' || id.length === 0) throw new SafeClientError('malformed');
+  if (typeof name !== 'string' || name.length === 0) throw new SafeClientError('malformed');
+  if (status !== 'operational' && status !== 'degraded' && status !== 'outage') {
+    throw new SafeClientError('malformed');
+  }
+
+  const rawUptime = value.uptime90Days;
+  if (!Array.isArray(rawUptime)) throw new SafeClientError('malformed');
+  const uptime90Days: number[] = [];
+  for (const entry of rawUptime) {
+    if (typeof entry !== 'number' || !Number.isFinite(entry)) {
+      throw new SafeClientError('malformed');
+    }
+    uptime90Days.push(entry);
+  }
+
+  const { latencyMs } = value;
+  if (typeof latencyMs !== 'number' || !Number.isFinite(latencyMs)) {
+    throw new SafeClientError('malformed');
+  }
+
+  return { id, name, status, uptime90Days, latencyMs };
+}
+
+/** Validates the status payload and returns its components. Exported for tests. */
+export function validateStatusResponse(payload: unknown): ComponentStatus[] {
+  if (!isRecord(payload) || !Array.isArray(payload.components)) {
+    throw new SafeClientError('malformed');
+  }
+  const components = payload.components.map(validateComponent);
+  if (!components.some((component) => /stellar/i.test(component.name))) {
+    throw new SafeClientError('malformed');
+  }
+  return components;
+}
+
+function deriveOverall(components: ComponentStatus[]): StatusData['overall'] {
+  if (components.some((component) => component.status === 'outage')) return 'outage';
+  if (components.some((component) => component.status === 'degraded')) return 'degraded';
+  return 'operational';
+}
+
 export function useStatus() {
   const [data, setData] = useState<StatusData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [stale, setStale] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<string | null>(null);
+  const hasDataRef = useRef(false);
 
-  const fetchStatus = useCallback(async () => {
+  const fetchStatus = useCallback(async (signal?: AbortSignal) => {
+    const statusApiUrl = getStatusApiUrl();
     if (!statusApiUrl) {
       setData(null);
+      hasDataRef.current = false;
       setError('Status endpoint unavailable');
+      setStale(false);
       setLoading(false);
       setLastUpdated(null);
       return;
     }
 
     try {
-      const headers: HeadersInit = {
-        Accept: 'application/json',
-      };
-      // Status polling sends no telemetry and never includes cookies.
-      const res = await fetch(statusApiUrl, { headers, credentials: 'omit' });
-      if (!res.ok) throw new Error(`Status endpoint returned ${res.status}`);
-      const json = await res.json();
-      if (!Array.isArray(json.components)) throw new Error('Status response has no components');
-      const apiComponents = json.components as ComponentStatus[];
-      if (!apiComponents.some((component) => /stellar/i.test(component.name))) {
-        throw new Error('Status response is missing Stellar');
-      }
-
+      const { data: components, stale: servedStale } = await requestJson(
+        statusApiUrl,
+        validateStatusResponse,
+        { signal, cacheTtlMs: STATUS_CACHE_TTL_MS, serveStaleOnError: true },
+      );
+      const now = new Date().toISOString();
       setData({
-        overall: apiComponents.some((c) => c.status === 'outage')
-          ? 'outage'
-          : apiComponents.some((c) => c.status === 'degraded')
-            ? 'degraded'
-            : 'operational',
-        components: apiComponents,
+        overall: deriveOverall(components),
+        components,
         incidents: incidentsData.incidents as Incident[],
-        lastUpdated: new Date().toISOString(),
+        lastUpdated: now,
       });
+      hasDataRef.current = true;
       setError(null);
-      setLastUpdated(new Date().toISOString());
+      setStale(servedStale);
+      setLastUpdated(now);
     } catch (err) {
-      setData(null);
-      setError(err instanceof Error ? err.message : 'Failed to fetch status data');
-      setLastUpdated(null);
+      if (err instanceof SafeClientError && err.kind === 'aborted') return;
+      // Keep the last known data on screen and mark it stale instead of blanking the page.
+      if (hasDataRef.current) {
+        setStale(true);
+        setError(safeErrorMessage(err));
+      } else {
+        setData(null);
+        setError(safeErrorMessage(err));
+        setStale(false);
+        setLastUpdated(null);
+      }
     } finally {
       setLoading(false);
     }
   }, []);
 
+  const { refresh } = useSafePoll(fetchStatus, {
+    intervalMs: STATUS_POLL_INTERVAL_MS,
+    enabled: Boolean(getStatusApiUrl()),
+  });
+
+  // No endpoint configured: report that once instead of polling.
   useEffect(() => {
-    fetchStatus();
+    if (!getStatusApiUrl()) {
+      setData(null);
+      hasDataRef.current = false;
+      setError('Status endpoint unavailable');
+      setStale(false);
+      setLoading(false);
+      setLastUpdated(null);
+    }
+  }, []);
 
-    // Auto-refresh every 60s, pause when tab is hidden
-    const interval = setInterval(() => {
-      if (document.visibilityState === 'visible') {
-        fetchStatus();
-      }
-    }, 60000);
-
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible') {
-        fetchStatus();
-      }
-    };
-
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    return () => {
-      clearInterval(interval);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-    };
-  }, [fetchStatus]);
-
-  return { data, loading, error, refetch: fetchStatus, lastUpdated };
+  return { data, loading, error, stale, refetch: refresh, lastUpdated };
 }
