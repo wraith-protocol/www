@@ -354,6 +354,18 @@
     "ogTitle": "Wraith Protocol",
     "ogDescription": "Pagamentos privados para cada rede. Endereços ocultos, SDK multi-rede e agentes de privacidade com IA."
   },
+  "ogArchives": {
+    "tagLabel": "Tag",
+    "authorLabel": "Autor",
+    "byline": "Por {{name}}",
+    "tagTitle": "#{{tag}}",
+    "tagPageTitle": "#{{tag}} — Blog da Wraith Protocol",
+    "tagSubtitle": "Posts com a tag {{tag}} no blog da Wraith Protocol",
+    "tagDescription": "Posts do blog da Wraith Protocol com a tag {{tag}} sobre pagamentos privados e infraestrutura stealth.",
+    "authorPageTitle": "{{name}} — Blog da Wraith Protocol",
+    "authorSubtitle": "Posts de {{name}} sobre pagamentos privados e endereços stealth",
+    "authorDescription": "Posts de {{name}} no blog de pagamentos privados da Wraith Protocol."
+  },
   "ogRoutes": {
     "/": {
       "title": "Wraith Protocol",

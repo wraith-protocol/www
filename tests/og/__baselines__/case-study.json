@@ -1,0 +1,50 @@
+{
+  "file": "case-study-payroll-processor.png",
+  "kind": "case-study",
+  "locale": "en",
+  "titleFontSize": 60,
+  "lines": [
+    {
+      "y": 89,
+      "x": 132,
+      "right": 311,
+      "text": "WRAITH PROTOCOL"
+    },
+    {
+      "y": 91,
+      "x": 89,
+      "right": 109,
+      "text": "W"
+    },
+    {
+      "y": 355,
+      "x": 80,
+      "right": 895,
+      "text": "Anonymous Payroll Provider"
+    },
+    {
+      "y": 416,
+      "x": 80,
+      "right": 897,
+      "text": "A payroll processing platform using Wraith to enable private"
+    },
+    {
+      "y": 452,
+      "x": 80,
+      "right": 894,
+      "text": "contractor payments, protecting recipient financial privacy"
+    },
+    {
+      "y": 488,
+      "x": 80,
+      "right": 533,
+      "text": "across international jurisdictions."
+    },
+    {
+      "y": 562,
+      "x": 80,
+      "right": 186,
+      "text": "usewraith.xyz"
+    }
+  ]
+}

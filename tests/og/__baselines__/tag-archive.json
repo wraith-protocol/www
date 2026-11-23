@@ -1,0 +1,50 @@
+{
+  "file": "es-blog-tag-stealth-payments.png",
+  "kind": "tag",
+  "locale": "es",
+  "titleFontSize": 76,
+  "lines": [
+    {
+      "y": 89,
+      "x": 132,
+      "right": 311,
+      "text": "WRAITH PROTOCOL"
+    },
+    {
+      "y": 91,
+      "x": 89,
+      "right": 109,
+      "text": "W"
+    },
+    {
+      "y": 296,
+      "x": 80,
+      "right": 172,
+      "text": "ETIQUETA"
+    },
+    {
+      "y": 388,
+      "x": 80,
+      "right": 794,
+      "text": "#stealth-payments"
+    },
+    {
+      "y": 452,
+      "x": 80,
+      "right": 868,
+      "text": "Artículos etiquetados con stealth-payments en el blog de"
+    },
+    {
+      "y": 488,
+      "x": 80,
+      "right": 291,
+      "text": "Wraith Protocol"
+    },
+    {
+      "y": 562,
+      "x": 80,
+      "right": 186,
+      "text": "usewraith.xyz"
+    }
+  ]
+}

@@ -354,6 +354,18 @@
     "ogTitle": "Wraith Protocol",
     "ogDescription": "Pagos privados para cada cadena. Direcciones ocultas, SDK multicadena y agentes de privacidad con IA."
   },
+  "ogArchives": {
+    "tagLabel": "Etiqueta",
+    "authorLabel": "Autor",
+    "byline": "Por {{name}}",
+    "tagTitle": "#{{tag}}",
+    "tagPageTitle": "#{{tag}} — Blog de Wraith Protocol",
+    "tagSubtitle": "Artículos etiquetados con {{tag}} en el blog de Wraith Protocol",
+    "tagDescription": "Artículos del blog de Wraith Protocol etiquetados con {{tag}} sobre pagos privados e infraestructura stealth.",
+    "authorPageTitle": "{{name}} — Blog de Wraith Protocol",
+    "authorSubtitle": "Artículos de {{name}} sobre pagos privados y direcciones stealth",
+    "authorDescription": "Artículos de {{name}} en el blog de pagos privados de Wraith Protocol."
+  },
   "ogRoutes": {
     "/": {
       "title": "Wraith Protocol",

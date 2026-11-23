@@ -354,6 +354,18 @@
     "ogTitle": "Wraith Protocol",
     "ogDescription": "Private payments for every chain. Stealth addresses, multichain SDK, and AI-powered privacy agents."
   },
+  "ogArchives": {
+    "tagLabel": "Tag",
+    "authorLabel": "Author",
+    "byline": "By {{name}}",
+    "tagTitle": "#{{tag}}",
+    "tagPageTitle": "#{{tag}} — Wraith Protocol Blog",
+    "tagSubtitle": "Posts tagged {{tag}} on the Wraith Protocol blog",
+    "tagDescription": "Blog posts tagged {{tag}} from Wraith Protocol on private payments and stealth infrastructure.",
+    "authorPageTitle": "{{name}} — Wraith Protocol Blog",
+    "authorSubtitle": "Posts by {{name}} on private payments and stealth addresses",
+    "authorDescription": "Posts by {{name}} on Wraith Protocol's privacy-preserving payments blog."
+  },
   "ogRoutes": {
     "/": {
       "title": "Wraith Protocol",
