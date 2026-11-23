@@ -721,9 +721,9 @@ describe('og-metadata: localized dynamic content', () => {
     expect(enJob.title).toBe('Privacy by default');
     expect(enJob.subtitle).toBe('How Wraith makes private payments practical for everyday apps.');
     expect(esJob.title).toBe('Privacidad por defecto');
-    expect(esJob.subtitle).toBe('Pagos privados en el día a día');
+    expect(esJob.subtitle).toBe('Pagos privados con Wraith en el día a día');
     expect(ptJob.title).toBe('Privacidade por padrão');
-    expect(ptJob.subtitle).toBe('Pagamentos privados no dia a dia');
+    expect(ptJob.subtitle).toBe('Pagamentos privados com o Wraith no dia a dia');
 
     const caseStudies = new Map(
       jobs

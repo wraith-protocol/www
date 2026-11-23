@@ -15,7 +15,7 @@ export const SITE_ORIGIN = 'https://usewraith.xyz';
 export type SeoPageKey = 'home' | 'stellar' | 'grants' | 'blog' | 'caseStudies';
 
 /** The canonical base path for each page (no locale prefix — English is the canonical). */
-const PAGE_PATHS: Record<SeoPageKey, string> = {
+export const PAGE_PATHS: Record<SeoPageKey, string> = {
   home: '/',
   stellar: '/stellar',
   grants: '/grants',
