@@ -492,7 +492,7 @@
       "description": "Telemetría de rendimiento real de usuarios para usewraith.xyz.",
       "ogImage": {
         "title": "Web Vitals",
-        "subtitle": "Telemetría de rendimiento real de usuarios"
+        "subtitle": "Telemetría de rendimiento real de usuarios para usewraith.xyz"
       },
       "ogType": "website"
     },
@@ -566,7 +566,7 @@
       "description": "Anunciamos el inicio de la ola 7 junto con un resumen de los hitos de la ola 6: transacciones stealth en EVM, lanzamiento del SDK v1.4, integraciones del ecosistema Stellar y mejoras de privacidad en TEE.",
       "ogImage": {
         "title": "Inicio de la ola 7",
-        "subtitle": "Transacciones stealth, SDK v1.4, Stellar y TEE"
+        "subtitle": "Transacciones stealth en EVM, SDK v1.4, Stellar y TEE"
       }
     },
     "/blog/stealth-addresses-explained": {
@@ -582,7 +582,7 @@
       "description": "Cómo hace Wraith que los pagos privados sean prácticos en el día a día de las aplicaciones.",
       "ogImage": {
         "title": "Privacidad por defecto",
-        "subtitle": "Pagos privados en el día a día"
+        "subtitle": "Pagos privados con Wraith en el día a día"
       }
     },
     "/case-studies/payroll-processor": {
@@ -590,7 +590,7 @@
       "description": "Una plataforma de procesamiento de nóminas que usa Wraith para habilitar pagos privados a contratistas, protegiendo la privacidad financiera de los receptores en distintas jurisdicciones.",
       "ogImage": {
         "title": "Proveedor de nómina anónimo",
-        "subtitle": "Pagos privados a contratistas"
+        "subtitle": "Pagos privados a contratistas con Wraith"
       }
     }
   },
