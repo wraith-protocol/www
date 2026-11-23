@@ -665,5 +665,29 @@
       "successShort": "Revisa tu bandeja",
       "errorShort": "Intenta de nuevo"
     }
+  },
+  "routeBoundary": {
+    "skipToContent": "Ir al contenido",
+    "loadingLabel": "Cargando",
+    "loadingPage": "Cargando página…",
+    "loadingSection": "Cargando sección…",
+    "loadingFooter": "Cargando pie de página…",
+    "eyebrowOffline": "SIN CONEXIÓN",
+    "eyebrowUpdate": "ACTUALIZACIÓN REQUERIDA",
+    "eyebrowRecovery": "RECUPERACIÓN",
+    "headingOffline": "Parece que estás sin conexión",
+    "headingChunk": "No se pudo cargar la versión más reciente",
+    "headingGeneric": "No se pudo cargar esta página",
+    "headingSection": "No se pudo cargar esta sección",
+    "bodyOffline": "Tu dispositivo perdió la conexión antes de terminar de cargar esta vista. Vuelve a conectarte e inténtalo de nuevo.",
+    "bodyChunk": "Un despliegue reciente pudo haber reemplazado los archivos en caché o la descarga se interrumpió. Reintenta o recarga para obtener la última versión.",
+    "bodyGeneric": "Un error inesperado interrumpió la carga. Puedes intentarlo de nuevo, recargar la página o volver al inicio.",
+    "connectionRestored": "Conexión restablecida. Puedes intentar cargar de nuevo.",
+    "retryLimitReached": "Se alcanzó el límite de reintentos. Recarga la página para obtener la última versión.",
+    "reloadLimitReached": "Una recarga reciente no resolvió el problema. Revisa tu conexión o vuelve al inicio.",
+    "offlineReloadBlocked": "Vuelve a conectarte a internet antes de recargar esta página.",
+    "retryButton": "Intentar de nuevo",
+    "reloadButton": "Recargar página",
+    "homeLink": "Volver al inicio"
   }
 }

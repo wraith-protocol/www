@@ -665,5 +665,29 @@
       "successShort": "Verifique sua caixa de entrada",
       "errorShort": "Tente novamente"
     }
+  },
+  "routeBoundary": {
+    "skipToContent": "Ir para o conteúdo",
+    "loadingLabel": "Carregando",
+    "loadingPage": "Carregando página…",
+    "loadingSection": "Carregando seção…",
+    "loadingFooter": "Carregando rodapé…",
+    "eyebrowOffline": "OFFLINE",
+    "eyebrowUpdate": "ATUALIZAÇÃO NECESSÁRIA",
+    "eyebrowRecovery": "RECUPERAÇÃO",
+    "headingOffline": "Parece que você está offline",
+    "headingChunk": "Não foi possível carregar a versão mais recente",
+    "headingGeneric": "Não foi possível carregar esta página",
+    "headingSection": "Não foi possível carregar esta seção",
+    "bodyOffline": "Seu dispositivo perdeu a conexão antes de terminar de carregar esta visualização. Reconecte-se e tente novamente.",
+    "bodyChunk": "Uma implantação recente pode ter substituído os arquivos em cache ou o download foi interrompido. Tente novamente ou recarregue para obter a versão mais recente.",
+    "bodyGeneric": "Um erro inesperado interrompeu o carregamento. Você pode tentar novamente, recarregar a página ou voltar à página inicial.",
+    "connectionRestored": "Conexão restaurada. Você pode tentar carregar novamente.",
+    "retryLimitReached": "Limite de tentativas atingido. Recarregue a página para obter a versão mais recente.",
+    "reloadLimitReached": "Uma recarga recente não resolveu o problema. Verifique sua conexão ou volte à página inicial.",
+    "offlineReloadBlocked": "Reconecte-se à internet antes de recarregar esta página.",
+    "retryButton": "Tentar novamente",
+    "reloadButton": "Recarregar página",
+    "homeLink": "Voltar ao início"
   }
 }
