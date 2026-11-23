@@ -312,8 +312,7 @@ function CaseStudiesList() {
                 {t('caseStudies.totalStudies')}
               </span>
               <span className="font-heading text-[18px] font-semibold text-on-surface">
-                {caseStudies.length}{' '}
-                {caseStudies.length === 1 ? t('caseStudies.study') : t('caseStudies.studies')}
+                {t('caseStudies.studyCount', { count: caseStudies.length })}
               </span>
             </div>
           </div>
