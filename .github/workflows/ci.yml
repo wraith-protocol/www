@@ -46,6 +46,7 @@ jobs:
       - run: pnpm test:a11y
       - run: pnpm build
       - run: pnpm check:chunk-budget
+      - run: pnpm check:csp
       - run: pnpm validate:jsonld
 
       - name: Ensure Playwright reports are not tracked

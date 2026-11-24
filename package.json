@@ -11,6 +11,7 @@
     "og:generate": "tsx scripts/og.ts",
     "generate:sitemap": "tsx scripts/sitemap.ts",
     "check:sitemap": "tsx scripts/sitemap.ts --check",
+    "check:csp": "tsx scripts/check-html-csp.ts",
     "preview": "vite preview",
     "preview:functions": "node --import tsx scripts/preview-server.ts",
     "test": "vitest run",

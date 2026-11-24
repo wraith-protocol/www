@@ -1,60 +1,162 @@
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import crypto from 'node:crypto';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const distDir = path.resolve(__dirname, '../dist');
+const rootDir = path.resolve(__dirname, '..');
+const defaultDistDir = path.join(rootDir, 'dist');
+const defaultInlinePolicyPath = path.join(
+  rootDir,
+  'node_modules',
+  '.tmp',
+  'csp-inline-policy.json',
+);
 
-async function main() {
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function buildStylesheetLinkRegex(cssFile) {
+  const escapedCssFile = escapeRegExp(cssFile);
+  const relAttr = 'rel=["\']stylesheet["\']';
+  const hrefAttr = `href=["']/assets/${escapedCssFile}["']`;
+  return new RegExp(
+    `<link\\b[^>]*${relAttr}[^>]*${hrefAttr}[^>]*>|<link\\b[^>]*${hrefAttr}[^>]*${relAttr}[^>]*>`,
+  );
+}
+
+/**
+ * Inlines the built stylesheet into `dist/index.html`, writes the generated
+ * inline `<style>` SHA-256 policy JSON, and removes the original CSS asset.
+ * Always fails closed by throwing if any required file or tag replacement fails.
+ */
+export function inlineCss(options = {}) {
+  const distDir = path.resolve(options.distDir ?? defaultDistDir);
+  const inlinePolicyPath = path.resolve(options.inlinePolicyPath ?? defaultInlinePolicyPath);
+
+  fs.rmSync(inlinePolicyPath, { force: true });
+
   const htmlPath = path.join(distDir, 'index.html');
   if (!fs.existsSync(htmlPath)) {
-    console.error('dist/index.html not found! Run build first.');
-    process.exit(1);
+    throw new Error(`dist/index.html not found at ${htmlPath}. Run build first.`);
   }
 
-  let html = fs.readFileSync(htmlPath, 'utf8');
-
-  // Find css files in dist/assets
   const assetsDir = path.join(distDir, 'assets');
   if (!fs.existsSync(assetsDir)) {
-    console.error('dist/assets directory not found!');
-    process.exit(1);
+    throw new Error(`dist/assets directory not found at ${assetsDir}.`);
   }
 
-  const files = fs.readdirSync(assetsDir);
-  const cssFile = files.find((f) => f.endsWith('.css'));
+  const files = fs.readdirSync(assetsDir).sort();
+  const cssFile =
+    files.find((file) => /^index-.*\.css$/.test(file)) ??
+    files.find((file) => file.endsWith('.css'));
 
   if (!cssFile) {
-    console.log('No CSS file found to inline.');
-    return;
+    throw new Error(`No CSS asset found to inline in ${assetsDir}.`);
   }
 
   const cssPath = path.join(assetsDir, cssFile);
   const cssContent = fs.readFileSync(cssPath, 'utf8');
 
-  console.log(`Inlining CSS from assets/${cssFile} (${cssContent.length} bytes)...`);
-
-  // Find the stylesheet link tag
-  // We match any link tag with rel="stylesheet" pointing to /assets/index-....css
-  const cssRegex =
-    /<link[^>]*rel="stylesheet"[^>]*href="\/assets\/index-[^>]*\.css"[^>]*>|<link[^>]*href="\/assets\/index-[^>]*\.css"[^>]*rel="stylesheet"[^>]*>/;
-
-  if (cssRegex.test(html)) {
-    html = html.replace(cssRegex, `<style>${cssContent}</style>`);
-    fs.writeFileSync(htmlPath, html, 'utf8');
-    console.log('Successfully inlined CSS into dist/index.html!');
-
-    // Delete the css file to keep dist clean
-    fs.unlinkSync(cssPath);
-    console.log(`Deleted original CSS file ${cssFile}`);
-  } else {
-    console.warn('Could not find CSS link tag in dist/index.html');
+  if (/<\/style/i.test(cssContent)) {
+    throw new Error(`Refusing to inline ${cssFile}: contains raw </style sequence.`);
   }
+
+  const html = fs.readFileSync(htmlPath, 'utf8');
+  const cssRegex = buildStylesheetLinkRegex(cssFile);
+  if (!cssRegex.test(html)) {
+    throw new Error(
+      `Failed to inline CSS: could not find stylesheet <link> tag for /assets/${cssFile} in ${htmlPath}.`,
+    );
+  }
+
+  const styleSha256 = `sha256-${crypto.createHash('sha256').update(cssContent, 'utf8').digest('base64')}`;
+  const replacedHtml = html.replace(cssRegex, () => `<style>${cssContent}</style>`);
+  if (replacedHtml === html) {
+    throw new Error(`Failed to inline CSS: replacement produced unchanged HTML in ${htmlPath}.`);
+  }
+
+  fs.writeFileSync(htmlPath, replacedHtml, 'utf8');
+
+  const sourceAsset = `assets/${cssFile}`;
+  const inlineStyleHashes = [styleSha256];
+  fs.mkdirSync(path.dirname(inlinePolicyPath), { recursive: true });
+  fs.writeFileSync(
+    inlinePolicyPath,
+    JSON.stringify(
+      {
+        sourceAsset,
+        inlineStyleHashes,
+      },
+      null,
+      2,
+    ) + '\n',
+    'utf8',
+  );
+
+  fs.unlinkSync(cssPath);
+  console.log(`Successfully inlined ${sourceAsset} into ${htmlPath} (${styleSha256})!`);
+
+  return {
+    sourceAsset,
+    inlineStyleHashes,
+  };
 }
 
-main().catch((err) => {
-  console.error('Error inlining CSS:', err);
-  process.exit(1);
-});
+function parseCliArgs(argv) {
+  const options = {};
+  for (let i = 0; i < argv.length; i += 1) {
+    const arg = argv[i];
+    if (arg === '--dist') {
+      const value = argv[i + 1];
+      if (!value) {
+        throw new Error('Missing value for --dist');
+      }
+      options.distDir = value;
+      i += 1;
+    } else if (arg.startsWith('--dist=')) {
+      const value = arg.slice('--dist='.length);
+      if (!value) {
+        throw new Error('Missing value for --dist');
+      }
+      options.distDir = value;
+    } else if (arg === '--policy') {
+      const value = argv[i + 1];
+      if (!value) {
+        throw new Error('Missing value for --policy');
+      }
+      options.inlinePolicyPath = value;
+      i += 1;
+    } else if (arg.startsWith('--policy=')) {
+      const value = arg.slice('--policy='.length);
+      if (!value) {
+        throw new Error('Missing value for --policy');
+      }
+      options.inlinePolicyPath = value;
+    } else {
+      throw new Error(`Unknown argument: ${arg}`);
+    }
+  }
+  return options;
+}
+
+export async function main(argv = process.argv.slice(2)) {
+  const options = parseCliArgs(argv);
+  inlineCss(options);
+}
+
+const argv1 = process.argv[1];
+const isMain =
+  typeof argv1 === 'string' &&
+  (import.meta.url === pathToFileURL(argv1).href ||
+    fileURLToPath(import.meta.url) === path.resolve(argv1));
+
+if (isMain) {
+  main().catch((err) => {
+    console.error('Error inlining CSS:', err instanceof Error ? err.message : err);
+    process.exit(1);
+  });
+}
