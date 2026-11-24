@@ -27,6 +27,7 @@
     "scripts/sitemap.ts",
     "tests/sitemap.test.ts",
     "scripts/jsdom.d.ts",
+    "scripts/inline-css.d.ts",
     "scripts/check-html-csp.ts",
     "tests/csp-gate.test.ts"
   ]

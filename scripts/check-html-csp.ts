@@ -15,7 +15,7 @@
  */
 
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
-import { join, dirname, resolve } from 'node:path';
+import { join, dirname, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { createHash } from 'node:crypto';
 import { JSDOM } from 'jsdom';
@@ -77,6 +77,7 @@ export interface ValidationOptions {
 }
 
 const SRI_HASH_PATTERN = /^sha(256|384|512)-[A-Za-z0-9+/]+={0,2}$/;
+const SHA256_HASH_PATTERN = /^sha256-[A-Za-z0-9+/]+={0,2}$/;
 
 /**
  * Parses CSP directives into per-directive token sets.
@@ -147,32 +148,57 @@ export function computeSha256(content: string): string {
 }
 
 /**
- * Loads the narrow build-generated inline CSS hash policy emitted by
- * `scripts/inline-css.js`.
+ * Loads and strictly validates the narrow build-generated inline CSS hash policy
+ * emitted by `scripts/inline-css.js`. Fails closed by throwing on missing,
+ * malformed, empty, or invalid policy data.
  */
 export function loadGeneratedInlineStyleHashes(
   policyPath: string = defaultInlinePolicyPath,
 ): Set<string> {
   if (!existsSync(policyPath)) {
-    return new Set<string>();
+    throw new Error(
+      `Missing generated inline style policy file at ${policyPath}. Run build/inline-css first.`,
+    );
   }
+
+  const raw = readFileSync(policyPath, 'utf8');
+  let parsed: unknown;
   try {
-    const parsed: unknown = JSON.parse(readFileSync(policyPath, 'utf8'));
-    if (
-      typeof parsed === 'object' &&
-      parsed !== null &&
-      'inlineStyleHashes' in parsed &&
-      Array.isArray((parsed as { inlineStyleHashes: unknown }).inlineStyleHashes)
-    ) {
-      const hashes = (parsed as { inlineStyleHashes: unknown[] }).inlineStyleHashes.filter(
-        (item): item is string => typeof item === 'string' && SRI_HASH_PATTERN.test(item),
-      );
-      return new Set<string>(hashes);
-    }
-  } catch {
-    return new Set<string>();
+    parsed = JSON.parse(raw);
+  } catch (err) {
+    throw new Error(
+      `Invalid JSON in generated inline style policy at ${policyPath}: ${(err as Error).message}`,
+    );
   }
-  return new Set<string>();
+
+  if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
+    throw new Error(`Invalid inline style policy schema at ${policyPath}: expected JSON object.`);
+  }
+
+  const record = parsed as Record<string, unknown>;
+  if (typeof record.sourceAsset !== 'string' || record.sourceAsset.trim().length === 0) {
+    throw new Error(
+      `Invalid inline style policy at ${policyPath}: missing non-empty "sourceAsset" string.`,
+    );
+  }
+
+  if (!Array.isArray(record.inlineStyleHashes) || record.inlineStyleHashes.length === 0) {
+    throw new Error(
+      `Invalid inline style policy at ${policyPath}: "inlineStyleHashes" must be a non-empty array.`,
+    );
+  }
+
+  const validatedHashes: string[] = [];
+  for (const item of record.inlineStyleHashes) {
+    if (typeof item !== 'string' || !SHA256_HASH_PATTERN.test(item)) {
+      throw new Error(
+        `Invalid inline style hash entry in ${policyPath}: expected sha256-<base64>, received ${JSON.stringify(item)}.`,
+      );
+    }
+    validatedHashes.push(item);
+  }
+
+  return new Set<string>(validatedHashes);
 }
 
 function stripControlWhitespace(value: string): string {
@@ -422,7 +448,7 @@ export function validateHtml(
 
   const approvedScripts =
     options?.approvedScriptHashes ?? new Set<string>(APPROVED_INLINE_SCRIPT_HASHES);
-  const approvedStyles = options?.approvedStyleHashes;
+  const approvedStyles = options?.approvedStyleHashes ?? new Set<string>();
   const csp = parseCspDirectives(options?.cspDirectives ?? PAGE_CSP_DIRECTIVES);
 
   if (!/^\s*<!doctype\s+html\s*>/i.test(html)) {
@@ -686,25 +712,15 @@ export function validateHtml(
 
     violations.push(...inspectCssContent(content, filePath, csp));
 
-    if (approvedStyles !== undefined) {
-      if (!approvedStyles.has(hash)) {
-        violations.push({
-          file: filePath,
-          type: 'unapproved-inline-style',
-          message: `Inline style (${hash}) does not match narrow generated build policy`,
-        });
-      }
-    } else {
-      const isTailwindBuildBundle =
-        content.includes('tailwindcss') &&
-        (content.includes('--color-surface') || content.includes('@layer'));
-      if (!isTailwindBuildBundle) {
-        violations.push({
-          file: filePath,
-          type: 'unapproved-inline-style',
-          message: `Unapproved inline style detected (${hash})`,
-        });
-      }
+    if (!approvedStyles.has(hash)) {
+      violations.push({
+        file: filePath,
+        type: 'unapproved-inline-style',
+        message:
+          approvedStyles.size === 0
+            ? `Inline style (${hash}) rejected: no approved inline style policy hashes were provided (fail-closed)`
+            : `Inline style (${hash}) does not match narrow generated build policy`,
+      });
     }
   }
 
@@ -886,6 +902,22 @@ export function findHtmlFiles(dir: string): string[] {
   return findFilesByExtension(dir, '.html');
 }
 
+export interface PostBuildGateOptions {
+  readonly distDir?: string;
+  readonly inlinePolicyPath?: string;
+  readonly baseDir?: string;
+}
+
+export interface PostBuildGateResult {
+  readonly ok: boolean;
+  readonly htmlFilesCount: number;
+  readonly fileResults: HtmlValidationResult[];
+  readonly assetViolations: ValidationViolation[];
+  readonly violations: ValidationViolation[];
+  readonly uniqueScriptHashes: string[];
+  readonly uniqueStyleHashes: string[];
+}
+
 /**
  * Validates built static CSS and SVG assets in `dist/` for unsafe inline
  * execution, mixed content, and unapproved external origins.
@@ -893,25 +925,26 @@ export function findHtmlFiles(dir: string): string[] {
 export function validateBuiltAssets(
   targetDistDir: string = defaultDistDir,
   directives: readonly string[] = PAGE_CSP_DIRECTIVES,
+  baseDir: string = rootDir,
 ): ValidationViolation[] {
   const violations: ValidationViolation[] = [];
   const csp = parseCspDirectives(directives);
 
   for (const cssFile of findFilesByExtension(targetDistDir, '.css')) {
-    const relative = cssFile.replace(`${rootDir}/`, '');
+    const relPath = relative(baseDir, cssFile);
     const css = readFileSync(cssFile, 'utf8');
-    violations.push(...inspectCssContent(css, relative, csp));
+    violations.push(...inspectCssContent(css, relPath, csp));
   }
 
   for (const svgFile of findFilesByExtension(targetDistDir, '.svg')) {
-    const relative = svgFile.replace(`${rootDir}/`, '');
+    const relPath = relative(baseDir, svgFile);
     const rawSvg = readFileSync(svgFile, 'utf8');
     const dom = new JSDOM(rawSvg, { contentType: 'image/svg+xml' });
     const doc = dom.window.document;
 
     if (doc.querySelectorAll('script, foreignObject').length > 0) {
       violations.push({
-        file: relative,
+        file: relPath,
         type: 'unapproved-inline-script',
         message: 'Built SVG asset contains disallowed <script> or <foreignObject> element',
       });
@@ -922,7 +955,7 @@ export function validateBuiltAssets(
         const name = attr.name.toLowerCase();
         if (name.startsWith('on')) {
           violations.push({
-            file: relative,
+            file: relPath,
             type: 'inline-event-handler',
             message: `Inline event handler "${name}" found inside SVG asset`,
           });
@@ -933,7 +966,7 @@ export function validateBuiltAssets(
           isDangerousExecutableScheme(attr.value)
         ) {
           violations.push({
-            file: relative,
+            file: relPath,
             type: 'javascript-url',
             message: `Executable URL found inside SVG asset attribute ${name}="${attr.value}"`,
           });
@@ -945,67 +978,144 @@ export function validateBuiltAssets(
   return violations;
 }
 
-export function main(): void {
-  console.log('Running Post-Build HTML & CSP Compatibility Gate...');
+/**
+ * Runs the production post-build HTML & CSP compatibility gate fail-closed.
+ * Throws if `dist/`, built HTML files, or generated inline CSS policy are missing/invalid.
+ */
+export function runPostBuildGate(config?: PostBuildGateOptions): PostBuildGateResult {
+  const distDir = resolve(config?.distDir ?? defaultDistDir);
+  const inlinePolicyPath = resolve(config?.inlinePolicyPath ?? defaultInlinePolicyPath);
+  const baseDir = resolve(config?.baseDir ?? (config?.distDir ? dirname(distDir) : rootDir));
 
-  if (!existsSync(defaultDistDir)) {
-    console.error('dist/ directory does not exist! Run `pnpm build` first.');
-    process.exit(1);
+  if (!existsSync(distDir)) {
+    throw new Error(`dist/ directory does not exist at ${distDir}. Run \`pnpm build\` first.`);
   }
 
-  const htmlFiles = findHtmlFiles(defaultDistDir);
+  const htmlFiles = findHtmlFiles(distDir);
   if (htmlFiles.length === 0) {
-    console.error('No HTML files found in dist/! Run `pnpm build` first.');
-    process.exit(1);
+    throw new Error(`No HTML files found in ${distDir}. Run \`pnpm build\` first.`);
   }
 
-  const generatedStyleHashes = loadGeneratedInlineStyleHashes();
+  const generatedStyleHashes = loadGeneratedInlineStyleHashes(inlinePolicyPath);
   const options: ValidationOptions = {
     approvedScriptHashes: new Set<string>(APPROVED_INLINE_SCRIPT_HASHES),
-    approvedStyleHashes: generatedStyleHashes.size > 0 ? generatedStyleHashes : undefined,
+    approvedStyleHashes: generatedStyleHashes,
   };
 
-  let totalViolations = 0;
+  const fileResults: HtmlValidationResult[] = [];
+  const allViolations: ValidationViolation[] = [];
   const uniqueScriptHashes = new Set<string>();
   const uniqueStyleHashes = new Set<string>();
 
   for (const filePath of htmlFiles) {
-    const relative = filePath.replace(`${rootDir}/`, '');
+    const relPath = relative(baseDir, filePath);
     const html = readFileSync(filePath, 'utf8');
-    const result = validateHtml(html, relative, options);
+    const result = validateHtml(html, relPath, options);
+    fileResults.push(result);
 
     result.inlineScriptHashes.forEach((h) => uniqueScriptHashes.add(h));
     result.inlineStyleHashes.forEach((h) => uniqueStyleHashes.add(h));
+    allViolations.push(...result.violations);
+  }
 
-    if (!result.ok) {
-      totalViolations += result.violations.length;
-      console.error(`\nViolations found in ${relative}:`);
-      for (const v of result.violations) {
-        console.error(`  - [${v.type}] ${v.message}`);
+  const assetViolations = validateBuiltAssets(distDir, PAGE_CSP_DIRECTIVES, baseDir);
+  allViolations.push(...assetViolations);
+
+  return {
+    ok: allViolations.length === 0,
+    htmlFilesCount: htmlFiles.length,
+    fileResults,
+    assetViolations,
+    violations: allViolations,
+    uniqueScriptHashes: Array.from(uniqueScriptHashes),
+    uniqueStyleHashes: Array.from(uniqueStyleHashes),
+  };
+}
+
+function parseCliArgs(argv: string[]): PostBuildGateOptions {
+  let distDir: string | undefined;
+  let inlinePolicyPath: string | undefined;
+
+  for (let i = 0; i < argv.length; i += 1) {
+    const arg = argv[i];
+    if (arg === undefined) continue;
+
+    if (arg === '--dist') {
+      const value = argv[i + 1];
+      if (!value) {
+        throw new Error('Missing value for --dist');
       }
+      distDir = value;
+      i += 1;
+    } else if (arg.startsWith('--dist=')) {
+      const value = arg.slice('--dist='.length);
+      if (!value) {
+        throw new Error('Missing value for --dist');
+      }
+      distDir = value;
+    } else if (arg === '--policy') {
+      const value = argv[i + 1];
+      if (!value) {
+        throw new Error('Missing value for --policy');
+      }
+      inlinePolicyPath = value;
+      i += 1;
+    } else if (arg.startsWith('--policy=')) {
+      const value = arg.slice('--policy='.length);
+      if (!value) {
+        throw new Error('Missing value for --policy');
+      }
+      inlinePolicyPath = value;
     } else {
-      console.log(`  ok  ${relative}`);
+      throw new Error(`Unknown argument: ${arg}`);
     }
   }
 
-  const assetViolations = validateBuiltAssets(defaultDistDir);
-  if (assetViolations.length > 0) {
-    totalViolations += assetViolations.length;
+  return {
+    ...(distDir !== undefined ? { distDir } : {}),
+    ...(inlinePolicyPath !== undefined ? { inlinePolicyPath } : {}),
+  };
+}
+
+export function main(argv: string[] = process.argv.slice(2)): void {
+  console.log('Running Post-Build HTML & CSP Compatibility Gate...');
+
+  let result: PostBuildGateResult;
+  try {
+    const options = parseCliArgs(argv);
+    result = runPostBuildGate(options);
+  } catch (err) {
+    console.error(`CSP & HTML gate failed: ${err instanceof Error ? err.message : String(err)}`);
+    process.exit(1);
+  }
+
+  for (const fileResult of result.fileResults) {
+    if (!fileResult.ok) {
+      console.error(`\nViolations found in ${fileResult.file}:`);
+      for (const v of fileResult.violations) {
+        console.error(`  - [${v.type}] ${v.message}`);
+      }
+    } else {
+      console.log(`  ok  ${fileResult.file}`);
+    }
+  }
+
+  if (result.assetViolations.length > 0) {
     console.error('\nViolations found in built static assets:');
-    for (const v of assetViolations) {
+    for (const v of result.assetViolations) {
       console.error(`  - ${v.file}: [${v.type}] ${v.message}`);
     }
   }
 
-  if (totalViolations > 0) {
-    console.error(`\nCSP & HTML gate failed with ${totalViolations} violation(s).`);
+  if (!result.ok) {
+    console.error(`\nCSP & HTML gate failed with ${result.violations.length} violation(s).`);
     process.exit(1);
   }
 
   console.log('\nCSP & HTML compatibility gate passed:');
-  console.log(`  - HTML files verified: ${htmlFiles.length}`);
-  console.log(`  - Inline script SHA-256 digests: ${Array.from(uniqueScriptHashes).join(', ')}`);
-  console.log(`  - Inline style SHA-256 digests: ${Array.from(uniqueStyleHashes).join(', ')}`);
+  console.log(`  - HTML files verified: ${result.htmlFilesCount}`);
+  console.log(`  - Inline script SHA-256 digests: ${result.uniqueScriptHashes.join(', ')}`);
+  console.log(`  - Inline style SHA-256 digests: ${result.uniqueStyleHashes.join(', ')}`);
 }
 
 const argv1 = process.argv[1];

