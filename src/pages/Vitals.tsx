@@ -18,20 +18,20 @@ function getRatingBadge(rating: MetricRating) {
     case 'good':
       return {
         label: 'GOOD',
-        colorClass: 'border-[#22c55e]/40 bg-[#22c55e]/15 text-[#22c55e]',
-        dotClass: 'bg-[#22c55e]',
+        colorClass: 'border-tertiary/40 bg-tertiary-10 text-tertiary',
+        dotClass: 'bg-tertiary',
       };
     case 'needs-improvement':
       return {
         label: 'NEEDS IMPROVEMENT',
-        colorClass: 'border-[#c4c7c5]/40 bg-[#c4c7c5]/15 text-[#c4c7c5]',
-        dotClass: 'bg-[#c4c7c5]',
+        colorClass: 'border-outline-variant bg-surface-container text-on-surface-variant',
+        dotClass: 'bg-on-surface-variant',
       };
     case 'poor':
       return {
         label: 'POOR',
-        colorClass: 'border-[#ee7d77]/40 bg-[#ee7d77]/15 text-[#ee7d77]',
-        dotClass: 'bg-[#ee7d77]',
+        colorClass: 'border-error-30 bg-error-10 text-error',
+        dotClass: 'bg-error',
       };
   }
 }
@@ -103,12 +103,12 @@ export default function Vitals() {
                 aria-label="Do-Not-Track Status"
                 className={`inline-flex items-center gap-2 border px-3 py-1 font-mono text-[11px] uppercase tracking-[1px] ${
                   dntEnabled
-                    ? 'border-[#c4c7c5]/50 bg-[#c4c7c5]/10 text-[#c4c7c5]'
-                    : 'border-[#22c55e]/40 bg-[#22c55e]/15 text-[#22c55e]'
+                    ? 'border-outline-variant bg-surface-container text-on-surface-variant'
+                    : 'border-tertiary/40 bg-tertiary-10 text-tertiary'
                 }`}
               >
                 <span
-                  className={`h-2 w-2 rounded-full ${dntEnabled ? 'bg-[#c4c7c5]' : 'bg-[#22c55e]'}`}
+                  className={`h-2 w-2 rounded-full ${dntEnabled ? 'bg-on-surface-variant' : 'bg-tertiary'}`}
                   aria-hidden="true"
                 />
                 <span>
@@ -424,7 +424,7 @@ export default function Vitals() {
                   </span>
                   <span className="font-body text-xs text-on-surface-variant">{tile.label}</span>
                   {tile.blocked && (
-                    <span className="font-mono text-[10px] uppercase tracking-[1px] text-[#ee7d77]">
+                    <span className="font-mono text-[10px] uppercase tracking-[1px] text-error">
                       Blocked
                     </span>
                   )}
@@ -455,7 +455,7 @@ export default function Vitals() {
                 role="status"
                 className="flex items-center gap-3 border border-outline-variant/60 bg-surface-container/50 px-4 py-6"
               >
-                <span className="h-2 w-2 rounded-full bg-[#22c55e]" aria-hidden="true" />
+                <span className="h-2 w-2 rounded-full bg-tertiary" aria-hidden="true" />
                 <p className="font-body text-sm text-on-surface-variant">
                   No incidents reported in the last 30 days.
                 </p>

@@ -15,21 +15,13 @@ export const SITE_ORIGIN = 'https://usewraith.xyz';
 /** Pages that have dedicated i18n SEO metadata and locale-prefixed URL variants. */
 export type SeoPageKey = 'home' | 'stellar' | 'grants' | 'blog' | 'caseStudies';
 
-/** The canonical base path for each page, read from the route inventory. */
-function canonicalPath(id: string): string {
-  const route = getRouteById(id);
-  if (!route || route.kind === 'redirect') {
-    throw new Error(`Route inventory has no renderable route for "${id}"`);
-  }
-  return route.path;
-}
-
-const PAGE_PATHS: Record<SeoPageKey, string> = {
-  home: canonicalPath('home'),
-  stellar: canonicalPath('stellar'),
-  grants: canonicalPath('grants'),
-  blog: canonicalPath('blog'),
-  caseStudies: canonicalPath('case-studies'),
+/** The canonical base path for each page (no locale prefix — English is the canonical). */
+export const PAGE_PATHS: Record<SeoPageKey, string> = {
+  home: '/',
+  stellar: '/stellar',
+  grants: '/grants',
+  blog: '/blog',
+  caseStudies: '/case-studies',
 };
 
 /**

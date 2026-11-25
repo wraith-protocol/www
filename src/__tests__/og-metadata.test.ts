@@ -168,8 +168,37 @@ describe('og-metadata: dynamic routes', () => {
   });
 
   it('does not treat blog tag or author routes as posts', () => {
-    expect(resolveRouteMetadata('/blog/tag/wave-7')).toBeNull();
-    expect(resolveRouteMetadata('/blog/author/lena-vogt')).toBeNull();
+    const tag = resolveRouteMetadata('/blog/tag/wave-7');
+    expect(tag).not.toBeNull();
+    expect(tag!.ogType).toBe('website');
+    expect(tag!.ogImage.title).toBe('#wave-7');
+    expect(tag!.ogUrl).toBe('https://usewraith.xyz/blog/tag/wave-7');
+
+    const author = resolveRouteMetadata('/blog/author/lena-vogt');
+    expect(author).not.toBeNull();
+    expect(author!.ogType).toBe('website');
+    expect(author!.ogImage.title).toBe('Lena Vogt');
+  });
+
+  it('localizes tag and author archive metadata', () => {
+    const es = resolveRouteMetadata('/es/blog/tag/privacy');
+    const pt = resolveRouteMetadata('/pt/blog/author/lena-vogt');
+    expect(es!.locale).toBe('es');
+    expect(es!.ogUrl).toBe('https://usewraith.xyz/es/blog/tag/privacy');
+    expect(es!.description).not.toBe(resolveRouteMetadata('/blog/tag/privacy')!.description);
+    expect(pt!.locale).toBe('pt');
+    expect(pt!.ogImage.subtitle).toContain('Lena Vogt');
+    expect(pt!.ogImage.subtitle).not.toBe(
+      resolveRouteMetadata('/blog/author/lena-vogt')!.ogImage.subtitle,
+    );
+  });
+
+  it('returns no metadata for unknown tags and opted-out or unknown authors', () => {
+    expect(resolveRouteMetadata('/blog/tag/not-a-tag')).toBeNull();
+    expect(resolveRouteMetadata('/blog/author/wraith-team')).toBeNull();
+    expect(resolveRouteMetadata('/blog/author/nobody')).toBeNull();
+    expect(resolveRouteMetadata('/blog/author/constructor')).toBeNull();
+    expect(resolveRouteMetadata('/blog/tag/privacy/extra')).toBeNull();
   });
 });
 
@@ -553,9 +582,20 @@ describe('og-metadata: route indexability', () => {
     expect(isIndexableRoute('/pt/case-studies/nonexistent')).toBe(false);
   });
 
-  it('rejects blog tag and author routes', () => {
-    expect(isIndexableRoute('/blog/tag/wave-7')).toBe(false);
-    expect(isIndexableRoute('/blog/author/lena-vogt')).toBe(false);
+  it('indexes only tag and author archives that exist in the app', () => {
+    expect(isIndexableRoute('/blog/tag/wave-7')).toBe(true);
+    expect(isIndexableRoute('/es/blog/tag/privacy')).toBe(true);
+    expect(isIndexableRoute('/blog/author/lena-vogt')).toBe(true);
+    expect(isIndexableRoute('/blog/tag/not-a-tag')).toBe(false);
+    expect(isIndexableRoute('/blog/author/wraith-team')).toBe(false);
+    expect(isIndexableRoute('/blog/author/nobody')).toBe(false);
+  });
+
+  it('maps tag and author archives to locale-prefixed image slugs', () => {
+    expect(ogImageSlugFor('/blog/tag/privacy', 'en')).toBe('blog-tag-privacy');
+    expect(ogImageSlugFor('/es/blog/tag/privacy', 'es')).toBe('es-blog-tag-privacy');
+    expect(ogImageSlugFor('/pt/blog/author/lena-vogt', 'pt')).toBe('pt-blog-author-lena-vogt');
+    expect(ogImageSlugFor('/blog/author/wraith-team', 'en')).toBeNull();
   });
 
   it('identifies non-indexable routes', () => {
@@ -681,9 +721,9 @@ describe('og-metadata: localized dynamic content', () => {
     expect(enJob.title).toBe('Privacy by default');
     expect(enJob.subtitle).toBe('How Wraith makes private payments practical for everyday apps.');
     expect(esJob.title).toBe('Privacidad por defecto');
-    expect(esJob.subtitle).toBe('Pagos privados en el día a día');
+    expect(esJob.subtitle).toBe('Pagos privados con Wraith en el día a día');
     expect(ptJob.title).toBe('Privacidade por padrão');
-    expect(ptJob.subtitle).toBe('Pagamentos privados no dia a dia');
+    expect(ptJob.subtitle).toBe('Pagamentos privados com o Wraith no dia a dia');
 
     const caseStudies = new Map(
       jobs

@@ -124,8 +124,25 @@ describe('middleware: non-indexable routes', () => {
     expect(response).toBeUndefined();
   });
 
-  it('bypasses bot requests for blog tag and author routes', async () => {
-    for (const path of ['/blog/tag/wave-7', '/blog/author/lena-vogt']) {
+  it('serves archive cards, not post metadata, for known tag and author routes', async () => {
+    for (const [path, image] of [
+      ['/blog/tag/wave-7', '/og/blog-tag-wave-7.png'],
+      ['/es/blog/author/lena-vogt', '/og/es-blog-author-lena-vogt.png'],
+    ] as const) {
+      const { response } = await makeRequest(
+        path,
+        'TwitterBot/1.0',
+        '<html lang="en"><head></head></html>',
+      );
+      expect(response, `${path} must be rewritten`).not.toBeUndefined();
+      const html = await response!.text();
+      expect(html).toContain(`content="https://usewraith.xyz${image}"`);
+      expect(html).toContain('<meta property="og:type" content="website" />');
+    }
+  });
+
+  it('bypasses bot requests for unknown tag and opted-out author routes', async () => {
+    for (const path of ['/blog/tag/not-a-tag', '/blog/author/wraith-team']) {
       const { response } = await makeRequest(
         path,
         'TwitterBot/1.0',
