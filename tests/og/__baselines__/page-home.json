@@ -1,0 +1,44 @@
+{
+  "file": "home.png",
+  "kind": "page",
+  "locale": "en",
+  "titleFontSize": 76,
+  "lines": [
+    {
+      "y": 89,
+      "x": 132,
+      "right": 311,
+      "text": "WRAITH PROTOCOL"
+    },
+    {
+      "y": 91,
+      "x": 89,
+      "right": 109,
+      "text": "W"
+    },
+    {
+      "y": 411,
+      "x": 80,
+      "right": 658,
+      "text": "Wraith Protocol"
+    },
+    {
+      "y": 475,
+      "x": 80,
+      "right": 531,
+      "text": "Private payments for every chain"
+    },
+    {
+      "y": 555,
+      "x": 1007,
+      "right": 1100,
+      "text": "EVM · Stellar"
+    },
+    {
+      "y": 556,
+      "x": 80,
+      "right": 186,
+      "text": "usewraith.xyz"
+    }
+  ]
+}

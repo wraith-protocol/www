@@ -1,0 +1,38 @@
+{
+  "$comment": "Terms that must stay unchanged across locales. `terms` are brand, product, protocol, and standard names: whenever the English string contains one, every translation of that string must contain it verbatim (case-sensitive), and a route-metadata string made up only of these terms may be identical to English. `localeTerms` lists loanwords a specific locale deliberately keeps in English; they only exempt route metadata from the untranslated check. Every entry needs a reason.",
+  "terms": [
+    { "term": "Wraith Protocol", "reason": "Product name" },
+    { "term": "Wraith", "reason": "Product name" },
+    { "term": "WRAITH PROTOCOL", "reason": "Product wordmark" },
+    { "term": "WRAITH", "reason": "Product wordmark" },
+    { "term": "@wraith-protocol/sdk", "reason": "npm package name" },
+    { "term": "usewraith.xyz", "reason": "Domain name" },
+    { "term": "ERC-5564", "reason": "Ethereum standard identifier" },
+    { "term": "ERC-6538", "reason": "Ethereum standard identifier" },
+    { "term": "Stellar Development Foundation", "reason": "Organization name" },
+    { "term": "Stellar", "reason": "Chain name" },
+    { "term": "Soroban", "reason": "Stellar smart-contract platform name" },
+    { "term": "Horizen", "reason": "Chain name" },
+    { "term": "Solana", "reason": "Chain name" },
+    { "term": "CKB", "reason": "Chain name" },
+    { "term": "EVM", "reason": "Ethereum Virtual Machine acronym" },
+    { "term": "SDK", "reason": "Product surface name used in navigation" },
+    { "term": "Goldsky", "reason": "Indexer vendor name" },
+    { "term": "GitHub", "reason": "Platform name" },
+    { "term": "Tornado Cash", "reason": "Protocol name" },
+    { "term": "Aztec", "reason": "Protocol name" },
+    { "term": "Railgun", "reason": "Protocol name" },
+    { "term": "OFAC", "reason": "Regulator acronym" },
+    { "term": "Buttondown", "reason": "Newsletter vendor name" },
+    { "term": "Web Vitals", "reason": "Google performance metric brand" },
+    { "term": "Security.txt", "reason": "RFC 9116 file name" }
+  ],
+  "localeTerms": {
+    "es": [{ "term": "Blog", "reason": "Common loanword in Spanish" }],
+    "pt": [
+      { "term": "Blog", "reason": "Common loanword in Portuguese" },
+      { "term": "Newsletter", "reason": "Common loanword in Brazilian Portuguese" },
+      { "term": "Tag", "reason": "Common loanword in Brazilian Portuguese" }
+    ]
+  }
+}

@@ -843,6 +843,17 @@ function validateBlogManifest(file: string): void {
     requireIsoDate(ctx, post, 'date');
     requireNonEmpty(ctx, post, 'author');
     requireUrl(ctx, post, 'url');
+    // Tag archives and OG cards are generated from these tags.
+    if (post['tags'] !== undefined) {
+      const tags = post['tags'];
+      if (!isArray(tags) || !(tags as unknown[]).every(isNonEmptyString)) {
+        failures.push({
+          file: ctx.file,
+          record: ctx.record,
+          message: `"tags" must be an array of non-empty strings (got ${JSON.stringify(tags)})`,
+        });
+      }
+    }
   });
 }
 

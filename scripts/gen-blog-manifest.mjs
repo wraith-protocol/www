@@ -10,7 +10,7 @@ const blogPostsPath = path.join(rootDir, 'src', 'data', 'blog-posts.json');
 const outputPath = path.join(rootDir, 'src', 'data', 'blog-manifest.json');
 
 function parseFrontmatter(source) {
-  const frontmatterMatch = source.match(/^---\n([\s\S]*?)\n---/);
+  const frontmatterMatch = source.match(/^---\r?\n([\s\S]*?)\r?\n---/);
   if (!frontmatterMatch) {
     return { data: {}, content: source };
   }
@@ -19,7 +19,7 @@ function parseFrontmatter(source) {
   const content = source.slice(frontmatterMatch[0].length);
 
   const data = {};
-  const lines = frontmatterContent.split('\n');
+  const lines = frontmatterContent.split(/\r?\n/);
   for (const line of lines) {
     const colonIndex = line.indexOf(':');
     if (colonIndex === -1) continue;
@@ -48,7 +48,7 @@ function parseFrontmatter(source) {
 }
 
 function extractFirstParagraph(content) {
-  const lines = content.split('\n');
+  const lines = content.split(/\r?\n/);
   let inCode = false;
   let foundBreak = false;
   let paragraph = '';
@@ -93,6 +93,11 @@ function extractFirstParagraph(content) {
     .replace(/[*_]/g, '');
 }
 
+function normalizeTags(value) {
+  const list = Array.isArray(value) ? value : typeof value === 'string' && value ? [value] : [];
+  return list.map((tag) => String(tag).trim()).filter(Boolean);
+}
+
 function getSlug(filename) {
   return filename.replace(/\.mdx?$/, '');
 }
@@ -108,7 +113,7 @@ function processMdxFile(filePath, filename) {
     excerpt: data.excerpt || extractFirstParagraph(content),
     date: data.date || data.publishedAt || '2026-01-01',
     author: data.author || 'Wraith Team',
-    tags: Array.isArray(data.tags) ? data.tags : [],
+    tags: normalizeTags(data.tags),
     url: `https://usewraith.xyz/blog/${slug}`,
   };
 }
@@ -123,7 +128,7 @@ function loadBlogPostsJson() {
       excerpt: post.excerpt,
       date: post.publishedAt || '2026-01-01',
       author: post.author || 'Wraith Team',
-      tags: Array.isArray(post.tags) ? post.tags : [],
+      tags: normalizeTags(post.tags),
       url: `https://usewraith.xyz/blog/${post.slug}`,
     }));
   } catch {
@@ -183,8 +188,29 @@ async function main() {
 
   entries.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
-  await writeManifest(entries);
+  fs.writeFileSync(outputPath, formatManifest(entries));
   console.log(`Generated blog-manifest.json with ${entries.length} posts`);
 }
 
-await main();
+/**
+ * JSON.stringify with short string arrays kept on one line, the way Prettier
+ * prints them, so a build never leaves a formatting diff in the manifest.
+ */
+function formatManifest(entries) {
+  const json = JSON.stringify(entries, null, 2);
+  return (
+    json.replace(
+      /^( *)("[^"\n]+": )\[\n((?: *"(?:[^"\\\n]|\\.)*",?\n)+) *\]/gm,
+      (match, indent, key, body) => {
+        const items = body
+          .trim()
+          .split('\n')
+          .map((line) => line.trim().replace(/,$/, ''));
+        const inline = `${indent}${key}[${items.join(', ')}]`;
+        return inline.length + 1 <= 100 ? inline : match;
+      },
+    ) + '\n'
+  );
+}
+
+main();

@@ -1,0 +1,50 @@
+{
+  "file": "blog-author-lena-vogt.png",
+  "kind": "author",
+  "locale": "en",
+  "titleFontSize": 76,
+  "lines": [
+    {
+      "y": 89,
+      "x": 132,
+      "right": 311,
+      "text": "WRAITH PROTOCOL"
+    },
+    {
+      "y": 91,
+      "x": 89,
+      "right": 109,
+      "text": "W"
+    },
+    {
+      "y": 296,
+      "x": 80,
+      "right": 156,
+      "text": "AUTHOR"
+    },
+    {
+      "y": 388,
+      "x": 80,
+      "right": 452,
+      "text": "Lena Vogt"
+    },
+    {
+      "y": 452,
+      "x": 80,
+      "right": 796,
+      "text": "Posts by Lena Vogt on private payments and stealth"
+    },
+    {
+      "y": 488,
+      "x": 80,
+      "right": 220,
+      "text": "addresses"
+    },
+    {
+      "y": 562,
+      "x": 80,
+      "right": 186,
+      "text": "usewraith.xyz"
+    }
+  ]
+}
