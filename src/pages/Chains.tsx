@@ -11,7 +11,7 @@ interface SortState {
 }
 
 const STATUS_COLORS: Record<string, string> = {
-  live: 'text-[#22c55e] bg-[#22c55e]/10',
+  live: 'text-tertiary bg-tertiary-10',
   testnet: 'text-primary bg-surface-bright',
   devnet: 'text-primary bg-surface-bright',
   planned: 'text-outline bg-surface-bright',

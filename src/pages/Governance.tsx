@@ -46,13 +46,20 @@ export default function Governance() {
           {maintainers.map((maintainer) => (
             <div
               key={maintainer.name}
-              className="border border-outline-variant/40 bg-surface-container p-4 rounded-lg flex items-center gap-4"
+              className="border border-outline-variant bg-surface-container p-4 flex items-center gap-4"
             >
-              <img
-                src={maintainer.photo}
-                alt={maintainer.name}
-                className="w-16 h-16 rounded-full object-cover"
-              />
+              <div
+                className="h-16 w-16 shrink-0 overflow-hidden bg-outline-variant-30"
+                role="img"
+                aria-label={maintainer.name}
+              >
+                <div className="flex h-full w-full items-center justify-center font-heading text-xl font-bold text-on-surface-variant">
+                  {maintainer.name
+                    .split(' ')
+                    .map((part) => part[0])
+                    .join('')}
+                </div>
+              </div>
               <div>
                 <h3 className="font-bold font-heading text-on-surface">{maintainer.name}</h3>
                 <p className="text-[13px] text-outline mb-1">{maintainer.role}</p>

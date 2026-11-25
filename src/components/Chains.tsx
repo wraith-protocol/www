@@ -62,15 +62,15 @@ export default function Chains() {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 border-y border-outline-variant md:grid-cols-4">
+        <div className="grid grid-cols-1 border-y border-outline-variant sm:grid-cols-2 md:grid-cols-4">
           {chains.map((chain, index) => (
             <div
               key={chain.name}
-              className={`flex flex-col gap-4 p-6 md:p-7 ${chain.border ? 'border-b border-outline-variant md:border-r md:border-b-0' : ''} ${chain.featured ? 'bg-surface-bright' : ''}`}
+              className={`min-w-0 flex flex-col gap-4 p-6 md:p-7 ${chain.border ? 'border-b border-outline-variant md:border-r md:border-b-0' : ''} ${chain.featured ? 'bg-surface-bright' : ''}`}
               data-reveal={isInView}
               style={{ transitionDelay: isInView ? `${index * 80}ms` : '0ms' }}
             >
-              <div className="flex items-center justify-between gap-3">
+              <div className="flex flex-wrap items-center justify-between gap-2">
                 <span
                   className={`font-heading text-lg font-semibold ${chain.active ? 'text-on-surface' : 'text-outline'}`}
                 >

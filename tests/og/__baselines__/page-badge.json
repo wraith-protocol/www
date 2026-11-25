@@ -1,0 +1,44 @@
+{
+  "file": "es-stellar.png",
+  "kind": "page",
+  "locale": "es",
+  "titleFontSize": 68,
+  "lines": [
+    {
+      "y": 89,
+      "x": 132,
+      "right": 311,
+      "text": "WRAITH PROTOCOL"
+    },
+    {
+      "y": 91,
+      "x": 89,
+      "right": 109,
+      "text": "W"
+    },
+    {
+      "y": 413,
+      "x": 80,
+      "right": 692,
+      "text": "Integración Stellar"
+    },
+    {
+      "y": 475,
+      "x": 80,
+      "right": 671,
+      "text": "Direcciones ocultas nativas en la red Stellar"
+    },
+    {
+      "y": 555,
+      "x": 1051,
+      "right": 1100,
+      "text": "Stellar"
+    },
+    {
+      "y": 556,
+      "x": 80,
+      "right": 186,
+      "text": "usewraith.xyz"
+    }
+  ]
+}

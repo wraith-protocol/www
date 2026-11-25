@@ -306,7 +306,7 @@ export default function Security() {
               <span
                 className={`rounded px-3 py-1 font-mono text-xs font-semibold uppercase tracking-wider ${
                   bounty.status === 'active'
-                    ? 'bg-[#22c55e]/15 text-[#22c55e]'
+                    ? 'bg-tertiary-10 text-tertiary'
                     : 'bg-outline/15 text-outline'
                 }`}
               >

@@ -824,19 +824,16 @@ function validateBlogManifest(file: string): void {
     requireNonEmpty(ctx, post, 'authorName');
     requireNonEmpty(ctx, post, 'sourceFile');
     requireUrl(ctx, post, 'url');
-    requireArray(ctx, post, 'tags');
-    requireOneOf(ctx, post, 'locale', ['en', 'es', 'pt'] as const);
-    requireBoolean(ctx, post, 'draft');
-
-    if (isArray(post['tags'])) {
-      for (const tag of post['tags'] as unknown[]) {
-        if (!isNonEmptyString(tag)) {
-          fail(ctx, `field "tags" entries must be non-empty strings`);
-        }
+    // Tag archives and OG cards are generated from these tags.
+    if (post['tags'] !== undefined) {
+      const tags = post['tags'];
+      if (!isArray(tags) || !(tags as unknown[]).every(isNonEmptyString)) {
+        failures.push({
+          file: ctx.file,
+          record: ctx.record,
+          message: `"tags" must be an array of non-empty strings (got ${JSON.stringify(tags)})`,
+        });
       }
-    }
-    if (post['authorId'] !== null && post['authorId'] !== undefined) {
-      requireNonEmpty(ctx, post, 'authorId');
     }
   });
 }

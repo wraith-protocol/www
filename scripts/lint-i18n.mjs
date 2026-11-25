@@ -1,9 +1,12 @@
 /**
- * i18n linter: validates translation parity and detects hardcoded strings.
+ * i18n linter: validates locale structure and detects hardcoded strings.
  *
- * Part 1: Locale Parity Validation
- * Ensures all locale JSON files (en.json, es.json, pt.json, etc.) have
- * identical key structures with no missing or extraneous keys.
+ * Part 1: Locale Structure Validation (see scripts/i18n-validation.mjs)
+ * Compares every locale JSON file (es.json, pt.json, ...) against en.json:
+ * missing/extra keys at any depth, value type mismatches, interpolation
+ * placeholder drift, invalid or incomplete plural forms, untranslated route
+ * metadata, and allowlisted brand/protocol terms that must stay verbatim.
+ * The allowlist lives in scripts/i18n-allowlist.json.
  *
  * Part 2: Hardcoded String Detection
  * Scans src/components/*.tsx for JSX text nodes that look like human-readable
@@ -18,103 +21,65 @@
  * to be suppressed by keeping them inside t() calls.
  */
 
-import { readFileSync, readdirSync, existsSync } from 'fs';
+import { readFileSync, readdirSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { validateLocales } from './i18n-validation.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const i18nDir = join(__dirname, '..', 'src', 'i18n');
 const componentsDir = join(__dirname, '..', 'src', 'components');
+const allowlistPath = join(__dirname, 'i18n-allowlist.json');
+const REFERENCE_LOCALE = 'en';
 
 let totalViolations = 0;
 
-// ===== PART 1: LOCALE PARITY VALIDATION =====
+// ===== PART 1: LOCALE STRUCTURE VALIDATION =====
 
-/**
- * Recursively extracts all keys from a nested object
- * @param {object} obj - The object to extract keys from
- * @param {string} prefix - Current key path prefix
- * @returns {string[]} - Array of dot-notation keys
- */
-function extractKeys(obj, prefix = '') {
-  const keys = [];
-  for (const key in obj) {
-    const fullKey = prefix ? `${prefix}.${key}` : key;
-    if (typeof obj[key] === 'object' && obj[key] !== null && !Array.isArray(obj[key])) {
-      keys.push(...extractKeys(obj[key], fullKey));
-    } else {
-      keys.push(fullKey);
-    }
-  }
-  return keys.sort();
-}
-
-/**
- * Compares two arrays and returns differences
- * @param {string[]} arr1
- * @param {string[]} arr2
- * @returns {{missing: string[], extra: string[]}}
- */
-function compareKeys(arr1, arr2) {
-  const missing = arr2.filter((key) => !arr1.includes(key));
-  const extra = arr1.filter((key) => !arr2.includes(key));
-  return { missing, extra };
-}
-
-// Get all locale files
 const localeFiles = readdirSync(i18nDir)
   .filter((f) => f.endsWith('.json') && f !== 'package.json')
-  .map((f) => ({ name: f, path: join(i18nDir, f) }));
+  .sort();
 
 if (localeFiles.length < 2) {
-  console.warn('⚠️  Warning: Less than 2 locale files found. Skipping parity check.');
+  console.warn('⚠️  Warning: Less than 2 locale files found. Skipping structure check.');
 } else {
-  console.log(`\n🔍 Validating locale parity across ${localeFiles.length} files...\n`);
+  console.log(`
+🔍 Validating locale structure across ${localeFiles.length} files...
+`);
 
-  // Load all locale JSON files
-  const locales = localeFiles.map((file) => ({
-    name: file.name.replace('.json', ''),
-    keys: extractKeys(JSON.parse(readFileSync(file.path, 'utf8'))),
-    path: file.name,
-  }));
+  const locales = Object.fromEntries(
+    localeFiles.map((file) => [
+      file.replace('.json', ''),
+      JSON.parse(readFileSync(join(i18nDir, file), 'utf8')),
+    ]),
+  );
+  const allowlist = JSON.parse(readFileSync(allowlistPath, 'utf8'));
 
-  // Use the first locale (en.json) as the reference
-  const reference = locales[0];
-  console.log(`📋 Using ${reference.path} as reference (${reference.keys.length} keys)\n`);
+  console.log(`📋 Using ${REFERENCE_LOCALE}.json as reference
+`);
 
-  let parityIssues = false;
+  const violations = validateLocales({ locales, referenceLocale: REFERENCE_LOCALE, allowlist });
 
-  // Compare each locale against the reference
-  for (let i = 1; i < locales.length; i++) {
-    const current = locales[i];
-    const { missing, extra } = compareKeys(current.keys, reference.keys);
-
-    if (missing.length > 0 || extra.length > 0) {
-      parityIssues = true;
-      console.error(`❌ ${current.path} has parity issues:\n`);
-
-      if (missing.length > 0) {
-        console.error(`  Missing keys (${missing.length}):`);
-        missing.forEach((key) => console.error(`    - ${key}`));
-        console.error('');
-        totalViolations += missing.length;
-      }
-
-      if (extra.length > 0) {
-        console.error(`  Extra keys (${extra.length}):`);
-        extra.forEach((key) => console.error(`    + ${key}`));
-        console.error('');
-        totalViolations += extra.length;
-      }
-    } else {
-      console.log(`✅ ${current.path} matches reference (${current.keys.length} keys)`);
-    }
+  const byLocale = new Map();
+  for (const v of violations) {
+    if (!byLocale.has(v.locale)) byLocale.set(v.locale, []);
+    byLocale.get(v.locale).push(v);
   }
 
-  if (parityIssues) {
-    console.error('\n❌ Locale parity validation failed!\n');
+  for (const locale of Object.keys(locales)) {
+    if (!byLocale.has(locale)) console.log(`✅ ${locale}.json passes all structure checks`);
+  }
+  for (const [locale, list] of byLocale) {
+    const label = locale === '*' ? 'i18n-allowlist.json' : `${locale}.json`;
+    console.error(`\n❌ ${label} has ${list.length} issue(s):\n`);
+    for (const v of list) console.error(`  [${v.rule}] ${v.key}: ${v.message}`);
+  }
+
+  if (violations.length > 0) {
+    console.error('\n❌ Locale structure validation failed!\n');
+    totalViolations += violations.length;
   } else {
-    console.log('\n✅ All locales have matching key structures!\n');
+    console.log('\n✅ All locales match the reference structure!\n');
   }
 }
 
