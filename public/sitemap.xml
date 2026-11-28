@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://usewraith.xyz</loc>
-    <lastmod>2026-11-23</lastmod>
+    <lastmod>2026-11-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -44,7 +44,7 @@
   </url>
   <url>
     <loc>https://usewraith.xyz/stellar</loc>
-    <lastmod>2026-10-22</lastmod>
+    <lastmod>2026-11-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -204,13 +204,13 @@
   </url>
   <url>
     <loc>https://usewraith.xyz/es</loc>
-    <lastmod>2026-11-23</lastmod>
+    <lastmod>2026-11-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://usewraith.xyz/es/stellar</loc>
-    <lastmod>2026-10-22</lastmod>
+    <lastmod>2026-11-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -234,13 +234,13 @@
   </url>
   <url>
     <loc>https://usewraith.xyz/pt</loc>
-    <lastmod>2026-11-23</lastmod>
+    <lastmod>2026-11-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://usewraith.xyz/pt/stellar</loc>
-    <lastmod>2026-10-22</lastmod>
+    <lastmod>2026-11-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
