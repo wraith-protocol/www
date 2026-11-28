@@ -763,6 +763,18 @@ export function collectRoutes(options?: SitemapCollectionOptions): RouteEntry[] 
     blogPostsJsonEntries: options?.blogPostsJsonEntries,
   });
 
+  const archiveRoutes = [...authorRoutes, ...tagRoutes];
+  const localizedArchiveRoutes: RouteEntry[] = localePrefixes.flatMap((prefix) => {
+    const cleanPrefix = normalizeRoute(prefix);
+    if (!cleanPrefix || cleanPrefix === '/') return [];
+    return archiveRoutes.map((entry) => ({
+      route: `${cleanPrefix}${entry.route}`,
+      lastmod: entry.lastmod,
+      changefreq: entry.changefreq,
+      priority: entry.priority,
+    }));
+  });
+
   const manifestBackedRoutes = [
     ...staticEntries,
     ...csRoutes,
@@ -770,6 +782,7 @@ export function collectRoutes(options?: SitemapCollectionOptions): RouteEntry[] 
     ...blogRoutes,
     ...tagRoutes,
     ...localeRoutes,
+    ...localizedArchiveRoutes,
   ];
 
   const knownRoutes = new Set<string>(manifestBackedRoutes.map((entry) => entry.route));

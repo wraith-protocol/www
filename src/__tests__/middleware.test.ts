@@ -148,7 +148,10 @@ describe('middleware: non-indexable routes', () => {
         'TwitterBot/1.0',
         '<html lang="en"><head></head></html>',
       );
-      expect(response, `${path} must not be rewritten`).toBeUndefined();
+      expect(response, `${path} must be a 404`).not.toBeUndefined();
+      expect(response!.status).toBe(404);
+      expect(response!.headers.get('x-robots-tag')).toBe('noindex, nofollow');
+      expect(await response!.text()).toBe('Not Found');
     }
   });
 });

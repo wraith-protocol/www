@@ -91,7 +91,10 @@ external links.
 
 External links must point at a host listed in `scripts/link-check/external-links.json`.
 Add a host there when the site starts linking to it, and give a `reason` whenever an
-entry needs `acceptStatus` or `skipRequest`. Approved links are requested through
+entry needs `acceptStatus`, `acceptError` or `skipRequest`. `acceptStatus` keeps a
+documented status (such as a bot challenge) and `acceptError` keeps a documented error
+code (such as a TLS handshake abort from an egress network the host blocks); links
+covered by `acceptError` are reported as unverifiable rather than broken. Approved links are requested through
 `scripts/link-check/safe-request.ts`: only public addresses are allowed (loopback,
 private, link-local, IPv4-mapped forms of those, and so on are refused), each hop
 connects to the address its DNS lookup validated, and redirects are re-validated. The

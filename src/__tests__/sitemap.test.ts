@@ -13,6 +13,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   buildSitemap,
+  collectRoutes,
   gitLastModified,
   toDateString,
   type RouteEntry,
@@ -66,6 +67,31 @@ describe('sitemap builder', () => {
     // The only way today's date appears is if a caller passes it explicitly.
     // With our deterministic date derivation this must not happen for existing routes.
     expect(xml).not.toContain(`<lastmod>${today}</lastmod>`);
+  });
+});
+
+describe('sitemap archive policy', () => {
+  it('includes known tag and author archives in every locale', () => {
+    const routes = new Set(collectRoutes().map((entry) => entry.route));
+
+    expect(routes.has('/blog/tag/stealth-payments')).toBe(true);
+    expect(routes.has('/es/blog/tag/stealth-payments')).toBe(true);
+    expect(routes.has('/pt/blog/tag/stealth-payments')).toBe(true);
+    expect(routes.has('/blog/author/lena-vogt')).toBe(true);
+    expect(routes.has('/es/blog/author/lena-vogt')).toBe(true);
+    expect(routes.has('/pt/blog/author/lena-vogt')).toBe(true);
+  });
+
+  it('never includes unknown, opted-out or malformed archives', () => {
+    const routes = new Set(collectRoutes().map((entry) => entry.route));
+
+    expect(routes.has('/blog/tag/not-a-real-tag')).toBe(false);
+    expect(routes.has('/blog/author/wraith-team')).toBe(false);
+    expect(routes.has('/blog/author/nobody')).toBe(false);
+
+    for (const route of routes) {
+      expect(route).not.toMatch(/\/blog\/(?:tag|author)\/[^/]*[A-Z_%]/);
+    }
   });
 });
 

@@ -11,7 +11,9 @@
  *   - feeds: every RSS feed the pages advertise (plus /feed.xml) is served as
  *     XML, and the posts it links to render;
  *   - external links: hosts must be listed in scripts/link-check/external-links.json,
- *     and approved links must answer 2xx (or a documented acceptStatus).
+ *     and approved links must answer 2xx (or a documented acceptStatus). A host may
+ *     also accept documented error codes, which report the link as unverifiable
+ *     rather than broken.
  *
  * External links are requested through safe-request.ts: only public addresses,
  * DNS pinned per hop, redirects re-validated. The browser itself is locked to the
@@ -435,6 +437,8 @@ async function main(): Promise<void> {
       }
     }
 
+    const unverifiedExternal = externalResults.filter((result) => result.unverified).length;
+
     // ── Report ───────────────────────────────────────────────────────────────
     const summary = {
       base,
@@ -444,6 +448,7 @@ async function main(): Promise<void> {
       fragments: fragments.length,
       externalLinks: externalLinks.size,
       externalChecked: externalResults.length,
+      externalUnverified: unverifiedExternal,
       failures: failures.length,
     };
     if (options.report) {
@@ -463,7 +468,8 @@ async function main(): Promise<void> {
         `  fragments:            ${summary.fragments}`,
         `  external links:       ${summary.externalLinks}` +
           (options.external
-            ? ` (${summary.externalChecked} requested, ${skippedExternal} approved without a request)`
+            ? ` (${summary.externalChecked} requested, ${skippedExternal} approved without a request` +
+              (unverifiedExternal > 0 ? `, ${unverifiedExternal} unverifiable)` : ')')
             : ' (skipped)'),
       ].join('\n'),
     );
