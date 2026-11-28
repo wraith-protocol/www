@@ -1,5 +1,6 @@
 import type { ComponentType } from 'react';
 import GithubSlugger from 'github-slugger';
+import blogManifestData from '../data/blog-manifest.json';
 import {
   getAuthorById,
   resolveAuthor,
@@ -20,6 +21,22 @@ export interface BlogPostFrontmatter {
   tags: string[];
 }
 
+interface BlogManifestEntry {
+  slug: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  date: string;
+  author: string;
+  authorName: string;
+  authorId: string | null;
+  tags: string[];
+  locale: string;
+  draft: boolean;
+  url: string;
+  sourceFile: string;
+}
+
 export interface TocItem {
   id: string;
   text: string;
@@ -35,6 +52,7 @@ export interface BlogPost {
   authorId: string | null;
   excerpt: string;
   tags: string[];
+  locale: string;
   readingTimeMin: number;
   wordCount: number;
   toc: TocItem[];
@@ -47,21 +65,28 @@ interface MDXModule {
 }
 
 const modules = import.meta.glob<MDXModule>('/src/content/blog/*.mdx', { eager: true });
-const rawModules = import.meta.glob('/src/content/blog/*.mdx', {
-  query: '?raw',
-  import: 'default',
-  eager: true,
-}) as Record<string, unknown>;
 
-function getRawContent(value: unknown): string {
-  if (typeof value === 'string') return value;
+const componentsBySlug = new Map<string, ComponentType>();
+for (const [filepath, mod] of Object.entries(modules)) {
+  const filename = filepath.split('/').pop() || '';
+  componentsBySlug.set(filename.replace(/\.mdx$/, ''), mod.default);
+}
 
-  if (value && typeof value === 'object' && 'default' in value) {
-    const defaultExport = (value as { default?: unknown }).default;
-    if (typeof defaultExport === 'string') return defaultExport;
+const manifest = (blogManifestData ?? []) as BlogManifestEntry[];
+
+function buildToc(body: string): TocItem[] {
+  const slugger = new GithubSlugger();
+  const toc: TocItem[] = [];
+  const headingRegex = /^(##|###)\s+(.+)$/gm;
+  let match;
+  while ((match = headingRegex.exec(body)) !== null) {
+    if (!match[1] || !match[2]) continue;
+    const level = match[1].length;
+    const text = match[2].trim();
+    const cleanText = text.replace(/[*_`]/g, '');
+    toc.push({ id: slugger.slug(cleanText), text: cleanText, level });
   }
-
-  return '';
+  return toc;
 }
 
 // Cache posts to avoid re-parsing on every call
@@ -70,48 +95,32 @@ let cachedPosts: BlogPost[] | null = null;
 export function getAllPosts(): BlogPost[] {
   if (cachedPosts) return cachedPosts;
 
-  cachedPosts = Object.entries(modules)
-    .map(([filepath, mod]) => {
-      const filename = filepath.split('/').pop() || '';
-      const slug = filename.replace(/\.mdx$/, '');
-      const frontmatter = mod.frontmatter || {};
-      const rawAuthor = frontmatter.author || '';
-      const { name: authorName, linkId: authorId } = resolveAuthor(rawAuthor);
+  cachedPosts = manifest
+    .filter((entry) => !entry.draft)
+    .map((entry): BlogPost | null => {
+      const Component = componentsBySlug.get(entry.slug);
+      if (!Component) return null;
 
-      const rawContent = getRawContent(rawModules[filepath]);
-      const body = rawContent.replace(/^---[\s\S]*?^---/m, '');
+      const body = entry.content;
       const words = body.split(/\s+/).filter(Boolean).length;
-      const readingTimeMin = Math.max(1, Math.ceil(words / 200));
-
-      const slugger = new GithubSlugger();
-      const toc: TocItem[] = [];
-      const headingRegex = /^(##|###)\s+(.+)$/gm;
-      let match;
-      while ((match = headingRegex.exec(body)) !== null) {
-        if (!match[1] || !match[2]) continue;
-        const level = match[1].length;
-        const text = match[2].trim();
-        // Remove markdown formatting like **, _ etc if any
-        const cleanText = text.replace(/[*_`]/g, '');
-        const id = slugger.slug(cleanText);
-        toc.push({ id, text: cleanText, level });
-      }
 
       return {
-        slug,
-        title: frontmatter.title || slug,
-        date: frontmatter.date || '',
-        author: rawAuthor,
-        authorName,
-        authorId,
-        excerpt: frontmatter.excerpt || '',
-        tags: Array.isArray(frontmatter.tags) ? frontmatter.tags : [],
-        readingTimeMin,
+        slug: entry.slug,
+        title: entry.title,
+        date: entry.date,
+        author: entry.author,
+        authorName: entry.authorName,
+        authorId: entry.authorId,
+        excerpt: entry.excerpt,
+        tags: entry.tags,
+        locale: entry.locale,
+        readingTimeMin: Math.max(1, Math.ceil(words / 200)),
         wordCount: words,
-        toc,
-        Component: mod.default,
+        toc: buildToc(body),
+        Component,
       };
     })
+    .filter((post): post is BlogPost => post !== null)
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   return cachedPosts;

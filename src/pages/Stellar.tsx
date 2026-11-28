@@ -312,7 +312,10 @@ export default function Stellar() {
               <div className="flex flex-wrap items-center gap-6">
                 {[
                   { name: 'Stellar Development Foundation', url: 'https://stellar.org' },
-                  { name: 'Soroban', url: 'https://soroban.stellar.org' },
+                  {
+                    name: 'Soroban',
+                    url: 'https://developers.stellar.org/docs/build/smart-contracts/overview',
+                  },
                   { name: 'Freighter Wallet', url: 'https://freighter.app' },
                 ].map((credit) => (
                   <a

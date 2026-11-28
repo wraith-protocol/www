@@ -1,13 +1,14 @@
-import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
-import { slugifyTag, parseTags } from './feed-utils.mjs';
+import { slugifyTag } from './feed-utils.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const rootDir = join(__dirname, '..');
 const publicDir = join(rootDir, 'public');
 const distDir = join(rootDir, 'dist');
+const manifestPath = join(rootDir, 'src', 'data', 'blog-manifest.json');
 const siteUrl = 'https://usewraith.xyz';
 
 function escapeXml(value) {
@@ -23,109 +24,34 @@ function toRfc822(date) {
   return new Date(date).toUTCString();
 }
 
-let authorsCache = null;
-let optOutCache = null;
-
-function resolveAuthorName(authorId) {
-  if (!authorId) return 'Wraith Team';
-  try {
-    if (!authorsCache) {
-      const aPath = join(rootDir, 'src', 'data', 'authors.json');
-      authorsCache = existsSync(aPath) ? JSON.parse(readFileSync(aPath, 'utf8')) : {};
-    }
-    if (!optOutCache) {
-      const oPath = join(rootDir, 'src', 'data', 'authors-optout.json');
-      optOutCache = existsSync(oPath) ? JSON.parse(readFileSync(oPath, 'utf8')) : [];
-    }
-  } catch {
-    return authorId;
-  }
-  if (optOutCache.includes(authorId)) return 'Wraith Team';
-  const author = authorsCache[authorId];
-  if (author && author.optIn) return author.name;
-  if (author && !author.optIn) return 'Wraith Team';
-  return authorId;
-}
-
-function parseFrontmatter(content) {
-  const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
-  if (!match) return { metadata: {}, content };
-  const yaml = match[1];
-  const body = content.slice(match[0].length).trim();
-  const metadata = {};
-
-  yaml.split('\n').forEach((line) => {
-    const colonIdx = line.indexOf(':');
-    if (colonIdx > -1) {
-      const key = line.slice(0, colonIdx).trim();
-      let value = line.slice(colonIdx + 1).trim();
-      if (
-        (value.startsWith('"') && value.endsWith('"')) ||
-        (value.startsWith("'") && value.endsWith("'"))
-      ) {
-        value = value.slice(1, -1);
-      }
-      metadata[key] = value;
-    }
-  });
-
-  return { metadata, content: body };
-}
-
+/**
+ * Read published posts from the generated blog manifest.
+ *
+ * The manifest is produced by scripts/gen-blog-manifest.mjs, which owns
+ * frontmatter parsing and validation. Drafts are never published to feeds.
+ */
 export function getPosts() {
-  const postsMap = new Map();
-
-  // 1. Read MDX posts from src/content/blog/
-  const blogDir = join(rootDir, 'src', 'content', 'blog');
-  if (existsSync(blogDir)) {
-    const files = readdirSync(blogDir).filter((f) => f.endsWith('.mdx') || f.endsWith('.md'));
-    for (const file of files) {
-      const slug = file.replace(/\.mdx?$/, '');
-      const rawContent = readFileSync(join(blogDir, file), 'utf8');
-      const { metadata, content } = parseFrontmatter(rawContent);
-
-      if (metadata.title) {
-        postsMap.set(slug, {
-          slug,
-          title: metadata.title,
-          excerpt: metadata.excerpt ?? '',
-          content: content ?? '',
-          publishedAt: metadata.publishedAt || metadata.date,
-          author: resolveAuthorName(metadata.author),
-          tags: parseTags(metadata.tags),
-          url: metadata.url ?? `${siteUrl}/blog/${slug}`,
-        });
-      }
-    }
+  if (!existsSync(manifestPath)) {
+    throw new Error('src/data/blog-manifest.json is missing — run `pnpm gen:blog-manifest`');
   }
 
-  // 2. Read JSON posts from src/data/blog-posts.json
-  const manifestPath = join(rootDir, 'src', 'data', 'blog-posts.json');
-  if (existsSync(manifestPath)) {
-    try {
-      const parsed = JSON.parse(readFileSync(manifestPath, 'utf8'));
-      if (Array.isArray(parsed)) {
-        for (const post of parsed) {
-          if (post?.slug && post?.title && !postsMap.has(post.slug)) {
-            postsMap.set(post.slug, {
-              slug: post.slug,
-              title: post.title,
-              excerpt: post.excerpt ?? '',
-              content: post.content ?? '',
-              publishedAt: post.publishedAt || post.date,
-              author: resolveAuthorName(post.author),
-              tags: parseTags(post.tags),
-              url: post.url ?? `${siteUrl}/blog/${post.slug}`,
-            });
-          }
-        }
-      }
-    } catch {
-      // ignore
-    }
+  const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
+  if (!Array.isArray(manifest)) {
+    throw new Error('src/data/blog-manifest.json must contain an array of posts');
   }
 
-  return Array.from(postsMap.values())
+  return manifest
+    .filter((post) => post?.slug && post?.title && !post.draft)
+    .map((post) => ({
+      slug: post.slug,
+      title: post.title,
+      excerpt: post.excerpt ?? '',
+      content: post.content ?? '',
+      publishedAt: post.date,
+      author: post.authorName ?? post.author,
+      tags: Array.isArray(post.tags) ? post.tags : [],
+      url: post.url ?? `${siteUrl}/blog/${post.slug}`,
+    }))
     .filter((post) => Boolean(post.publishedAt))
     .sort((left, right) => Date.parse(right.publishedAt) - Date.parse(left.publishedAt));
 }

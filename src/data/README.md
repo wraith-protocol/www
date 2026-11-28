@@ -4,6 +4,65 @@ All data driving page content lives in `src/data/*.json`. Files are imported dir
 
 ---
 
+## `blog-manifest.json`
+
+The single, generated blog artifact. `scripts/gen-blog-manifest.mjs` parses each
+MDX file's frontmatter once with the structured parser in
+`scripts/blog-manifest-lib.mjs`, validates it, and writes this file.
+
+Do not edit it by hand — edit the MDX frontmatter in `src/content/blog/` and run
+`pnpm gen:blog-manifest`. The app (`src/utils/blog.ts`), RSS
+(`scripts/gen-rss.mjs`), sitemap (`scripts/sitemap.ts`), related posts and OG
+generation (`src/utils/og-metadata.ts`) all read this one file.
+
+### Schema
+
+```typescript
+interface BlogManifestEntry {
+  /** Filename-derived slug (unique, lowercase kebab-case) */
+  slug: string;
+  title: string;
+  excerpt: string;
+  /** Raw MDX body, used for word counts, TOC and feed descriptions */
+  content: string;
+  /** Normalized ISO date (YYYY-MM-DD) */
+  date: string;
+  /** Raw frontmatter author id or label */
+  author: string;
+  /** Display name after applying author opt-in/opt-out rules */
+  authorName: string;
+  /** Public author page id, or null when the author has no page */
+  authorId: string | null;
+  tags: string[];
+  /** One of en | es | pt */
+  locale: string;
+  /** Drafts never render, index, or publish to feeds */
+  draft: boolean;
+  url: string;
+  /** Repo-relative MDX source, used for sitemap git-date fallbacks */
+  sourceFile: string;
+}
+```
+
+### Frontmatter
+
+```yaml
+---
+title: 'Privacy by default' # required, non-empty
+date: '2026-07-20' # required, valid ISO date
+author: 'wraith-team' # required, authors.json id or label
+excerpt: 'One sentence summary.' # optional, derived from the body if omitted
+tags: ['privacy', 'stealth-payments'] # required, array of non-empty strings
+locale: 'en' # optional, en | es | pt, defaults to en
+draft: false # optional boolean, defaults to false
+---
+```
+
+Frontmatter is parsed as YAML: flow arrays (`tags: ['a', 'b']`), block
+sequences, single/double-quoted values, literal (`|`) and folded (`>`) block
+scalars, comments, escapes and Unicode are all supported. Malformed or invalid
+frontmatter fails the build with the file and the specific problem.
+
 ## `ecosystem.json`
 
 Powers the PartnerStrip component (homepage marquee) and the /ecosystem page.
