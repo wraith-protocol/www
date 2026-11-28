@@ -3,7 +3,22 @@ import esStrings from '../i18n/es.json';
 import ptStrings from '../i18n/pt.json';
 import blogManifest from '../data/blog-manifest.json';
 import caseStudiesData from '../data/case-studies.json';
-import { getAuthorById, listPublicAuthors, resolveAuthor, slugifyTag } from './blog-taxonomy';
+import authorsData from '../data/authors.json';
+import authorsOptOutData from '../data/authors-optout.json';
+import {
+  ARCHIVE_ROBOTS_INDEX,
+  archiveDescription,
+  archiveImageKey,
+  archiveOgImage,
+  archiveTitle,
+  findTagForSlug,
+  isArchivePath,
+  isIndexableAuthorId,
+  isIndexableTagSlug,
+  parseArchivePath,
+  slugifyTag,
+} from './blog-archives';
+import { listPublicAuthors, resolveAuthor } from './blog-taxonomy';
 
 export type Locale = 'en' | 'es' | 'pt';
 export const SUPPORTED_LOCALES: Locale[] = ['en', 'es', 'pt'];
@@ -157,12 +172,32 @@ const blogManifestData =
     tags?: string[];
   }>) || [];
 
+const authors = (authorsData ?? {}) as Record<string, { name: string; optIn?: boolean }>;
+const authorOptOut = (authorsOptOutData ?? []) as string[];
+
+// Every tag that appears on a published post. This is the source of truth for
+// tag archive indexability in metadata, OG jobs, middleware and the sitemap.
+const knownTags = Array.from(
+  new Set(blogManifestData.flatMap((post) => (Array.isArray(post.tags) ? post.tags : []))),
+).sort();
+
 function interpolate(template: string, values: Record<string, string>): string {
   return template.replace(/\{\{(\w+)\}\}/g, (match, key: string) => values[key] ?? match);
 }
 
 function archiveStrings(locale: Locale): ArchiveStrings {
   return ARCHIVE_STRINGS[locale] ?? ARCHIVE_STRINGS.en;
+}
+
+function archiveImageContent(kind: 'tag' | 'author', value: string, locale: Locale) {
+  const s = archiveStrings(locale);
+  return {
+    ...archiveOgImage(kind, value, locale),
+    subtitle:
+      kind === 'tag'
+        ? interpolate(s.tagSubtitle, { tag: value })
+        : interpolate(s.authorSubtitle, { name: value }),
+  };
 }
 
 /**
@@ -180,38 +215,21 @@ export function listBlogTags(): Array<{ tag: string; slug: string }> {
     .filter((entry) => entry.slug !== '');
 }
 
-function tagFromSlug(slug: string): string | undefined {
-  return listBlogTags().find((entry) => entry.slug === slug)?.tag;
-}
-
-function tagSlugFrom(pathname: string): string | null {
-  return pathname.match(/^\/blog\/tag\/([^/]+)$/)?.[1] ?? null;
-}
-
-function authorIdFrom(pathname: string): string | null {
-  return pathname.match(/^\/blog\/author\/([^/]+)$/)?.[1] ?? null;
-}
-
 function tagArchiveContent(tag: string, locale: Locale) {
-  const s = archiveStrings(locale);
   return {
-    title: interpolate(s.tagPageTitle, { tag }),
-    description: interpolate(s.tagDescription, { tag }),
-    ogImage: {
-      title: interpolate(s.tagTitle, { tag }),
-      subtitle: interpolate(s.tagSubtitle, { tag }),
-    },
-    label: s.tagLabel,
+    title: archiveTitle('tag', tag, locale),
+    description: archiveDescription('tag', tag, locale),
+    ogImage: archiveImageContent('tag', tag, locale),
+    label: archiveStrings(locale).tagLabel,
   };
 }
 
 function authorArchiveContent(name: string, locale: Locale) {
-  const s = archiveStrings(locale);
   return {
-    title: interpolate(s.authorPageTitle, { name }),
-    description: interpolate(s.authorDescription, { name }),
-    ogImage: { title: name, subtitle: interpolate(s.authorSubtitle, { name }) },
-    label: s.authorLabel,
+    title: archiveTitle('author', name, locale),
+    description: archiveDescription('author', name, locale),
+    ogImage: archiveImageContent('author', name, locale),
+    label: archiveStrings(locale).authorLabel,
   };
 }
 
@@ -285,30 +303,6 @@ function caseStudySlugFrom(pathname: string): string | null {
 export function resolveRouteMetadata(pathname: string): RouteMetadata | null {
   const { pathname: cleanPath, locale } = stripLocalePrefix(pathname);
 
-  // Tag and author archives are matched before `/blog/:slug`, which would
-  // otherwise read `tag/<slug>` as a post slug. Only archives that render in
-  // the app (a tag used by a post, an author with a public profile) resolve.
-  const tagSlug = tagSlugFrom(cleanPath);
-  const authorId = authorIdFrom(cleanPath);
-  if (tagSlug || authorId) {
-    const tag = tagSlug ? tagFromSlug(tagSlug) : undefined;
-    const author = authorId ? getAuthorById(authorId) : undefined;
-    if (!tag && !author) return null;
-    const content = tag
-      ? tagArchiveContent(tag, locale)
-      : authorArchiveContent(author!.name, locale);
-    return {
-      title: content.title,
-      description: content.description,
-      ogTitle: content.title,
-      ogDescription: content.description,
-      ogImage: content.ogImage,
-      ogUrl: canonicalUrlFor(locale, cleanPath),
-      ogType: 'website',
-      locale,
-    };
-  }
-
   const blogSlug = blogSlugFrom(cleanPath);
   const caseStudySlug = caseStudySlugFrom(cleanPath);
   // Exact match first, then the two-segment base (`/use-cases/calculator` is a
@@ -330,7 +324,7 @@ export function resolveRouteMetadata(pathname: string): RouteMetadata | null {
         description,
         ogTitle: archiveTitle('tag', tag, locale),
         ogDescription: description,
-        ogImage: archiveOgImage('tag', tag, locale),
+        ogImage: archiveImageContent('tag', tag, locale),
         ogUrl: canonicalUrlFor(locale, archive.routePath),
         ogType: 'website',
         locale,
@@ -347,7 +341,7 @@ export function resolveRouteMetadata(pathname: string): RouteMetadata | null {
       description,
       ogTitle: archiveTitle('author', author.name, locale),
       ogDescription: description,
-      ogImage: archiveOgImage('author', author.name, locale),
+      ogImage: archiveImageContent('author', author.name, locale),
       ogUrl: canonicalUrlFor(locale, archive.routePath),
       ogType: 'website',
       locale,
@@ -421,17 +415,15 @@ export function isIndexableRoute(pathname: string): boolean {
     return true;
   }
 
-  // Archives are indexable only when the app renders them — the same set the
-  // sitemap lists. Unknown tags and opted-out authors stay non-indexable.
-  const tagSlug = tagSlugFrom(cleanPath);
-  if (tagSlug) {
-    return tagFromSlug(tagSlug) !== undefined;
+  // Archive indexability is decided once, here and in the app: known archives
+  // are indexable, unknown or malformed ones are not.
+  const archive = parseArchivePath(cleanPath);
+  if (archive) {
+    return archive.kind === 'tag'
+      ? isIndexableTagSlug(archive.slug, knownTags)
+      : isIndexableAuthorId(archive.slug, authors, authorOptOut);
   }
-
-  const authorId = authorIdFrom(cleanPath);
-  if (authorId) {
-    return getAuthorById(authorId) !== undefined;
-  }
+  if (isArchivePath(cleanPath)) return false;
 
   // Dynamic slugs are only indexable when the post or case study exists —
   // everything else 404s in the app (this also rejects nested paths such as
@@ -456,14 +448,9 @@ export function ogImageSlugFor(pathname: string, locale: Locale): string | null 
     return null;
   }
 
-  const tagSlug = tagSlugFrom(cleanPath);
-  if (tagSlug) {
-    return localePrefixedSlug(locale, `blog-tag-${tagSlug}`);
-  }
-
-  const authorId = authorIdFrom(cleanPath);
-  if (authorId) {
-    return localePrefixedSlug(locale, `blog-author-${authorId}`);
+  const archive = parseArchivePath(cleanPath);
+  if (archive) {
+    return localePrefixedSlug(locale, archiveImageKey(archive.kind, archive.slug));
   }
 
   const blogSlug = blogSlugFrom(cleanPath);
@@ -526,43 +513,6 @@ export function listOgImageJobs(): OgImageJob[] {
         subtitle: config.ogImage.subtitle || config.description,
         description: config.description,
         chainBadge: config.ogImage.chainBadge,
-      });
-    }
-  }
-
-  const seenTagSlugs = new Set<string>();
-  for (const tag of knownTags) {
-    const tagSlug = slugifyTag(tag);
-    if (!tagSlug || seenTagSlugs.has(tagSlug)) continue;
-    seenTagSlugs.add(tagSlug);
-
-    const key = archiveImageKey('tag', tagSlug);
-    for (const locale of SUPPORTED_LOCALES) {
-      jobs.push({
-        slug: key,
-        routePath: `/blog/tag/${tagSlug}`,
-        locale,
-        file: `${localePrefixedSlug(locale, key)}.png`,
-        title: `#${tag}`,
-        subtitle: archiveDescription('tag', tag, locale),
-        description: archiveDescription('tag', tag, locale),
-      });
-    }
-  }
-
-  for (const [id, author] of Object.entries(authors)) {
-    if (!isIndexableAuthorId(id, authors, authorOptOut)) continue;
-
-    const key = archiveImageKey('author', id);
-    for (const locale of SUPPORTED_LOCALES) {
-      jobs.push({
-        slug: key,
-        routePath: `/blog/author/${id}`,
-        locale,
-        file: `${localePrefixedSlug(locale, key)}.png`,
-        title: author.name,
-        subtitle: archiveDescription('author', author.name, locale),
-        description: archiveDescription('author', author.name, locale),
       });
     }
   }
