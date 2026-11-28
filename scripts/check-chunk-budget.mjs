@@ -172,7 +172,7 @@ export const ROUTE_SPECS = [
     family: 'blog-index',
     entryKey: 'src/pages/Blog.tsx',
     htmlPath: 'blog/index.html',
-    allowedCollections: ['blog', 'i18n'],
+    allowedCollections: ['blog', 'blog-manifest', 'i18n'],
     allowedSdks: [],
   },
   {
@@ -180,7 +180,7 @@ export const ROUTE_SPECS = [
     family: 'blog-post',
     entryKey: 'src/pages/Blog.tsx',
     htmlPath: 'blog/wave-7-kickoff/index.html',
-    allowedCollections: ['blog', 'i18n'],
+    allowedCollections: ['blog', 'blog-manifest', 'i18n'],
     allowedSdks: [],
   },
   {
@@ -188,7 +188,7 @@ export const ROUTE_SPECS = [
     family: 'localized',
     entryKey: 'src/pages/Blog.tsx',
     htmlPath: 'index.html',
-    allowedCollections: ['blog', 'i18n'],
+    allowedCollections: ['blog', 'blog-manifest', 'i18n'],
     allowedSdks: [],
   },
   {

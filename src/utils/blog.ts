@@ -1,5 +1,6 @@
 import type { ComponentType } from 'react';
 import GithubSlugger from 'github-slugger';
+import blogManifestData from '../data/blog-manifest.json';
 import {
   getAuthorById,
   resolveAuthor,
@@ -18,6 +19,22 @@ export interface BlogPostFrontmatter {
   author: string;
   excerpt: string;
   tags: string[];
+}
+
+interface BlogManifestEntry {
+  slug: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  date: string;
+  author: string;
+  authorName: string;
+  authorId: string | null;
+  tags: string[];
+  locale: string;
+  draft: boolean;
+  url: string;
+  sourceFile: string;
 }
 
 export interface TocItem {
@@ -54,6 +71,8 @@ for (const [filepath, mod] of Object.entries(modules)) {
   const filename = filepath.split('/').pop() || '';
   componentsBySlug.set(filename.replace(/\.mdx$/, ''), mod.default);
 }
+
+const manifest = (blogManifestData ?? []) as BlogManifestEntry[];
 
 function buildToc(body: string): TocItem[] {
   const slugger = new GithubSlugger();

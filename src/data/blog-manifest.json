@@ -6,8 +6,13 @@
     "content": "Stealth addresses are the foundation of Wraith Protocol's privacy guarantees.\n\nWhen a sender makes a payment, the SDK derives a fresh, single-use address from the recipient's meta-address. Funds arrive at an address that has never appeared on-chain before, so outside observers cannot link the payment to the recipient's public identity.\n\nThis post walks through:\n\n- How meta-addresses are constructed from spend and view public keys\n- Why the recipient — and only the recipient — can scan and recover the funds\n- How the same scheme maps cleanly onto both EVM and Stellar\n\nThe result is private payments that require no interaction from the recipient and no changes to the underlying chain's consensus.",
     "date": "2026-08-12",
     "author": "lena-vogt",
+    "authorName": "Lena Vogt",
+    "authorId": "lena-vogt",
     "tags": ["cryptography", "stealth-payments", "privacy"],
-    "url": "https://usewraith.xyz/blog/stealth-addresses-explained"
+    "locale": "en",
+    "draft": false,
+    "url": "https://usewraith.xyz/blog/stealth-addresses-explained",
+    "sourceFile": "src/content/blog/stealth-addresses-explained.mdx"
   },
   {
     "slug": "wave-7-kickoff",
@@ -16,8 +21,13 @@
     "content": "Welcome to **Wave 7** of Wraith Protocol development!\n\nOver the past wave, our focus was on expanding privacy guarantees across both EVM and non-EVM chains, improving developer experience with our TypeScript SDK, and strengthening our privacy-preserving infrastructure.\n\nHere is a look back at what we shipped in **Wave 6**, followed by what to expect in **Wave 7**.\n\n---\n\n## 🚀 What We Shipped in Wave 6\n\n### 1. EVM Stealth Address Expansion\n\nWe successfully delivered full support for ERC-5564 stealth payment generations across multiple EVM networks. Users can now execute stealth transfers without revealing linked recipient addresses on-chain.\n\n- **Zero Linkability:** Built-in ephemeral pubkey derivation ensures sender-recipient privacy.\n- **Gas Optimizations:** Reduced contract interaction overhead by ~25% using streamlined cryptographic primitives.\n\n### 2. SDK v1.4 Release\n\nThe `@wraith-protocol/sdk` package received major performance and developer experience updates:\n\n- **Unified Multichain API:** One intuitive interface for EVM chains and Stellar.\n- **Automatic Stealth Key Derivation:** Instant generation of stealth addresses with a single function call.\n- **Enhanced Type Safety:** Comprehensive TypeScript definitions for all chain adapters.\n\n```typescript\nimport { buildSendStealth } from '@wraith-protocol/sdk/chains/evm';\n\nconst { transaction } = buildSendStealth({\n  recipientMetaAddress: 'st:eth:0x...',\n  amount: '0.1',\n  chain: 'horizen',\n});\n```\n\n### 3. TEE Privacy Enclave (Spectre) Upgrades\n\nOur hardware enclave architecture—Spectre—received critical security and latency enhancements:\n\n- Attestation verification workflows for remote nodes.\n- Faster scanning rates for stealth outputs across supported networks.\n\n---\n\n## 🎯 What's Coming in Wave 7\n\nWith Wave 7 officially underway, our primary objectives focus on scaling usability and developer adoption:\n\n1. **Stellar Ecosystem Expansion:** Deepening integration with Soroban smart contracts and expanding grant-funded privacy primitives.\n2. **Automated Scanning Agents:** TEE-managed AI agents capable of background balance scanning and stealth token claim automation.\n3. **Developer Tools & Console:** Launching key management dashboards and analytics for privacy-focused dApps.\n4. **Additional Chain Support:** Expanding our testnets for Solana and Base stealth address bridging.\n\n---\n\n## 🛠️ Get Involved\n\nWraith Protocol is open source and built for the privacy-first web.\n\n- **Documentation:** Check out the [Wraith Docs](https://docs.usewraith.xyz).\n- **GitHub:** Explore our open-source repositories on [GitHub](https://github.com/wraith-protocol).\n- **Demo:** Try stealth transactions live on the [Wraith Demo](https://demo.usewraith.xyz).\n\nStay tuned for regular updates as Wave 7 unfolds!",
     "date": "2026-07-27",
     "author": "wraith-team",
+    "authorName": "Wraith Team",
+    "authorId": null,
     "tags": ["announcements", "wave-7", "wave-6", "stealth-payments", "sdk"],
-    "url": "https://usewraith.xyz/blog/wave-7-kickoff"
+    "locale": "en",
+    "draft": false,
+    "url": "https://usewraith.xyz/blog/wave-7-kickoff",
+    "sourceFile": "src/content/blog/wave-7-kickoff.mdx"
   },
   {
     "slug": "privacy-by-default",
@@ -26,7 +36,12 @@
     "content": "Wraith brings privacy by default to payment experiences. Rather than asking developers to bolt on confidentiality after the fact, stealth addressing is part of the core send flow.\n\n- **No shared addresses:** recipients publish a meta-address; real destinations stay hidden.\n- **Same chains, new privacy:** EVM and Stellar work unchanged under the hood.\n- **Built for apps:** the SDK returns a signed transaction you can broadcast like any other.\n\nPrivacy should be the default state of a payment, not a premium add-on.",
     "date": "2026-07-20",
     "author": "Wraith Protocol Team",
+    "authorName": "Wraith Protocol Team",
+    "authorId": null,
     "tags": ["privacy", "stealth-payments"],
-    "url": "https://usewraith.xyz/blog/privacy-by-default"
+    "locale": "en",
+    "draft": false,
+    "url": "https://usewraith.xyz/blog/privacy-by-default",
+    "sourceFile": "src/content/blog/privacy-by-default.mdx"
   }
 ]

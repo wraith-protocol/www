@@ -563,16 +563,8 @@ export function getBlogRoutes(
     });
     excludedOrSeenSlugs.add(norm);
   }
-}
 
-export function getBlogRoutes(): RouteEntry[] {
-  return readBlogManifest().map((post) => ({
-    route: `/blog/${post.slug}`,
-    lastmod:
-      toDateString(post.date) ?? gitLastModified(post.sourceFile ?? 'src/data/blog-manifest.json'),
-    changefreq: 'weekly',
-    priority: '0.8',
-  }));
+  return entries;
 }
 
 export function getBlogTagRoutes(

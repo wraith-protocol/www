@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://usewraith.xyz</loc>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -80,13 +80,13 @@
   </url>
   <url>
     <loc>https://usewraith.xyz/chains</loc>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://usewraith.xyz/contributors</loc>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -98,7 +98,7 @@
   </url>
   <url>
     <loc>https://usewraith.xyz/governance</loc>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -116,13 +116,13 @@
   </url>
   <url>
     <loc>https://usewraith.xyz/security</loc>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://usewraith.xyz/status</loc>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -134,7 +134,7 @@
   </url>
   <url>
     <loc>https://usewraith.xyz/vitals</loc>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -146,6 +146,12 @@
   </url>
   <url>
     <loc>https://usewraith.xyz/blog/author/lena-vogt</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://usewraith.xyz/blog/privacy-by-default</loc>
+    <lastmod>2026-07-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -162,13 +168,7 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://usewraith.xyz/blog/privacy-by-default</loc>
-    <lastmod>2026-07-20</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://usewraith.xyz/blog/tag/cryptography</loc>
+    <loc>https://usewraith.xyz/blog/tag/privacy</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -178,7 +178,7 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://usewraith.xyz/blog/tag/privacy</loc>
+    <loc>https://usewraith.xyz/blog/tag/cryptography</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -204,7 +204,7 @@
   </url>
   <url>
     <loc>https://usewraith.xyz/es</loc>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -234,7 +234,7 @@
   </url>
   <url>
     <loc>https://usewraith.xyz/pt</loc>
-    <lastmod>2026-11-21</lastmod>
+    <lastmod>2026-11-23</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
