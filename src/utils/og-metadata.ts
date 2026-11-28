@@ -4,6 +4,12 @@ import ptStrings from '../i18n/pt.json';
 import blogManifest from '../data/blog-manifest.json';
 import caseStudiesData from '../data/case-studies.json';
 import { getAuthorById, listPublicAuthors, resolveAuthor, slugifyTag } from './blog-taxonomy';
+import {
+  APP_ROUTES,
+  matchAppRoute,
+  withLocalePrefix,
+  type StaticRouteDefinition,
+} from '../routes/inventory';
 
 export type Locale = 'en' | 'es' | 'pt';
 export const SUPPORTED_LOCALES: Locale[] = ['en', 'es', 'pt'];
@@ -361,20 +367,20 @@ export function isIndexableRoute(pathname: string): boolean {
   const { pathname: cleanPath } = stripLocalePrefix(pathname);
   const match = matchAppRoute(cleanPath);
 
-  if (!match || !match.route.policy.indexable) {
-    return false;
-  }
-
   // Archives are indexable only when the app renders them — the same set the
   // sitemap lists. Unknown tags and opted-out authors stay non-indexable.
   const tagSlug = tagSlugFrom(cleanPath);
   if (tagSlug) {
-    return tagFromSlug(tagSlug) !== undefined;
+    return match?.route.id === 'blog-tag' && tagFromSlug(tagSlug) !== undefined;
   }
 
   const authorId = authorIdFrom(cleanPath);
   if (authorId) {
-    return getAuthorById(authorId) !== undefined;
+    return match?.route.id === 'blog-author' && getAuthorById(authorId) !== undefined;
+  }
+
+  if (!match || !match.route.policy.indexable) {
+    return false;
   }
 
   // Dynamic slugs are only indexable when the post or case study exists —
@@ -411,6 +417,11 @@ export function ogImageSlugFor(pathname: string, locale: Locale): string | null 
   const blogSlug = blogSlugFrom(cleanPath);
   if (blogSlug) {
     return localePrefixedSlug(locale, `blog-${blogSlug}`);
+  }
+
+  const match = matchAppRoute(cleanPath);
+  if (!match) {
+    return null;
   }
 
   if (match.route.id === 'blog-post') {
