@@ -42,7 +42,9 @@ jobs:
       - run: pnpm format:check
       - run: pnpm lint:i18n
       - run: pnpm validate:content
+      - run: pnpm check:routes
       - run: pnpm check:sitemap
+      - run: pnpm check:robots
       - run: pnpm test:a11y
       - run: pnpm build
       - run: pnpm check:chunk-budget
@@ -234,12 +236,20 @@ jobs:
       - name: Wait for preview server
         run: npx --yes wait-on tcp:localhost:4173 --timeout 30000
 
+      - name: Resolve Lighthouse URLs from the route inventory
+        id: lighthouse_routes
+        run: |
+          {
+            echo 'urls<<ROUTE_INVENTORY_URLS'
+            pnpm --silent routes:lighthouse
+            echo 'ROUTE_INVENTORY_URLS'
+          } >> "$GITHUB_OUTPUT"
+
       - name: Run Lighthouse on Mobile
         id: lighthouse_mobile
         uses: treosh/lighthouse-ci-action@v12
         with:
-          urls: |
-            http://localhost:4173/
+          urls: ${{ steps.lighthouse_routes.outputs.urls }}
           configPath: './.github/lhci-mobile.json'
 
       - name: Save Mobile Reports
@@ -250,8 +260,7 @@ jobs:
         id: lighthouse_desktop
         uses: treosh/lighthouse-ci-action@v12
         with:
-          urls: |
-            http://localhost:4173/
+          urls: ${{ steps.lighthouse_routes.outputs.urls }}
           configPath: './.github/lhci-desktop.json'
 
       - name: Save Desktop Reports

@@ -8,6 +8,7 @@
 
 import { useTranslation } from 'react-i18next';
 import { SUPPORTED_LOCALES, type Locale } from '../i18n';
+import { getRouteById } from '../routes/inventory';
 
 export const SITE_ORIGIN = 'https://usewraith.xyz';
 
@@ -58,6 +59,18 @@ export interface PageSeoMeta {
   canonical: string;
   /** Full set of hreflang alternates including `x-default`. */
   alternates: HreflangAlternate[];
+}
+
+/**
+ * Returns the canonical URL for an inventory route id in the default (English)
+ * locale. Pages without dedicated SEO translations use this directly.
+ */
+export function canonicalForRoute(id: string): string {
+  const route = getRouteById(id);
+  if (!route || route.kind === 'redirect') {
+    throw new Error(`Route inventory has no canonical page for "${id}"`);
+  }
+  return route.path === '/' ? SITE_ORIGIN : `${SITE_ORIGIN}${route.path}`;
 }
 
 /**

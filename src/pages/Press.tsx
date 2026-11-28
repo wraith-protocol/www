@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { copyToClipboard } from '../utils/clipboard';
 import { EVM_SDK_ESM_ENTRYPOINT_GZIP_KB } from '../generated/sdk-size';
+import { canonicalForRoute } from '../utils/seo';
 
 const BRAND_COLORS = [
   { name: 'Surface', hex: '#0e0e0e', label: 'Background' },
@@ -58,14 +59,15 @@ function CopyBlock({ children }: { children: string }) {
 }
 
 export default function Press() {
+  const CANONICAL = canonicalForRoute('press');
   return (
     <div className="min-h-screen bg-surface text-on-surface">
       <Helmet>
         <title>Press Kit — Wraith Protocol</title>
         <meta name="description" content="Assets, copy, and contacts for press and partners." />
-        <link rel="canonical" href="https://usewraith.xyz/press" />
+        <link rel="canonical" href={CANONICAL} />
         <meta property="og:title" content="Press Kit — Wraith Protocol" />
-        <meta property="og:url" content="https://usewraith.xyz/press" />
+        <meta property="og:url" content={CANONICAL} />
       </Helmet>
       {/* Header */}
       <header className="fixed top-0 z-50 w-full border-b border-outline-variant-30 bg-surface/80 backdrop-blur-sm">

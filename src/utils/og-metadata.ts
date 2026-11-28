@@ -4,6 +4,12 @@ import ptStrings from '../i18n/pt.json';
 import blogManifest from '../data/blog-manifest.json';
 import caseStudiesData from '../data/case-studies.json';
 import { getAuthorById, listPublicAuthors, resolveAuthor, slugifyTag } from './blog-taxonomy';
+import {
+  APP_ROUTES,
+  matchAppRoute,
+  withLocalePrefix,
+  type StaticRouteDefinition,
+} from '../routes/inventory';
 
 export type Locale = 'en' | 'es' | 'pt';
 export const SUPPORTED_LOCALES: Locale[] = ['en', 'es', 'pt'];
@@ -108,29 +114,12 @@ const DYNAMIC_ROUTE_CONTENT: Record<Locale, DynamicRouteTable> = {
   pt: ptStrings.ogContent as unknown as DynamicRouteTable,
 };
 
-const ROUTE_SLUGS: Record<string, string> = {
-  '/': 'home',
-  '/blog': 'blog',
-  '/case-studies': 'case-studies',
-  '/careers': 'careers',
-  '/chains': 'chains',
-  '/contributors': 'contributors',
-  '/ecosystem': 'ecosystem',
-  '/faq': 'faq',
-  '/governance': 'governance',
-  '/grants': 'grants',
-  '/about': 'about',
-  '/newsletter': 'newsletter',
-  '/privacy': 'privacy',
-  '/roadmap': 'roadmap',
-  '/security': 'security',
-  '/status': 'status',
-  '/stellar': 'stellar',
-  '/threat-model': 'threat-model',
-  '/use-cases': 'use-cases',
-  '/use-cases/calculator': 'use-cases-calculator',
-  '/vitals': 'vitals',
-};
+const ROUTE_SLUGS: Record<string, string> = Object.fromEntries(
+  APP_ROUTES.filter(
+    (route): route is StaticRouteDefinition =>
+      route.kind === 'static' && route.ogSlug !== undefined,
+  ).map((route) => [route.path, route.ogSlug as string]),
+);
 
 const LOCALE_OG_STRINGS: Record<
   Locale,
@@ -251,7 +240,7 @@ export function stripLocalePrefix(pathname: string): { pathname: string; locale:
 
 function localizedPath(locale: Locale, cleanPath: string): string {
   if (locale === 'en') return cleanPath;
-  return cleanPath === '/' ? `/${locale}` : `/${locale}${cleanPath}`;
+  return withLocalePrefix(locale, cleanPath);
 }
 
 function canonicalUrlFor(locale: Locale, cleanPath: string): string {
@@ -376,21 +365,22 @@ export function resolveRouteMetadata(pathname: string): RouteMetadata | null {
 
 export function isIndexableRoute(pathname: string): boolean {
   const { pathname: cleanPath } = stripLocalePrefix(pathname);
-
-  if (Object.prototype.hasOwnProperty.call(ROUTE_CONTENT.en, cleanPath)) {
-    return true;
-  }
+  const match = matchAppRoute(cleanPath);
 
   // Archives are indexable only when the app renders them — the same set the
   // sitemap lists. Unknown tags and opted-out authors stay non-indexable.
   const tagSlug = tagSlugFrom(cleanPath);
   if (tagSlug) {
-    return tagFromSlug(tagSlug) !== undefined;
+    return match?.route.id === 'blog-tag' && tagFromSlug(tagSlug) !== undefined;
   }
 
   const authorId = authorIdFrom(cleanPath);
   if (authorId) {
-    return getAuthorById(authorId) !== undefined;
+    return match?.route.id === 'blog-author' && getAuthorById(authorId) !== undefined;
+  }
+
+  if (!match || !match.route.policy.indexable) {
+    return false;
   }
 
   // Dynamic slugs are only indexable when the post or case study exists —
@@ -400,13 +390,11 @@ export function isIndexableRoute(pathname: string): boolean {
   if (blogSlug) {
     return isKnownBlogSlug(blogSlug);
   }
-
-  const caseStudySlug = caseStudySlugFrom(cleanPath);
-  if (caseStudySlug) {
-    return isKnownCaseStudySlug(caseStudySlug);
+  if (match.route.id === 'case-study') {
+    return isKnownCaseStudySlug(match.params.slug ?? '');
   }
 
-  return false;
+  return true;
 }
 
 export function ogImageSlugFor(pathname: string, locale: Locale): string | null {
@@ -431,13 +419,24 @@ export function ogImageSlugFor(pathname: string, locale: Locale): string | null 
     return localePrefixedSlug(locale, `blog-${blogSlug}`);
   }
 
-  const caseStudySlug = caseStudySlugFrom(cleanPath);
-  if (caseStudySlug) {
-    return localePrefixedSlug(locale, `case-study-${caseStudySlug}`);
+  const match = matchAppRoute(cleanPath);
+  if (!match) {
+    return null;
   }
 
-  const slug = ROUTE_SLUGS[cleanPath];
-  return slug ? localePrefixedSlug(locale, slug) : null;
+  if (match.route.id === 'blog-post') {
+    return localePrefixedSlug(locale, `blog-${match.params.slug}`);
+  }
+
+  if (match.route.id === 'case-study') {
+    return localePrefixedSlug(locale, `case-study-${match.params.slug}`);
+  }
+
+  if (match.route.kind !== 'static' || !match.route.ogSlug) {
+    return null;
+  }
+
+  return localePrefixedSlug(locale, match.route.ogSlug);
 }
 
 export function generateOgImageUrl(ogImage: OgImageConfig, locale: Locale): string {
